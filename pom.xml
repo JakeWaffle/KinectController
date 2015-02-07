@@ -21,7 +21,6 @@
       <artifactId>com.j4k</artifactId>  
       <version>1.0</version> 
       <scope>system</scope>
-      <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
