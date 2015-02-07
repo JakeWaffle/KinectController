@@ -4,27 +4,31 @@
 
   <groupId>com.lcsc.hackathon</groupId>
   <artifactId>KinectController</artifactId>
-  <version>1.0</version>
+  <version>0.0.1</version>
   <packaging>jar</packaging>
 
   <name>KinectController</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
-    <dependency>
-        <groupId>com.espertech</groupId>
-        <artifactId>esper</artifactId>
-        <version>5.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>sample</groupId>  
-       <artifactId>com.sample</artifactId>  
-       <version>1.0</version> 
-      <scope>system</scope>
-      <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
-    </dependency>
+  <dependency>
+  	<groupId>com.espertech</groupId>
+  	<artifactId>esper</artifactId>
+  	<version>5.1.0</version>
+  </dependency>
+  <dependency>
+    <groupId>sample</groupId>  
+    <artifactId>com.sample</artifactId>  
+    <version>1.0</version> 
+    <scope>system</scope>
+    <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
+  </dependency>
   </dependencies>
   
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
