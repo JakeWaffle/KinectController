@@ -1,6 +1,6 @@
 package com.lcsc.hackathon;
 
-public class kinectTest {
+public class KinectTest {
 
 	public static void main(String[] args) {
 		System.out.println("This is a test");
