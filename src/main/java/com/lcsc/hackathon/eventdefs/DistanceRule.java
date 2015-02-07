@@ -1,3 +1,5 @@
+package com.lcsc.hackathon.eventdefs;
+
 public class DistanceRule {
 	private int end1;
 	private int end2;
