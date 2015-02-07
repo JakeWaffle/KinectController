@@ -12,21 +12,21 @@
 
   <dependencies>
     <dependency>
-        <groupId>com.espertech</groupId>
-        <artifactId>esper</artifactId>
-        <version>5.1.0</version>
+      <groupId>com.espertech</groupId>
+      <artifactId>esper</artifactId>
+      <version>5.1.0</version>
     </dependency>
     <dependency>
       <groupId>j4k</groupId>  
-       <artifactId>com.j4k</artifactId>  
-       <version>1.0</version> 
+      <artifactId>com.j4k</artifactId>  
+      <version>1.0</version> 
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
     </dependency>
     <dependency>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-util-ajax</artifactId>
-        <version>9.2.7.v20150116</version>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-util-ajax</artifactId>
+      <version>9.2.7.v20150116</version>
     </dependency>
   </dependencies>
   
