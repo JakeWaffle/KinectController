@@ -17,11 +17,18 @@
       <version>5.1.0</version>
     </dependency>
     <dependency>
-      <groupId>j4k</groupId>  
-      <artifactId>com.j4k</artifactId>  
+      <groupId>com.j4k</groupId>  
+      <artifactId>j4k</artifactId>  
       <version>1.0</version> 
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
+    </dependency>
+	<dependency>
+      <groupId>edu.ufl</groupId>  
+      <artifactId>ufl</artifactId>  
+      <version>1.0</version> 
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/ufdw.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
