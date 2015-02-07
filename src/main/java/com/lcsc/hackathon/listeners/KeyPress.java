@@ -18,7 +18,7 @@ public class KeyPress implements UpdateListener {
     }
     
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
-        this.rob.keyPress(Integer.parseInt((String)newEvents[0].get("keyID")));
-        this.rob.keyRelease(Integer.parseInt((String)newEvents[0].get("keyID")));
+        this.rob.keyPress(((Integer)newEvents[0].get("keyID")).intValue());
+        this.rob.keyRelease(((Integer)newEvents[0].get("keyID")).intValue());
     }
 }

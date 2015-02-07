@@ -1,5 +1,5 @@
 @echo off
 
-java -jar target/KinectController-1.0-jar-with-dependencies.jar
+java -jar target/KinectController-0.0.1-jar-with-dependencies.jar
 
 @echo on

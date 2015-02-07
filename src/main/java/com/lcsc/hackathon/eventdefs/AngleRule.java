@@ -5,7 +5,11 @@ public class AngleRule {
 	private int shoulderID;
 	private int end2;
 	
-	public AngleRule( end1, shoulderID, end2 );
+	public AngleRule(int end1, int shoulderID, int end2) {
+        this.end1 = end1;
+        this.shoulderID = shoulderID;
+        this.end2 = end2;
+    }
 	
 	public int getEnd1() {
 		return this.end1;

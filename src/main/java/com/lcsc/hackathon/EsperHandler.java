@@ -25,13 +25,15 @@ public class EsperHandler {
         Configuration config = new Configuration();
         config.getEngineDefaults().getExecution().setPrioritized(true);
         config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
-
+        config.addEventType("AngleRule", "com.lcsc.hackathon.eventdefs.AngleRule");
+        config.addEventType("DistanceRule", "com.lcsc.hackathon.eventdefs.DistanceRule");
+        
         this.engine = EPServiceProviderManager.getDefaultProvider(config);
         this.engine.initialize();
     }
     
     public void setPattern(String patternId, String pattern) {
-        EPStatement statement = this.engine.getEPAdministrator().createPattern(pattern);
+        EPStatement statement = this.engine.getEPAdministrator().createEPL(pattern);
         
         this.patterns.put(patternId, statement);
     }
