@@ -5,11 +5,11 @@ import edu.ufl.digitalworlds.j4k.DepthMap;
 import edu.ufl.digitalworlds.j4k.Skeleton; 
 import edu.ufl.digitalworlds.j4k.VideoFrame; 
 
-public class KinectTest extends J4KSDK {
+public class Kinect extends J4KSDK {
 
 	VideoFrame videoTexture;
 	
-	public KinectTest() {
+	public Kinect() {
 		super();
 		videoTexture = new VideoFrame();
 	}
