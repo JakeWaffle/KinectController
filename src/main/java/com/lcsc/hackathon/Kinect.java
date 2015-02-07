@@ -14,7 +14,7 @@ public class Kinect extends J4KSDK {
 		videoTexture = new VideoFrame();
 	}
 	
-    @Override 
+    @Override /* Not really needed*/
     public void onDepthFrameEvent(short[] depth_frame, byte[] player_index, float[] XYZ, float[] UV) { 
          
         DepthMap map=new DepthMap(getDepthWidth(),getDepthHeight(),XYZ); 
@@ -31,7 +31,7 @@ public class Kinect extends J4KSDK {
         System.out.println("SkeletonFrameEvent");
     } 
 	
-    @Override 
+    @Override /* Not really needed*/
     public void onColorFrameEvent(byte[] data) {     
 
         videoTexture.update(getColorWidth(), getColorHeight(), data); 
