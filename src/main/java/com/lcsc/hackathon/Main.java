@@ -1,3 +1,4 @@
+//http://www.thinkplexx.com/blog/simple-apache-commons-cli-example-java-command-line-arguments-parsing
 package com.lcsc.hackathon;
 
 import com.lcsc.hackathon.events.EventFactory;
@@ -8,6 +9,8 @@ public class Main {
     static Logger log = Logger.getRootLogger();
     
     public static void main(String[] args) {
+		new Cli(args).parse();
+		
         EsperHandler eHandler = new EsperHandler();
         
         ConfigParser configParser = new ConfigParser();
