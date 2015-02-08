@@ -3,15 +3,17 @@ package com.lcsc.hackathon.eventdefs;
 public class DistanceRule {
 	private String type = "";
 	private String id = "";
-	private int end1;
-	private int end2;
+	private int joint1;
+	private int joint2;
+    private int distance;
     
 	
-	public DistanceRule(String type, String id, int end1, int end2) {
+	public DistanceRule(String type, String id, int joint1, int joint2, int distance) {
 		this.type = type;
 		this.id = id;
-        this.end1 = end1;
-        this.end2 = end2;
+        this.joint1 = joint1;
+        this.joint2 = joint2;
+        this.distance = distance;
     }
 	
 	public String getType() {
@@ -30,19 +32,19 @@ public class DistanceRule {
 		this.id = id;
 	}
     
-	public int getEnd1() {
-		return this.end1;
+	public int getJoint1() {
+		return this.joint1;
 	}
 	
-	public void setEnd1(int e1) {
-		this.end1 = e1;
+	public void setJoint1(int j1) {
+		this.joint1 = j1;
 	}
 	
-	public int getEnd2() {
-		return this.end2;
+	public int getJoint2() {
+		return this.joint2;
 	}
 	
-	public void setEnd2(int e2) {
-		this.end2 = e2;
+	public void setJoint2(int j2) {
+		this.joint2 = j2;
 	}
 }

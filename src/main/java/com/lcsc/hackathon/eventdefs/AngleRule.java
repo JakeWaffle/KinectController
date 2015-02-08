@@ -4,14 +4,15 @@ public class AngleRule {
 	private String type = "";
 	private String id = "";
 	private int end1;
-	private int shoulderID;
+	private int vertex;
 	private int end2;
+    private int angle
 	
-	public AngleRule(String type, String id, int end1, int shoulderID, int end2) {
+	public AngleRule(String type, String id, int end1, int vertex, int end2, int angle) {
 		this.type = type;
 		this.id = id;
         this.end1 = end1;
-        this.shoulderID = shoulderID;
+        this.vertex = vertex;
         this.end2 = end2;
     }
 	
