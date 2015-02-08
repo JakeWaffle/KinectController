@@ -1,0 +1,139 @@
+{"Gestures": [
+	{
+		"id" : "mouse",
+		"rules" : [
+			{
+				"type" : "DistanceRule",
+				"id" : "left-arm-dist",
+				"attributes" :{
+					"endpoint1" : "hand",
+					"endpoint2" : "shoulder",
+					"min-dist" : "minimum",
+					"max-dist" : "maximum"
+				}
+			},
+			{
+				"type" : "AngleRule",
+				"id" : "left-arm-angle",
+				"attributes" : {
+					"endpoint1" : "hand",
+					"vertex" : "elbow",
+					"endpoint2" : "shoulder",
+					"min-angle" : "minimum",
+					"max-angle" : "maximum"
+				}
+			}
+		],
+		"trigger": {
+			"type" : "mouse",
+			"keys" : [
+				"key" : "none",
+				"type" : "mouse"
+			]
+		}
+	},
+	
+	{
+		"id" : "move-forward",
+		"rules" : [
+			{
+				"type" : "DistanceRule",
+				"id" : "body-forward",
+				"attributes" :{
+					"endpoint1" : "waist",
+					"endpoint2" : "waist",
+					"min-dist" : "minimum",
+					"max-dist" : "maximum"
+				}
+			}
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "W",
+				"type" : "keyPress"
+			]
+		}
+	},
+	
+	{
+		"id" : "move-backward",
+		"rules" : [
+			{
+				"type" : "DistanceRule",
+				"id" : "body-backward",
+				"attributes" :{
+					"endpoint1" : "waist",
+					"endpoint2" : "waist",
+					"min-dist" : "minimum",
+					"max-dist" : "maximum"
+				}
+			}
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "S",
+				"type" : "keyPress"
+			]
+		}
+	},
+	
+	{
+		"id" : "move-left",
+		"rules" : [
+			{
+				"type" : "DistanceRule",
+				"id" : "body-left",
+				"attributes" :{
+					"endpoint1" : "waist",
+					"endpoint2" : "waist",
+					"min-dist" : "minimum",
+					"max-dist" : "maximum"
+				}
+			}
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "A",
+				"type" : "keyPress"
+			]
+		}
+	},
+	
+	{
+		"id" : "move-right",
+		"rules" : [
+			{
+				"type" : "DistanceRule",
+				"id" : "body-right",
+				"attributes" :{
+					"endpoint1" : "waist",
+					"endpoint2" : "waist",
+					"min-dist" : "minimum",
+					"max-dist" : "maximum"
+				}
+			}
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "D",
+				"type" : "keyPress"
+			]
+		}
+	}
+
+	]
+}
+
+
+
+
+
+

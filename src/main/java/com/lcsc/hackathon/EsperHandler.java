@@ -25,8 +25,8 @@ public class EsperHandler {
         Configuration config = new Configuration();
         config.getEngineDefaults().getExecution().setPrioritized(true);
         config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
-        config.addEventType("AngleRule", "com.lcsc.hackathon.eventdefs.AngleRule");
-        config.addEventType("DistanceRule", "com.lcsc.hackathon.eventdefs.DistanceRule");
+        config.addEventType("AngleRule", "com.lcsc.hackathon.events.AngleRule");
+        config.addEventType("DistanceRule", "com.lcsc.hackathon.events.DistanceRule");
         
         this.engine = EPServiceProviderManager.getDefaultProvider(config);
         this.engine.initialize();

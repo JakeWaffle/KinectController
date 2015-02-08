@@ -11,6 +11,9 @@ public class Main {
     public static void main(String[] args) {
         log.info("asdfasdf");
         EsperHandler eHandler = new EsperHandler();
+		
+		Conversions.getKeyId("W");
+		Conversions.getJointId("HEAD");
         
         //This has the values for the KeyEvents
         //http://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_PAGE_DOWN
