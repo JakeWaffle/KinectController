@@ -9,10 +9,7 @@ public class EventFactory {
     List<AngleRule> angleRules = new ArrayList<AngleRule>();
     List<DistanceRule> distRules = new ArrayList<DistanceRule>();
     
-    EsperHandler eHandler;
-    
-    public EventFactory(EsperHandler eHandler) {
-        this.eHandler = eHandler;
+    public EventFactory() {
     }
     
     public void addAngleRule(AngleRule rule) {
@@ -23,5 +20,10 @@ public class EventFactory {
         distRules.add(rule);
     }
     
-    
+    public List<Object> getEventData(/*j4k skeleton,*/ EsperHandler eHandler) {
+        //loop through all of the angle/distRules and 
+        //update them with information from the current skeleton.
+        
+        //Then pass all of the rules to eHandler using sendEvent().
+    }
 }

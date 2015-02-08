@@ -38,7 +38,7 @@ public class ConfigParser {
             
         }
         
-        EventFactory eFactory = new EventFactory(eHandler);
+        EventFactory eFactory = new EventFactory();
         
         Object[] gestures = (Object[])config.get("gestures");
         
@@ -60,38 +60,36 @@ public class ConfigParser {
                 
                 Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
                 if (ruleType.equals("AngleRule")) {
-                    //int end1 = attributes.get("endpoint1");
-                    //int end2 = attributes.get("endpoint2");
-                    //int vertex = attributes.get("vertex");
+                    int end1 = Conversions.getJointId(attributes.get("endjoint1"));
+                    int end2 = Conversions.getJointId(attributes.get("endjoint2"));
+                    int vertex = Conversions.getJointId(attributes.get("vertex"));
                     
-                    //AngleRule angRule = new AngleRule();
+                    AngleRule angRule = new AngleRule(ruleId, end1, vertex, end2, -1);
+                    eFactory.addAngleRule(angRule);
                     
-                    //int minAngle = Integer.parseInt(attributes.get("min-angle"));
-                    //int maxAngle = Integer.parseInt(attributes.get("max-angle"));
+                    int minAngle = Integer.parseInt(attributes.get("min-angle"));
+                    int maxAngle = Integer.parseInt(attributes.get("max-angle"));
                     
-                    /*
                     rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1, 
                                                                                                                     vertex, 
                                                                                                                     end2, 
                                                                                                                     minAngle,
                                                                                                                     maxAngle));
-                    */
                 }
                 else if (ruleType.equals("DistanceRule")) {
-                    //int end1 = attributes.get("endpoint1");
-                    //int end2 = attributes.get("endpoint2");
+                    int joint1 = Conversions.getJointId(attributes.get("joint1"));
+                    int joint2 = Conversions.getJointId(attributes.get("joint2"));
                     
-                    //int minDist = Integer.parseInt(attributes.get("min-dist"));
-                    //int maxDist = Integer.parseInt(attributes.get("max-dist"));
+                    DistanceRule distRule = new DistanceRule(ruleId, joint1, joint2, -1);
+                    eFactory.addDistanceRule(distRule);
                     
-                    //DistanceRule distRule = new DistanceRule();
+                    int minDist = Integer.parseInt(attributes.get("min-dist"));
+                    int maxDist = Integer.parseInt(attributes.get("max-dist"));
                     
-                    /*
-                    rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %d, distance < %d)", end1,
-                                                                                                          end2,
-                                                                                                          minDist,
-                                                                                                          maxDist));
-                    */
+                    rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %d, distance < %d)", joint1,
+                                                                                                                      joint2,
+                                                                                                                      minDist,
+                                                                                                                      maxDist));
                 }
                 else {
                     log.warn("RuleType is invalid: "+ruleType);
@@ -146,10 +144,6 @@ public class ConfigParser {
             }
         }
         
-        
-        //Pass some information about the rules into the EventFactory
-        
-        //return the Event Factory so it can retrieve information from the Kinect.
         return eFactory;
     }
 }
