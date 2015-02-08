@@ -23,7 +23,7 @@ public class Cli {
 
 	}
 
-	public void parse() {
+	public CommandLine parse() {
 		CommandLineParser parser = new BasicParser();
 
 		CommandLine cmd = null;
@@ -44,6 +44,8 @@ public class Cli {
 			log.log(Level.SEVERE, "Failed to parse comand line properties", e);
 			help();
 		}
+		
+		return CommandLine;
 	}
 
 	private void help() {

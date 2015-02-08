@@ -9,7 +9,7 @@ public class Main {
     static Logger log = Logger.getRootLogger();
     
     public static void main(String[] args) {
-		new Cli(args).parse();
+		CommandLine arguments = new Cli(args).parse();
 		
         EsperHandler eHandler = new EsperHandler();
         
