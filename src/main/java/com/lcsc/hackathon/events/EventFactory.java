@@ -79,8 +79,8 @@ public class EventFactory {
         
         for (AbsoluteDistance rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] point = skele.get3DJoint(rule.getJoint1());
-            double[] joint = skele.get3DJoint(rule.getJoint2());
+            double[] point = skele.get3DJoint(rule.getAbsPoint());
+            double[] joint = skele.get3DJoint(rule.getJointId());
             
             double distance = Formulas.getDistance(point, joint);
             log.info(String.format("Distance: %f", distance));
@@ -92,10 +92,10 @@ public class EventFactory {
         
         for (AbsoluteDistX rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getAbsolutePoint());
-            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            double point = rule.getAbsPointX()[0];
+            double joint = rule.getJointId()[0];
             
-            double distance = Formulas.getDistance(point, joint);
+            double distance = Formulas.getDistanceX(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             
@@ -105,8 +105,8 @@ public class EventFactory {
         
         for (AbsoluteDistY rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getAbsolutePoint());
-            double[] joint2 = skele.get3DJoint(rule.getAbsolutePoint());
+            double point = rule.getAbsPointY()[1];
+            double joint = rule.getJointId()[1];
             
             double distance = Formulas.getDistance(point, joint);
             log.info(String.format("Distance: %f", distance));
@@ -118,10 +118,10 @@ public class EventFactory {
         
         for (AbsoluteDistZ rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getJoint1());
-            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            double point = rule.getAbsPointZ()[2];
+            double joint = rule.getJointId()[2];
             
-            double distance = Formulas.getDistanceZ(joint1, joint2);
+            double distance = Formulas.getDistanceZ(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             
