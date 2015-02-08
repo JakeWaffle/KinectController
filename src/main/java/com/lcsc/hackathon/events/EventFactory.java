@@ -77,9 +77,9 @@ public class EventFactory {
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistance rule : this.distRules) {
+        for (AbsoluteDistance rule : this.absDistRules) {
             //update them with information from the current skeleton.
-            double[] point = skele.get3DJoint(rule.getAbsPoint());
+            double[] point = rule.getAbsPoint();
             double[] joint = skele.get3DJoint(rule.getJointId());
             
             double distance = Formulas.getDistance(point, joint);
@@ -90,9 +90,9 @@ public class EventFactory {
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistX rule : this.distRules) {
+        for (AbsoluteDistX rule : this.absDistXRules) {
             //update them with information from the current skeleton.
-            double point = rule.getAbsPointX()[0];
+            double point = rule.getAbsPointX();
             double joint = rule.getJointId()[0];
             
             double distance = Formulas.getDistanceX(point, joint);
@@ -103,12 +103,12 @@ public class EventFactory {
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistY rule : this.distRules) {
+        for (AbsoluteDistY rule : this.absDistYRules) {
             //update them with information from the current skeleton.
-            double point = rule.getAbsPointY()[1];
+            double point = rule.getAbsPointY();
             double joint = rule.getJointId()[1];
             
-            double distance = Formulas.getDistance(point, joint);
+            double distance = Formulas.getDistanceY(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             
@@ -116,9 +116,9 @@ public class EventFactory {
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistZ rule : this.distRules) {
+        for (AbsoluteDistZ rule : this.absDistZRules) {
             //update them with information from the current skeleton.
-            double point = rule.getAbsPointZ()[2];
+            double point = rule.getAbsPointZ();
             double joint = rule.getJointId()[2];
             
             double distance = Formulas.getDistanceZ(point, joint);
