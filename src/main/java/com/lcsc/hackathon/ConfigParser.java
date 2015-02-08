@@ -211,36 +211,37 @@ public class ConfigParser {
             String ruleId   = attributes.get("id");
             int jointId = Conversions.getJointId(attributes.get("jointId"));
             
-            double absoluteX = Double.parseDouble(attributes.get("absoluteX"));
-            double absoluteY = Double.parseDouble(attributes.get("absoluteY"));
-            double absoluteZ = Double.parseDouble(attributes.get("absoluteZ"));
+            double[] absolutePoint = new double[3];
+            absolutePoint[0] = Double.parseDouble(attributes.get("absoluteX"));
+            absolutePoint[1] = Double.parseDouble(attributes.get("absoluteY"));
+            absolutePoint[2] = Double.parseDouble(attributes.get("absoluteZ"));
             
-            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
-            eFactory.addDistanceRule(distRule);
+            AbsoluteDistance distRule = new AbsoluteDistance(ruleId, absolutePoint, jointId, 0);
+            eFactory.addAbsDistRules(distRule);
             
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance > %f, distance < %f)",
-                                                                        joint1,
-                                                                        absoluteX,
-                                                                        absoluteY,
-                                                                        absoluteZ,
+            String patternChunk1 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance > %f, distance < %f)",
+                                                                        jointId,
+                                                                        absolutePoint[0],
+                                                                        absolutePoint[1],
+                                                                        absolutePoint[2],
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance < %f)",
-                                                                        joint1,
-                                                                        absoluteX,
-                                                                        absoluteY,
-                                                                        absoluteZ,
+            String patternChunk2 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance < %f)",
+                                                                        jointId,
+                                                                        absolutePoint[0],
+                                                                        absolutePoint[1],
+                                                                        absolutePoint[2],
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance > %f)",
-                                                                        joint1,
-                                                                        absoluteX,
-                                                                        absoluteY,
-                                                                        absoluteZ,
+            String patternChunk3 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance > %f)",
+                                                                        jointId,
+                                                                        absolutePoint[0],
+                                                                        absolutePoint[1],
+                                                                        absolutePoint[2],
                                                                         maxDist);
                                                                         
             patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
@@ -249,28 +250,28 @@ public class ConfigParser {
             String ruleId   = attributes.get("id");
             int jointId = Conversions.getJointId(attributes.get("jointId"));
             
-            double absoluteX = Double.parseDouble(attributes.get("absoluteX"));
+            double absPointX = Double.parseDouble(attributes.get("absoluteX"));
             
-            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
-            eFactory.addDistanceRule(distRule);
+            AbsoluteDistX distRule = new AbsoluteDistX(ruleId, absPointX, jointId, 0);
+            eFactory.addAbsDistXRules(distRule);
             
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance > %f, distance < %f)",
-                                                                        joint1,
-                                                                        absoluteX,
+            String patternChunk1 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance > %f, distance < %f)",
+                                                                        jointId,
+                                                                        absPointX,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance < %f)",
-                                                                        joint1,
-                                                                        absoluteX,
+            String patternChunk2 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance < %f)",
+                                                                        jointId,
+                                                                        absPointX,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance > %f)",
-                                                                        joint1,
-                                                                        absoluteX,
+            String patternChunk3 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance > %f)",
+                                                                        jointId,
+                                                                        absPointX,
                                                                         maxDist);
                                                                         
             patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
@@ -281,25 +282,25 @@ public class ConfigParser {
             
             double absoluteY = Double.parseDouble(attributes.get("absoluteY"));
             
-            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
-            eFactory.addDistanceRule(distRule);
+            AbsoluteDistY distRule = new AbsoluteDistY(ruleId, absoluteY, jointId, 0);
+            eFactory.addAbsDistYRules(distRule);
             
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance > %f, distance < %f)",
-                                                                        joint1,
+            String patternChunk1 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance > %f, distance < %f)",
+                                                                        jointId,
                                                                         absoluteY,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance < %f)",
-                                                                        joint1,
+            String patternChunk2 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance < %f)",
+                                                                        jointId,
                                                                         absoluteY,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance > %f)",
-                                                                        joint1,
+            String patternChunk3 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance > %f)",
+                                                                        jointId,
                                                                         absoluteY,
                                                                         maxDist);
                                                                         
@@ -311,25 +312,25 @@ public class ConfigParser {
             
             double absoluteZ = Double.parseDouble(attributes.get("absoluteZ"));
             
-            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
-            eFactory.addDistanceRule(distRule);
+            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absoluteZ, jointId, 0);
+            eFactory.addAbsDistZRules(distRule);
             
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance > %f, distance < %f)",
-                                                                        joint1,
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance > %f, distance < %f)",
+                                                                        jointId,
                                                                         absoluteZ,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance < %f)",
-                                                                        joint1,
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance < %f)",
+                                                                        jointId,
                                                                         absoluteZ,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance > %f)",
-                                                                        joint1,
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance > %f)",
+                                                                        jointId,
                                                                         absoluteZ,
                                                                         maxDist);
                                                                         

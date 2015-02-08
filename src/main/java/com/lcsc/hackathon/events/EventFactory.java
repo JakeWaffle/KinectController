@@ -18,6 +18,10 @@ public class EventFactory {
     //passed to Esper to be processed.
     List<AngleRule> angleRules = new ArrayList<AngleRule>();
     List<DistanceRule> distRules = new ArrayList<DistanceRule>();
+    List<AbsoluteDistance> absDistRules = new ArrayList<AbsoluteDistance>();
+    List<AbsoluteDistX> absDistXRules = new ArrayList<AbsoluteDistX>();
+    List<AbsoluteDistY> absDistYRules = new ArrayList<AbsoluteDistY>();
+    List<AbsoluteDistZ> absDistZRules = new ArrayList<AbsoluteDistZ>();
     
     public EventFactory() {
     }
@@ -28,6 +32,22 @@ public class EventFactory {
     
     public void addDistanceRule(DistanceRule rule) {
         distRules.add(rule);
+    }
+    
+    public void addAbsDistRules(AbsoluteDistance rule) {
+        absDistRules.add(rule);
+    }
+    
+    public void addAbsDistXRules(AbsoluteDistX rule) {
+        absDistXRules.add(rule);
+    }
+    
+    public void addAbsDistYRules(AbsoluteDistY rule) {
+        absDistYRules.add(rule);
+    }
+    
+    public void addAbsDistZRules(AbsoluteDistZ rule) {
+        absDistZRules.add(rule);
     }
     
     public void getEventData(Skeleton skele, EsperHandler eHandler) {
