@@ -1,17 +1,16 @@
 {
     "gestures": [
         {
-            "id" : "sneak",
+            "id" : "move-right",
             "rules" : [
                 {
-                    "type" : "AngleRule",
-                    "attributes" : {
-                        "id" : "left-arm-angle",
-                        "endJoint1" : "HAND_LEFT",
-                        "vertex" : "ELBOW_LEFT",
-                        "endJoint2" : "SHOULDER_LEFT",
-                        "min-angle" : "0",
-                        "max-angle" : "90"
+                    "type" : "DistanceRule",
+                    "attributes" :{
+                        "id" : "headToHand",
+                        "joint1" : "HEAD",
+                        "joint2" : "HAND_LEFT",
+                        "min-dist" : "0.0",
+                        "max-dist" : "0.5"
                     }
                 }
             ],
@@ -20,7 +19,33 @@
                 "type" : "keyPress",
                 "keys" : [
                     {
-                        "key" : "E",
+                        "key" : "M",
+                        "type" : "KeyDownUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-backward",
+            "rules" : [
+                {
+                    "type" : "AngleRule",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "endJoint1" : "HAND_LEFT",
+                        "vertex" : "ELBOW_LEFT",
+                        "endJoint2" : "SHOULDER_LEFT",
+                        "min-angle" : "90",
+                        "max-angle" : "180"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "N",
                         "type" : "KeyDownUp"
                     }
                 ]
@@ -236,7 +261,7 @@
                         "jointId" : "FOOT_RIGHT",
                         "absoluteY" : "0",
                         "min-dist" : "-1.0",
-                        "max-dist" : "0.68"
+                        "max-dist" : "0.7"
                     }
                 },
                 {
@@ -246,29 +271,7 @@
                         "jointId" : "FOOT_LEFT",
                         "absoluteY" : "0",
                         "min-dist" : "-1.0",
-                        "max-dist" : "0.68"
-                    }
-                },
-                {
-                    "type" : "AngleRule",
-                    "attributes" : {
-                        "id" : "left-arm-angle",
-                        "endJoint1" : "HIP_LEFT",
-                        "vertex" : "KNEE_LEFT",
-                        "endJoint2" : "FOOT_LEFT",
-                        "min-angle" : "0",
-                        "max-angle" : "150"
-                    }
-                },
-                {
-                    "type" : "AngleRule",
-                    "attributes" : {
-                        "id" : "left-arm-angle",
-                        "endJoint1" : "HIP_RIGHT",
-                        "vertex" : "KNEE_RIGHT",
-                        "endJoint2" : "FOOT_RIGHT",
-                        "min-angle" : "0",
-                        "max-angle" : "150"
+                        "max-dist" : "0.7"
                     }
                 }
             ],
@@ -281,6 +284,66 @@
                         "type" : "KeyDownUp"
                     }
                 ]
+            }
+        },
+		{
+            "id" : "mouseMove",
+            "rules" : [
+				{
+                    "type" : "AngleRule",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "endJoint1" : "HAND_LEFT",
+                        "vertex" : "ELBOW_LEFT",
+                        "endJoint2" : "SHOULDER_LEFT",
+                        "min-angle" : "100",
+                        "max-angle" : "180"
+                    }
+                },
+                {
+                    "type" : "DistanceXRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "-0.1",
+                        "max-dist" : "-1.0"
+                    }
+                },
+                {
+                    "type" : "DistanceXRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "0.1",
+                        "max-dist" : "1.0"
+                    }
+                },
+				{
+                    "type" : "DistanceYRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "-0.1",
+                        "max-dist" : "-1.0"
+                    }
+                },
+				{
+                    "type" : "DistanceYRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "0.1",
+                        "max-dist" : "1.0"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "mouseMove",
             }
         }
 	]

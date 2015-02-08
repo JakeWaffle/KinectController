@@ -82,8 +82,8 @@ public class ConfigParser {
             }
             else if (triggerType.equals("mouseMove")) {
                 //keyDefs is going to be populated when we check out the actual rules.
-                List<Map<String, String>> keyDefs = new ArrayList<Map<String,String>>();
-                trigger = new Trigger(triggerType, keyDefs);
+                List<Map<String, String>> defs = new ArrayList<Map<String,String>>();
+                trigger = new Trigger(triggerType, defs);
             }
             else {
                 log.error(String.format("Invalid Trigger Type: %s", triggerType));
@@ -95,6 +95,7 @@ public class ConfigParser {
             //(Those pattern chunks will be assembled later with the rest of the informatino needed.)
             List<String> rulePattern = new ArrayList<String>();
             
+            int count = 0;
             Object[] rules = (Object[])gesture.get("rules");
             for (Object ruleObj : rules) {
                 Map<String, Object> rule = (Map<String, Object>)ruleObj;
@@ -102,7 +103,8 @@ public class ConfigParser {
                 
                 try {
                     Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
-                    rulePattern.add(configureRule(eFactory, ruleType, triggerType, attributes));
+                    rulePattern.add(configureRule(eFactory, ruleType, triggerType, count, attributes));
+                    count += 1;
                 } catch (Exception e) {
                     log.error("", e);
                     System.exit(1);
@@ -114,21 +116,50 @@ public class ConfigParser {
             
             String pattern = "select ";
             
-            
             if (triggerType.equals("mouseMove")) {
-                pattern += String.format("'%s' as triggerId DistanceXRule.distance as x DistanceYRule.distance as y from pattern[",gestureId);
-            }
+                pattern += String.format("'%s' as triggerId, '%s' as direction from pattern[", gestureId, (String)triggerMap.get("direction"));
+
+                boolean x = false;
+                boolean y = false;
+                for (int i=0; i<rulePattern.size(); i++) {
+                    String tmp = rulePattern.get(i);
+                    
+                    log.info("TMP: "+tmp);
+                    
+                    if (tmp.contains("DistanceXRule") && !x) {
+                        tmp = tmp.replaceAll("DistanceXRule", "every e1=DistanceXRule");
+                        x = true;
+                    }
+                    else if (tmp.contains("DistanceYRule") && !y) {
+                        tmp = tmp.replaceAll("DistanceYRule", "every e2=DistanceYRule");
+                        y = true;
+                    }
+                    else {
+                        tmp = "every "+tmp;
+                    }
+                    pattern += tmp;
+                    if (i != rulePattern.size()-1) {
+                        pattern += " or ";
+                    }
+                    else if (i == 0) {
+                        pattern += " and ";
+                    }
+                    else {
+                        pattern += "]";
+                    }
+                }
+            }            
             else {
                 pattern += String.format("'%s' as triggerId from pattern[",gestureId);
-            }
-            
-            for (int i=0; i<rulePattern.size(); i++) {
-                pattern += rulePattern.get(i);
-                if (i != rulePattern.size()-1) {
-                    pattern += " and ";
-                }
-                else {
-                    pattern += "]";
+
+                for (int i=0; i<rulePattern.size(); i++) {
+                    pattern += rulePattern.get(i);
+                    if (i != rulePattern.size()-1) {
+                        pattern += " and ";
+                    }
+                    else {
+                        pattern += "]";
+                    }
                 }
             }
             
@@ -159,7 +190,7 @@ public class ConfigParser {
     //                      Esper to deal with. There will also be thresholds and other information for
     //                      the Esper pattern. (ach rule will have some specific format.)
     //@return               This String is going to be placed within the Esper query pattern.
-    private String configureRule(EventFactory eFactory, String ruleType, String triggerType, Map<String, String> attributes) {
+    private String configureRule(EventFactory eFactory, String ruleType, String triggerType, int index, Map<String, String> attributes) {
         String patternChunk = "";
         String patternChunk1 = "";
         String patternChunk2 = "";
@@ -427,10 +458,10 @@ public class ConfigParser {
             patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (triggerType.equals("mouseMove")) {
-            patternChunk = String.format("every %s", patternChunk1);
+            patternChunk = String.format("%s", patternChunk1);
         }
         else {
-            log error("Invalid Trigger Type: "+triggerType);
+            log.error("Invalid Trigger Type: "+triggerType);
             System.exit(1);
         }
         

@@ -72,8 +72,10 @@ public class EventFactory {
             double[] end1 = skele.get3DJoint(rule.getEnd1());
             double[] end2 = skele.get3DJoint(rule.getEnd2());
             double[] vertex = skele.get3DJoint(rule.getVertex());
-            
-            rule.setAngle(Formulas.getAngle(end1, vertex, end2));
+            double angle = Formulas.getAngle(end1, vertex, end2);
+            //log.info(String.format("Angle: %f", angle));
+            double oldAngle = rule.getAngle();
+            rule.setAngle(angle*0.5 + oldAngle*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -86,7 +88,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistance(joint1, joint2);
             //log.info(String.format("Distance: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -99,7 +102,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceX(joint1, joint2);
             //log.info(String.format("DistanceX: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -112,7 +116,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceY(joint1, joint2);
             //log.info(String.format("DistanceY: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -125,7 +130,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceZ(joint1, joint2);
             //log.info(String.format("DistanceZ: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -137,8 +143,9 @@ public class EventFactory {
             double[] joint = skele.get3DJoint(rule.getJointId());
             
             double distance = Formulas.getDistance(point, joint);
-            log.info(String.format("AbsDistance: %f", distance));
-            rule.setDistance(distance);
+            //log.info(String.format("AbsDistance: %f", distance));
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -151,7 +158,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceX(point, joint);
             //log.info(String.format("AbsDistanceX: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -163,8 +171,9 @@ public class EventFactory {
             double joint = skele.get3DJoint(rule.getJointId())[1];
             
             double distance = Formulas.getDistanceY(point, joint);
-            log.info(String.format("AbsDistanceY: %f", distance));
-            rule.setDistance(distance);
+            //log.info(String.format("AbsDistanceY: %f", distance));
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -177,7 +186,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceZ(point, joint);
             //log.info(String.format("AbsDistanceZ: %f", distance));
-            rule.setDistance(distance);
+            double oldDist = rule.getDistance();
+            rule.setDistance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
