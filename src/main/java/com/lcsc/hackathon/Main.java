@@ -2,7 +2,7 @@
 package com.lcsc.hackathon;
 
 import com.lcsc.hackathon.events.EventFactory;
-
+import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
 
 public class Main {
@@ -10,12 +10,13 @@ public class Main {
     
     public static void main(String[] args) {
 		CommandLine arguments = new Cli(args).parse();
+		String config = arguments.getOptionValue("f");
 		
         EsperHandler eHandler = new EsperHandler();
         
         ConfigParser configParser = new ConfigParser();
         
-        EventFactory eFactory = configParser.parseConfigFile("config.json", eHandler);
+        EventFactory eFactory = configParser.parseConfigFile(config, eHandler);
         
         //This has the values for the KeyEvents
         //http://docs.oracle.com/javase/7/docs/api/constant-values.html#java.awt.event.KeyEvent.VK_PAGE_DOWN

@@ -1,4 +1,6 @@
 //http://www.thinkplexx.com/blog/simple-apache-commons-cli-example-java-command-line-arguments-parsing
+package com.lcsc.hackathon;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +10,8 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+
+import edu.ufl.digitalworlds.j4k.Skeleton;
 
 public class Cli {
 	private static final Logger log = Logger.getLogger(Cli.class.getName());
@@ -19,7 +23,8 @@ public class Cli {
 		this.args = args;
 
 		options.addOption("h", "help", false, "show help.");
-		options.addOption("v", "var", true, "Here you can set parameter .");
+		options.addOption("f", "filename", true, "Name the configuration file");
+		options.addOption("d", "debug", false, "Display debug skeleton");
 
 	}
 
@@ -33,11 +38,13 @@ public class Cli {
 			if (cmd.hasOption("h"))
 				help();
 
-			if (cmd.hasOption("v")) {
-				log.log(Level.INFO, "Using cli argument -v=" + cmd.getOptionValue("v"));
+			if (cmd.hasOption("f")) {
+				log.log(Level.INFO, "Using cli argument -f=" + cmd.getOptionValue("f"));
 				// Whatever you want to do with the setting goes here
+				System.out.println("Thank you for entering the config name");
 			} else {
-				log.log(Level.SEVERE, "MIssing v option");
+				log.log(Level.SEVERE, "Missing configuration filename");
+				System.out.println("Warning: Missing configuration file.");
 				help();
 			}
 		} catch (ParseException e) {
@@ -45,7 +52,7 @@ public class Cli {
 			help();
 		}
 		
-		return CommandLine;
+		return cmd;
 	}
 
 	private void help() {
