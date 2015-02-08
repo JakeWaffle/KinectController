@@ -83,7 +83,7 @@ public class EventFactory {
             double[] joint = skele.get3DJoint(rule.getJointId());
             
             double distance = Formulas.getDistance(point, joint);
-            log.info(String.format("Distance: %f", distance));
+            log.info(String.format("AbsDistance: %f", distance));
             rule.setDistance(distance);
             
             //Then pass all of the rules to eHandler using sendEvent().
@@ -96,7 +96,7 @@ public class EventFactory {
             double joint = skele.get3DJoint(rule.getJointId())[0];
             
             double distance = Formulas.getDistanceX(point, joint);
-            log.info(String.format("Distance: %f", distance));
+            log.info(String.format("AbsDistanceX: %f", distance));
             rule.setDistance(distance);
             
             //Then pass all of the rules to eHandler using sendEvent().
@@ -109,7 +109,7 @@ public class EventFactory {
             double joint = skele.get3DJoint(rule.getJointId())[1];
             
             double distance = Formulas.getDistanceY(point, joint);
-            log.info(String.format("Distance: %f", distance));
+            log.info(String.format("AbsDistanceY: %f", distance));
             rule.setDistance(distance);
             
             //Then pass all of the rules to eHandler using sendEvent().
@@ -122,7 +122,7 @@ public class EventFactory {
             double joint = skele.get3DJoint(rule.getJointId())[2];
             
             double distance = Formulas.getDistanceZ(point, joint);
-            log.info(String.format("Distance: %f", distance));
+            log.info(String.format("AbsDistanceZ: %f", distance));
             rule.setDistance(distance);
             
             //Then pass all of the rules to eHandler using sendEvent().
