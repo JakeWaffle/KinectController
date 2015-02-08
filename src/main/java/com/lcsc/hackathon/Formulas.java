@@ -11,6 +11,21 @@ public class Formulas {
 		}
 	}
 	
+	// Get distance between two joints (can be negative)
+	public static double getDistanceX(double[] jointA, double[] JointB {
+		return jointA[0]-jointB[0];
+	}
+	
+	// Get distance between two joints (can be negative)
+	public static double getDistanceY(double[] jointA, double[] JointB {
+		return jointA[1]-jointB[1];
+	}
+	
+	// Get distance between two joints (can be negative)
+	public static double getDistanceZ(double[] jointA, double[] JointB {
+		return jointA[2]-jointB[2];
+	}
+	
 	// Get the distance between two joints.
 	public static double getDistance(double[] jointA, double[] jointB) {
 		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));

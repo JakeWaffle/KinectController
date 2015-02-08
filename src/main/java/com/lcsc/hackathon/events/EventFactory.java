@@ -56,5 +56,57 @@ public class EventFactory {
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
+        
+        for (AbsoluteDistance rule : this.distRules) {
+            //update them with information from the current skeleton.
+            double[] joint1 = skele.get3DJoint(rule.getJoint1());
+            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            
+            double distance = Formulas.getDistance(joint1, joint2);
+            log.info(String.format("Distance: %f", distance));
+            rule.setDistance(distance);
+            
+            //Then pass all of the rules to eHandler using sendEvent().
+            eHandler.sendEvent(rule);
+        }
+        
+        for (AbsoluteDistX rule : this.distRules) {
+            //update them with information from the current skeleton.
+            double[] joint1 = skele.get3DJoint(rule.getJoint1());
+            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            
+            double distance = Formulas.getDistanceX(joint1, joint2);
+            log.info(String.format("Distance: %f", distance));
+            rule.setDistance(distance);
+            
+            //Then pass all of the rules to eHandler using sendEvent().
+            eHandler.sendEvent(rule);
+        }
+        
+        for (AbsoluteDistY rule : this.distRules) {
+            //update them with information from the current skeleton.
+            double[] joint1 = skele.get3DJoint(rule.getJoint1());
+            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            
+            double distance = Formulas.getDistanceY(joint1, joint2);
+            log.info(String.format("Distance: %f", distance));
+            rule.setDistance(distance);
+            
+            //Then pass all of the rules to eHandler using sendEvent().
+            eHandler.sendEvent(rule);
+        }
+        
+        for (AbsoluteDistZ rule : this.distRules) {
+            //update them with information from the current skeleton.
+            double[] joint1 = skele.get3DJoint(rule.getJoint1());
+            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            
+            double distance = Formulas.getDistanceZ(joint1, joint2);
+            log.info(String.format("Distance: %f", distance));
+            rule.setDistance(distance);
+            
+            //Then pass all of the rules to eHandler using sendEvent().
+            eHandler.sendEvent(rule);
+        }
     }
 }
