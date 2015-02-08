@@ -12,17 +12,17 @@ public class Formulas {
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceX(double[] jointA, double[] JointB {
+	public static double getDistanceX(double[] jointA, double[] JointB) {
 		return jointA[0]-jointB[0];
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceY(double[] jointA, double[] JointB {
+	public static double getDistanceY(double[] jointA, double[] JointB) {
 		return jointA[1]-jointB[1];
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceZ(double[] jointA, double[] JointB {
+	public static double getDistanceZ(double[] jointA, double[] JointB) {
 		return jointA[2]-jointB[2];
 	}
 	
