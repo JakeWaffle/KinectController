@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class EventFactory {
+    //These lists of rules are instantiated based off of the config file.
+    //They are meant to be updated periodically by the Kinect and then
+    //passed to Esper to be processed.
     List<AngleRule> angleRules = new ArrayList<AngleRule>();
     List<DistanceRule> distRules = new ArrayList<DistanceRule>();
     

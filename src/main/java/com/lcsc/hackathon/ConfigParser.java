@@ -27,6 +27,17 @@ public class ConfigParser {
     public ConfigParser() {
     }
     
+    //This will parse the config file, pass listeners and patterns over to esper and
+    //then it will return an EventFactry that is setup to relay information from the
+    //kinect to Esper based on the config file.
+    //
+    //@param configFilename The filename of the config file. It's assumed to be in the
+    //                      project's config directory.
+    //@param eHandler       An EsperHandler object that should just be initialized and unchanged.
+    //                      We're just going to configure it to trigger key presses and mouse movements
+    //                      using listeners and patterns.
+    //@return               This will be a configured EventFactory that is setup to relay information
+    //                      from the kinect to Esper.
     public EventFactory parseConfigFile(String configFilename, EsperHandler eHandler) {
         String projRoot = new File("").getAbsolutePath();
         
@@ -50,60 +61,32 @@ public class ConfigParser {
             Map<String, Object> gesture = (Map<String, Object>)gestureObj;
             String gestureId = (String)gesture.get("id");
             
+            //First we will grab all of the rules and add Events to the EventFactory.
+            //Then we'll be assembling a list of pattern chunks for the Esper pattern query.
+            //(Those pattern chunks will be assembled later with the rest of the informatino needed.)
             List<String> rulePattern = new ArrayList<String>();
             
             Object[] rules = (Object[])gesture.get("rules");
             for (Object ruleObj : rules) {
                 Map<String, Object> rule = (Map<String, Object>)ruleObj;
-                String ruleId   = (String)rule.get("id");
                 String ruleType = (String)rule.get("type");
                 
-                if (!ruleType.equals("AngleRule") && !ruleType.equals("DistanceRule")) {
-                    log.warn("RuleType is invalid: "+ruleType);
+                try {
+                    Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
+                    rulePattern.add(configureRule(eFactory, ruleType, attributes));
+                } catch (Exception e) {
+                    log.error("", e);
+                    System.exit(1);
                 }
                 
-                Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
-                if (ruleType.equals("AngleRule")) {
-                    int end1 = Conversions.getJointId(attributes.get("endjoint1"));
-                    int end2 = Conversions.getJointId(attributes.get("endjoint2"));
-                    int vertex = Conversions.getJointId(attributes.get("vertex"));
-                    
-                    AngleRule angRule = new AngleRule(ruleId, end1, vertex, end2, -1);
-                    eFactory.addAngleRule(angRule);
-                    
-                    double minAngle = Double.parseDouble(attributes.get("min-angle"));
-                    double maxAngle = Double.parseDouble(attributes.get("max-angle"));
-                    
-                    rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
-                                                                                                                    vertex, 
-                                                                                                                    end2, 
-                                                                                                                    minAngle,
-                                                                                                                    maxAngle));
-                }
-                else if (ruleType.equals("DistanceRule")) {
-                    int joint1 = Conversions.getJointId(attributes.get("joint1"));
-                    int joint2 = Conversions.getJointId(attributes.get("joint2"));
-                    
-                    DistanceRule distRule = new DistanceRule(ruleId, joint1, joint2, -1);
-                    eFactory.addDistanceRule(distRule);
-                    
-                    double minDist = Double.parseDouble(attributes.get("min-dist"));
-                    double maxDist = Double.parseDouble(attributes.get("max-dist"));
-                    
-                    rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
-                                                                                                                      joint2,
-                                                                                                                      minDist,
-                                                                                                                      maxDist));
-                }
-                else {
-                    log.warn("RuleType is invalid: "+ruleType);
-                }
             }
             
             String pattern = "select ";
             Trigger trigger = null;
             
-            //This is getting the trigger from the config file.
+            //This is getting the trigger from the config file. This trigger will be stored
+            //in the Triggers class and retrieved later by whichever listener is activated.
+            //(We can't pass all the information we need through Esper.)
             Map<String, Object> triggerMap = (Map<String, Object>)gesture.get("trigger");
             String triggerType = (String)triggerMap.get("type");
             
@@ -149,5 +132,60 @@ public class ConfigParser {
         }
         
         return eFactory;
+    }
+    
+    //This is for configuring the rules that are in the config file. Event objects need to be passed to
+    //the EventFactory so that they can be updated later and passed to Esper.
+    //@param eFactory       This is the guy that will relay information from the kinect to Esper. We're
+    //                      passing it dummy Rule objects so that it knows what information it needs to
+    //                      retrieve from the kinect.
+    //@param ruleType       This will identify the rule that we're dealing with. It should be analogous to
+    //                      the Java Bean that we're dealing with also.
+    //@param attributes     This should have some data that will directly go into one of the Java beans for
+    //                      Esper to deal with. There will also be thresholds and other information for
+    //                      the Esper pattern. (ach rule will have some specific format.)
+    //@return               This String is going to be placed within the Esper query pattern.
+    private String configureRule(EventFactory eFactory, String ruleType, Map<String, String> attributes) {
+        String patternChunk = "";
+        if (ruleType.equals("AngleRule")) {
+            String ruleId   = attributes.get("id");
+            int end1 = Conversions.getJointId(attributes.get("endjoint1"));
+            int end2 = Conversions.getJointId(attributes.get("endjoint2"));
+            int vertex = Conversions.getJointId(attributes.get("vertex"));
+            
+            AngleRule angRule = new AngleRule(ruleId, end1, vertex, end2, -1);
+            eFactory.addAngleRule(angRule);
+            
+            double minAngle = Double.parseDouble(attributes.get("min-angle"));
+            double maxAngle = Double.parseDouble(attributes.get("max-angle"));
+            
+            rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
+                                                                                                            vertex, 
+                                                                                                            end2, 
+                                                                                                            minAngle,
+                                                                                                            maxAngle));
+        }
+        else if (ruleType.equals("DistanceRule")) {
+            String ruleId   = attributes.get("id");
+            int joint1 = Conversions.getJointId(attributes.get("joint1"));
+            int joint2 = Conversions.getJointId(attributes.get("joint2"));
+            
+            DistanceRule distRule = new DistanceRule(ruleId, joint1, joint2, -1);
+            eFactory.addDistanceRule(distRule);
+            
+            double minDist = Double.parseDouble(attributes.get("min-dist"));
+            double maxDist = Double.parseDouble(attributes.get("max-dist"));
+            
+            rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
+                                                                                                              joint2,
+                                                                                                              minDist,
+                                                                                                              maxDist));
+        }
+        else {
+            log.error("RuleType is invalid: "+ruleType);
+            System.exit(1);
+        }
+        
+        return patternChunk;
     }
 }
