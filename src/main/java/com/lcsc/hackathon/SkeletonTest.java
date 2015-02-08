@@ -4,7 +4,6 @@ import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
 
 public class SkeletonTest extends J4KSDK {
-
 	Skeleton skeletons[];
 	
 	// Get the distance between two joints.
@@ -31,9 +30,7 @@ public class SkeletonTest extends J4KSDK {
 		}
 	}
 
-	public void run(){
-
-		System.out.println("This program will run for about 20 seconds.");
+	public void run() {
 		this.start(J4KSDK.NONE|J4KSDK.NONE|J4KSDK.SKELETON);
 		skeletons = new Skeleton[6];
 		this.showViewerDialog();
@@ -43,12 +40,6 @@ public class SkeletonTest extends J4KSDK {
 		this.stop();
 	}
 	
-	public static void main(String[] args)
-	{
-		SkeletonTest skeletonTest;
-		skeletonTest = new SkeletonTest();
-		skeletonTest.run();
-	}
 	
 	@Override
 	public void onColorFrameEvent(byte[] color_frame) {
