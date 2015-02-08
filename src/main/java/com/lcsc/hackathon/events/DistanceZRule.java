@@ -1,13 +1,13 @@
 package com.lcsc.hackathon.events;
 
-public class DistanceYRule {
+public class DistanceZRule {
 	private String id = "";
 	private int joint1;
 	private int joint2;
     private double distance;
     
 	
-	public DistanceYRule(	String id,
+	public DistanceZRule(	String id,
 							int joint1,
 							int joint2,
 							double distance) {
