@@ -23,7 +23,14 @@
 					"max-angle" : "maximum"
 				}
 			}
-		]
+		],
+		"trigger": {
+			"type" : "mouse",
+			"keys" : [
+				"key" : "none",
+				"type" : "mouse"
+			]
+		}
 	},
 	
 	{
@@ -39,7 +46,15 @@
 					"max-dist" : "maximum"
 				}
 			}
-		]
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "W",
+				"type" : "keyPress"
+			]
+		}
 	},
 	
 	{
@@ -55,7 +70,15 @@
 					"max-dist" : "maximum"
 				}
 			}
-		]
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "S",
+				"type" : "keyPress"
+			]
+		}
 	},
 	
 	{
@@ -71,7 +94,15 @@
 					"max-dist" : "maximum"
 				}
 			}
-		]
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "A",
+				"type" : "keyPress"
+			]
+		}
 	},
 	
 	{
@@ -87,7 +118,15 @@
 					"max-dist" : "maximum"
 				}
 			}
-		]
+		],
+		
+		"trigger": {
+			"type" : "keyPress",
+			"keys" : [
+				"key" : "D",
+				"type" : "keyPress"
+			]
+		}
 	}
 
 	]
