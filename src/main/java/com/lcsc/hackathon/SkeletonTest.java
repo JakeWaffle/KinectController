@@ -47,7 +47,7 @@ public class SkeletonTest extends J4KSDK {
 	@Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
 		System.out.println("A new skeleton frame was received.");
-		System.out.println(join_status);
+		//System.out.println(join_status);
 	}
 
 	@Override

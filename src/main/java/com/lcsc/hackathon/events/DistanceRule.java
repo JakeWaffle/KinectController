@@ -1,28 +1,18 @@
-package com.lcsc.hackathon.eventdefs;
+package com.lcsc.hackathon.events;
 
 public class DistanceRule {
-	private String type = "";
 	private String id = "";
 	private int joint1;
 	private int joint2;
     private int distance;
     
 	
-	public DistanceRule(String type, String id, int joint1, int joint2, int distance) {
-		this.type = type;
+	public DistanceRule(String id, int joint1, int joint2, int distance) {
 		this.id = id;
         this.joint1 = joint1;
         this.joint2 = joint2;
         this.distance = distance;
     }
-	
-	public String getType() {
-		return this.type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
 	
 	public String getId() {
 		return this.id;

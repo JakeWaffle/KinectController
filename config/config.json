@@ -25,11 +25,7 @@
 			}
 		],
 		"trigger": {
-			"type" : "mouse",
-			"keys" : [
-				"key" : "none",
-				"type" : "mouse"
-			]
+			"type" : "mouseMove"
 		}
 	},
 	
@@ -51,8 +47,10 @@
 		"trigger": {
 			"type" : "keyPress",
 			"keys" : [
-				"key" : "W",
-				"type" : "keyPress"
+                {
+                    "key" : "W",
+                    "type" : "keyPress"
+                }
 			]
 		}
 	},
@@ -75,8 +73,10 @@
 		"trigger": {
 			"type" : "keyPress",
 			"keys" : [
-				"key" : "S",
-				"type" : "keyPress"
+                {
+                    "key" : "S",
+                    "type" : "keyPress"
+                }
 			]
 		}
 	},
@@ -99,8 +99,10 @@
 		"trigger": {
 			"type" : "keyPress",
 			"keys" : [
-				"key" : "A",
-				"type" : "keyPress"
+                {
+                    "key" : "A",
+                    "type" : "keyPress"
+                }
 			]
 		}
 	},
@@ -123,8 +125,10 @@
 		"trigger": {
 			"type" : "keyPress",
 			"keys" : [
-				"key" : "D",
-				"type" : "keyPress"
+                {
+                    "key" : "D",
+                    "type" : "keyPress"
+                }
 			]
 		}
 	}

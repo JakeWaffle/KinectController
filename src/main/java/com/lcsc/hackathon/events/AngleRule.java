@@ -1,28 +1,18 @@
-package com.lcsc.hackathon.eventdefs;
+package com.lcsc.hackathon.events;
 
 public class AngleRule {
-	private String type = "";
 	private String id = "";
 	private int end1;
 	private int vertex;
 	private int end2;
-    private int angle
+    private int angle;
 	
-	public AngleRule(String type, String id, int end1, int vertex, int end2, int angle) {
-		this.type = type;
+	public AngleRule(String id, int end1, int vertex, int end2, int angle) {
 		this.id = id;
         this.end1 = end1;
         this.vertex = vertex;
         this.end2 = end2;
     }
-	
-	public String getType() {
-		return this.type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
 	
 	public String getId() {
 		return this.id;
@@ -40,12 +30,12 @@ public class AngleRule {
 		this.end1 = e1;
 	}
 	
-	public int getShoulderID() {
-		return this.shoulderID;
+	public int getVertex() {
+		return this.vertex;
 	}
 	
-	public void setShoulderID(int shoulder) {
-		this.shoulderID = shoulder;
+	public void setVertex(int vertex) {
+		this.vertex = vertex;
 	}
 	
 	public int getEnd2() {

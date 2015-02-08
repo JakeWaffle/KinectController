@@ -1,5 +1,10 @@
 package com.lcsc.hackathon;
 
+import com.lcsc.hackathon.events.*;
+import com.lcsc.hackathon.listeners.*;
+
+import com.espertech.esper.client.UpdateListener;
+
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,6 +22,7 @@ import org.apache.log4j.Logger;
 public class ConfigParser {
     static Logger log = Logger.getRootLogger();
     private EsperHandler eHandler;
+    
     public ConfigParser(EsperHandler eHandler) {
         this.eHandler = eHandler;
     }
@@ -34,6 +40,8 @@ public class ConfigParser {
             
         }
         
+        List<AngleRule> angleRules      = new ArrayList<AngleRule>();
+        List<DistanceRule> distRules    = new ArrayList<DistanceRule>();
         
         Object[] gestures = (Object[])config.get("gestures");
         
@@ -52,8 +60,6 @@ public class ConfigParser {
                 if (!ruleType.equals("AngleRule") && !ruleType.equals("DistanceRule")) {
                     log.warn("RuleType is invalid: "+ruleType);
                 }
-                
-                List<int> jointIds = new ArrayList<int>();
                 
                 Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
                 if (ruleType.equals("AngleRule")) {
@@ -90,9 +96,55 @@ public class ConfigParser {
                     log.warn("RuleType is invalid: "+ruleType);
                 }
             }
+            
+            String pattern = "select ";
+            Trigger trigger = null;
+            
+            //This is getting the trigger from the config file.
+            Map<String, Object> triggerMap = (Map<String, Object>)gesture.get("trigger");
+            String triggerType = (String)triggerMap.get("type");
+            
+            if (triggerType.equals("keyPress")) {
+                List<Map<String, String>> keyDefs = new ArrayList<Map<String,String>>();
+                
+                Object[] keys = (Object[])triggerMap.get("keys");
+                for (Object keyObj : keys) {
+                    Map<String, String> key = (Map<String, String>)keyObj;
+                    keyDefs.add(key);
+                }
+                
+                trigger = new Trigger(triggerType, keyDefs);
+            }
+            else if (triggerType.equals("mouseMove")) {
+                //TODO
+            }
+            
+            //The gestureId will identify the trigger and be accessible in the pattern.
+            Triggers.addTrigger(gestureId, trigger);
+            pattern += gestureId+" as triggerId from pattern[";
+            
+            for (int i=0; i<rulePattern.size(); i++) {
+                pattern += rulePattern.get(i);
+                if (i != rulePattern.size()-1) {
+                    pattern += " and ";
+                }
+                else {
+                    pattern += "]";
+                }
+            }
+            
+            log.info("Pattern:\n"+pattern);
+            
+            //Sets up the patterns and listeners for this gesture!
+            this.eHandler.setPattern(gestureId, pattern);
+            if (triggerType.equals("keyPress")) {
+                this.eHandler.addListener(gestureId, (UpdateListener)new KeyPress());
+            }
+            else if (triggerType.equals("mouseMove")) {
+                //TODO
+            }
         }
         
-        //populate the Esper Handler with patterns and listeners.
         
         //Pass some information about the rules into the EventFactory
         
