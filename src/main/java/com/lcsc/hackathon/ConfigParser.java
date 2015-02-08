@@ -207,6 +207,134 @@ public class ConfigParser {
                                                                                                              
             patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
+        else if (ruleType.equals("AbsoluteDistance")) {
+            String ruleId   = attributes.get("id");
+            int jointId = Conversions.getJointId(attributes.get("jointId"));
+            
+            double absoluteX = Double.parseDouble(attributes.get("absoluteX"));
+            double absoluteY = Double.parseDouble(attributes.get("absoluteY"));
+            double absoluteZ = Double.parseDouble(attributes.get("absoluteZ"));
+            
+            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
+            eFactory.addDistanceRule(distRule);
+            
+            double minDist = Double.parseDouble(attributes.get("min-dist"));
+            double maxDist = Double.parseDouble(attributes.get("max-dist"));
+            
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance > %f, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        absoluteY,
+                                                                        absoluteZ,
+                                                                        minDist,
+                                                                        maxDist);
+
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        absoluteY,
+                                                                        absoluteZ,
+                                                                        minDist);
+                                                                                                             
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, absolutePoint[1]=%d, absolutePoint[2]=%d, distance > %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        absoluteY,
+                                                                        absoluteZ,
+                                                                        maxDist);
+                                                                        
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
+        }
+        else if (ruleType.equals("AbsoluteDistX")) {
+            String ruleId   = attributes.get("id");
+            int jointId = Conversions.getJointId(attributes.get("jointId"));
+            
+            double absoluteX = Double.parseDouble(attributes.get("absoluteX"));
+            
+            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
+            eFactory.addDistanceRule(distRule);
+            
+            double minDist = Double.parseDouble(attributes.get("min-dist"));
+            double maxDist = Double.parseDouble(attributes.get("max-dist"));
+            
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance > %f, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        minDist,
+                                                                        maxDist);
+
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        minDist);
+                                                                                                             
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[0]=%d, distance > %f)",
+                                                                        joint1,
+                                                                        absoluteX,
+                                                                        maxDist);
+                                                                        
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
+        }
+        else if (ruleType.equals("AbsoluteDistY")) {
+            String ruleId   = attributes.get("id");
+            int jointId = Conversions.getJointId(attributes.get("jointId"));
+            
+            double absoluteY = Double.parseDouble(attributes.get("absoluteY"));
+            
+            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
+            eFactory.addDistanceRule(distRule);
+            
+            double minDist = Double.parseDouble(attributes.get("min-dist"));
+            double maxDist = Double.parseDouble(attributes.get("max-dist"));
+            
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance > %f, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteY,
+                                                                        minDist,
+                                                                        maxDist);
+
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteY,
+                                                                        minDist);
+                                                                                                             
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[1]=%d, distance > %f)",
+                                                                        joint1,
+                                                                        absoluteY,
+                                                                        maxDist);
+                                                                        
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
+        }
+        else if (ruleType.equals("AbsoluteDistZ")) {
+            String ruleId   = attributes.get("id");
+            int jointId = Conversions.getJointId(attributes.get("jointId"));
+            
+            double absoluteZ = Double.parseDouble(attributes.get("absoluteZ"));
+            
+            AbsoluteDistZ distRule = new AbsoluteDistZ(ruleId, absolutePoint, jointId, 0);
+            eFactory.addDistanceRule(distRule);
+            
+            double minDist = Double.parseDouble(attributes.get("min-dist"));
+            double maxDist = Double.parseDouble(attributes.get("max-dist"));
+            
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance > %f, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteZ,
+                                                                        minDist,
+                                                                        maxDist);
+
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance < %f)",
+                                                                        joint1,
+                                                                        absoluteZ,
+                                                                        minDist);
+                                                                                                             
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absolutePoint[2]=%d, distance > %f)",
+                                                                        joint1,
+                                                                        absoluteZ,
+                                                                        maxDist);
+                                                                        
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
+        }
         else {
             log.error("RuleType is invalid: "+ruleType);
             System.exit(1);

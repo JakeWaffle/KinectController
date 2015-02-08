@@ -45,6 +45,31 @@
                 "type" : "keyPress",
                 "keys" : [
                     {
+                        "key" : "S",
+                        "type" : "KeyDownUp"
+                    }
+                ]
+            }
+        }
+        {
+            "id" : "move-left",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistZ",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "jointId" : "HAND_LEFT",
+                        "absoluteZ" : "1",
+                        "min-angle" : "90",
+                        "max-angle" : "180"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
                         "key" : "Q",
                         "type" : "KeyDownUp"
                     }
