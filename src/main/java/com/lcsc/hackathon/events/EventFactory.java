@@ -59,10 +59,10 @@ public class EventFactory {
         
         for (AbsoluteDistance rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getJoint1());
-            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            double[] point = skele.get3DJoint(rule.getJoint1());
+            double[] joint = skele.get3DJoint(rule.getJoint2());
             
-            double distance = Formulas.getDistance(joint1, joint2);
+            double distance = Formulas.getDistance(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             
@@ -72,10 +72,10 @@ public class EventFactory {
         
         for (AbsoluteDistX rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getJoint1());
+            double[] joint1 = skele.get3DJoint(rule.getAbsolutePoint());
             double[] joint2 = skele.get3DJoint(rule.getJoint2());
             
-            double distance = Formulas.getDistanceX(joint1, joint2);
+            double distance = Formulas.getDistance(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             
@@ -85,10 +85,10 @@ public class EventFactory {
         
         for (AbsoluteDistY rule : this.distRules) {
             //update them with information from the current skeleton.
-            double[] joint1 = skele.get3DJoint(rule.getJoint1());
-            double[] joint2 = skele.get3DJoint(rule.getJoint2());
+            double[] joint1 = skele.get3DJoint(rule.getAbsolutePoint());
+            double[] joint2 = skele.get3DJoint(rule.getAbsolutePoint());
             
-            double distance = Formulas.getDistanceY(joint1, joint2);
+            double distance = Formulas.getDistance(point, joint);
             log.info(String.format("Distance: %f", distance));
             rule.setDistance(distance);
             

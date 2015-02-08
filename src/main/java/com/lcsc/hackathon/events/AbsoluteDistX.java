@@ -2,17 +2,17 @@ package com.lcsc.hackathon.events;
 
 public class AbsoluteDistX {
 	private String id = "";
-	private double[] absoluteJoint;
+	private double[] absolutePoint;
 	private int jointId;
     private double distance;
     
 	
 	public AbsoluteDistX(	String id,
-							double[] absoluteJoint,
+							double[] absolutePoint,
 							int jointId,
 							double distance) {
 		this.id = id;
-        this.absoluteJoint = absoluteJoint;
+        this.absolutePoint = absolutePoint;
         this.jointId = jointId;
         this.distance = distance;
     }
@@ -25,12 +25,12 @@ public class AbsoluteDistX {
 		this.id = id;
 	}
     
-	public double[] getAbsoluteJoint() {
-		return this.absoluteJoint;
+	public double[] getAbsolutePoint() {
+		return this.absolutePoint;
 	}
 	
-	public void setAbsoluteJoint(double[] array) {
-		this.absoluteJoint = array;
+	public void setAbsolutePoint(double[] array) {
+		this.absolutePoint = array;
 	}
 	
 	public int getjointId() {
