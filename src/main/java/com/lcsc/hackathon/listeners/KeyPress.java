@@ -15,6 +15,9 @@ import org.apache.log4j.Logger;
 import java.awt.Robot;
 import java.awt.AWTException;
 
+import java.lang.Thread;
+import java.lang.InterruptedException;
+
 public class KeyPress implements UpdateListener {
     static Logger log = Logger.getRootLogger();
     private Robot rob;
@@ -38,6 +41,11 @@ public class KeyPress implements UpdateListener {
                 if (type.equals("KeyDownUp")) {
                     log.info(String.format("\n\nKeyPressRelease: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
                     this.rob.keyPress(Conversions.getKeyId(attributes.get("key")));
+                    try {
+                        Thread.sleep(100);
+                    } catch(InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
                     this.rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
                 }
                 else if (type.equals("KeyDown")) {

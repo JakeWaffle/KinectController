@@ -222,7 +222,7 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance > %f, distance < %f)",
+            String patternChunk1 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
@@ -230,14 +230,14 @@ public class ConfigParser {
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance < %f)",
+            String patternChunk2 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance < %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
                                                                         absolutePoint[2],
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%d, absPoint[1]=%d, absPoint[2]=%d, distance > %f)",
+            String patternChunk3 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
@@ -258,18 +258,18 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance > %f, distance < %f)",
+            String patternChunk1 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance < %f)",
+            String patternChunk2 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance < %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistX(jointId=%d, absPointX=%d, distance > %f)",
+            String patternChunk3 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         maxDist);
@@ -288,18 +288,18 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance > %f, distance < %f)",
+            String patternChunk1 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance < %f)",
+            String patternChunk2 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance < %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistY(jointId=%d, absPointY=%d, distance > %f)",
+            String patternChunk3 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         maxDist);
@@ -318,18 +318,18 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance > %f, distance < %f)",
+            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance < %f)",
+            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance < %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%d, distance > %f)",
+            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         maxDist);

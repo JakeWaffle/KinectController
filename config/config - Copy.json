@@ -1,142 +1,255 @@
-{"gestures": [
-	{
-		"id" : "mouse",
-		"rules" : [
-			{
-				"type" : "DistanceRule",
-				"id" : "left-arm-dist",
-				"attributes" :{
-					"endpoint1" : "hand",
-					"endpoint2" : "shoulder",
-					"min-dist" : "minimum",
-					"max-dist" : "maximum"
-				}
-			},
-			{
-				"type" : "AngleRule",
-				"id" : "left-arm-angle",
-				"attributes" : {
-					"endpoint1" : "hand",
-					"vertex" : "elbow",
-					"endpoint2" : "shoulder",
-					"min-angle" : "minimum",
-					"max-angle" : "maximum"
-				}
-			}
-		],
-		"trigger": {
-			"type" : "mouseMove"
-		}
-	},
-	{
-		"id" : "move-forward",
-		"rules" : [
-			{
-				"type" : "DistanceRule",
-				"id" : "body-forward",
-				"attributes" :{
-					"endpoint1" : "waist",
-					"endpoint2" : "waist",
-					"min-dist" : "minimum",
-					"max-dist" : "maximum"
-				}
-			}
-		],
-		
-		"trigger": {
-			"type" : "keyPress",
-			"keys" : [
+{
+    "gestures": [
+        {
+            "id" : "move-right",
+            "rules" : [
                 {
-                    "key" : "W",
-                    "type" : "keyPress"
+                    "type" : "DistanceRule",
+                    "attributes" :{
+                        "id" : "headToHand",
+                        "joint1" : "HEAD",
+                        "joint2" : "HAND_LEFT",
+                        "min-dist" : "0.0",
+                        "max-dist" : "0.5"
+                    }
                 }
-			]
-		}
-	},
-	
-	{
-		"id" : "move-backward",
-		"rules" : [
-			{
-				"type" : "DistanceRule",
-				"id" : "body-backward",
-				"attributes" :{
-					"endpoint1" : "waist",
-					"endpoint2" : "waist",
-					"min-dist" : "minimum",
-					"max-dist" : "maximum"
-				}
-			}
-		],
-		
-		"trigger": {
-			"type" : "keyPress",
-			"keys" : [
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "M",
+                        "type" : "KeyDownUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-backward",
+            "rules" : [
                 {
-                    "key" : "S",
-                    "type" : "keyPress"
+                    "type" : "AngleRule",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "endJoint1" : "HAND_LEFT",
+                        "vertex" : "ELBOW_LEFT",
+                        "endJoint2" : "SHOULDER_LEFT",
+                        "min-angle" : "90",
+                        "max-angle" : "180"
+                    }
                 }
-			]
-		}
-	},
-	
-	{
-		"id" : "move-left",
-		"rules" : [
-			{
-				"type" : "DistanceRule",
-				"id" : "body-left",
-				"attributes" :{
-					"endpoint1" : "waist",
-					"endpoint2" : "waist",
-					"min-dist" : "minimum",
-					"max-dist" : "maximum"
-				}
-			}
-		],
-		
-		"trigger": {
-			"type" : "keyPress",
-			"keys" : [
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "N",
+                        "type" : "KeyDownUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-up-press",
+            "rules" : [
                 {
-                    "key" : "A",
-                    "type" : "keyPress"
+                    "type" : "AbsoluteDistZ",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteZ" : "2.1",
+                        "min-dist" : "0.45",
+                        "max-dist" : "0.9"
+                    }
                 }
-			]
-		}
-	},
-	
-	{
-		"id" : "move-right",
-		"rules" : [
-			{
-				"type" : "DistanceRule",
-				"id" : "body-right",
-				"attributes" :{
-					"endpoint1" : "waist",
-					"endpoint2" : "waist",
-					"min-dist" : "minimum",
-					"max-dist" : "maximum"
-				}
-			}
-		],
-		
-		"trigger": {
-			"type" : "keyPress",
-			"keys" : [
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "W",
+                        "type" : "KeyDown"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-up-release",
+            "rules" : [
                 {
-                    "key" : "D",
-                    "type" : "keyPress"
+                    "type" : "AbsoluteDistZ",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteZ" : "2.1",
+                        "min-dist" : "-0.9",
+                        "max-dist" : "0.45"
+                    }
                 }
-			]
-		}
-	}
-
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "W",
+                        "type" : "KeyUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-down-press",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistZ",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteZ" : "2.1",
+                        "min-dist" : "-0.9",
+                        "max-dist" : "-0.45"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "S",
+                        "type" : "KeyDown"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-down-release",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistZ",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteZ" : "2.1",
+                        "min-dist" : "-0.45",
+                        "max-dist" : "0.9"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "S",
+                        "type" : "KeyUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-left-press",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistX",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteX" : "0",
+                        "min-dist" : "-0.9",
+                        "max-dist" : "-0.45"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "A",
+                        "type" : "KeyDown"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-left-release",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistX",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteX" : "2.1",
+                        "min-dist" : "-0.45",
+                        "max-dist" : "0.9"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "A",
+                        "type" : "KeyUp"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-right-press",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistX",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteX" : "0",
+                        "min-dist" : "0.45",
+                        "max-dist" : "0.9"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "D",
+                        "type" : "KeyDown"
+                    }
+                ]
+            }
+        },
+        {
+            "id" : "move-right-release",
+            "rules" : [
+                {
+                    "type" : "AbsoluteDistX",
+                    "attributes" : {
+                        "id" : "",
+                        "jointId" : "SPINE_BASE",
+                        "absoluteX" : "2.1",
+                        "min-dist" : "-0.9",
+                        "max-dist" : "0.45"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "D",
+                        "type" : "KeyUp"
+                    }
+                ]
+            }
+        }
 	]
 }
-
-
-
-
-
-
