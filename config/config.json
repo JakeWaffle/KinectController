@@ -285,6 +285,66 @@
                     }
                 ]
             }
+        },
+		{
+            "id" : "mouseMove",
+            "rules" : [
+				{
+                    "type" : "AngleRule",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "endJoint1" : "HAND_LEFT",
+                        "vertex" : "ELBOW_LEFT",
+                        "endJoint2" : "SHOULDER_LEFT",
+                        "min-angle" : "150",
+                        "max-angle" : "180"
+                    }
+                },
+                {
+                    "type" : "DistanceXRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "-0.1",
+                        "max-dist" : "-1.0"
+                    }
+                },
+                {
+                    "type" : "DistanceXRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "0.1",
+                        "max-dist" : "1.0"
+                    }
+                },
+				{
+                    "type" : "DistanceYRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "-0.1",
+                        "max-dist" : "-1.0"
+                    }
+                },
+				{
+                    "type" : "DistanceYRule",
+                    "attributes" : {
+                        "id" : "",
+                        "joint2" : "SHOULDER_LEFT",
+                        "joint1" : "HAND_LEFT",
+                        "min-dist" : "0.1",
+                        "max-dist" : "1.0"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "mouseMove"
+            }
         }
 	]
 }
