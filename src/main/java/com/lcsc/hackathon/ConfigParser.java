@@ -61,27 +61,6 @@ public class ConfigParser {
             Map<String, Object> gesture = (Map<String, Object>)gestureObj;
             String gestureId = (String)gesture.get("id");
             
-            //First we will grab all of the rules and add Events to the EventFactory.
-            //Then we'll be assembling a list of pattern chunks for the Esper pattern query.
-            //(Those pattern chunks will be assembled later with the rest of the informatino needed.)
-            List<String> rulePattern = new ArrayList<String>();
-            
-            Object[] rules = (Object[])gesture.get("rules");
-            for (Object ruleObj : rules) {
-                Map<String, Object> rule = (Map<String, Object>)ruleObj;
-                String ruleType = (String)rule.get("type");
-                
-                try {
-                    Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
-                    rulePattern.add(configureRule(eFactory, ruleType, attributes));
-                } catch (Exception e) {
-                    log.error("", e);
-                    System.exit(1);
-                }
-                
-            }
-            
-            String pattern = "select ";
             Trigger trigger = null;
             
             //This is getting the trigger from the config file. This trigger will be stored
@@ -102,16 +81,46 @@ public class ConfigParser {
                 trigger = new Trigger(triggerType, keyDefs);
             }
             else if (triggerType.equals("mouseMove")) {
-                //TODO
+                //keyDefs is going to be populated when we check out the actual rules.
+                List<Map<String, String>> keyDefs = new ArrayList<Map<String,String>>();
+                trigger = new Trigger(triggerType, keyDefs);
             }
             else {
                 log.error(String.format("Invalid Trigger Type: %s", triggerType));
                 System.exit(1);
             }
             
+            //Then we will grab all of the rules and add Events to the EventFactory.
+            //Then we'll be assembling a list of pattern chunks for the Esper pattern query.
+            //(Those pattern chunks will be assembled later with the rest of the informatino needed.)
+            List<String> rulePattern = new ArrayList<String>();
+            
+            Object[] rules = (Object[])gesture.get("rules");
+            for (Object ruleObj : rules) {
+                Map<String, Object> rule = (Map<String, Object>)ruleObj;
+                String ruleType = (String)rule.get("type");
+                
+                try {
+                    Map<String, String> attributes = (Map<String, String>)rule.get("attributes");
+                    rulePattern.add(configureRule(eFactory, ruleType, triggerType, attributes));
+                } catch (Exception e) {
+                    log.error("", e);
+                    System.exit(1);
+                }
+            }
+            
             //The gestureId will identify the trigger and be accessible in the pattern.
             Triggers.addTrigger(gestureId, trigger);
-            pattern += String.format("'%s' as triggerId from pattern[",gestureId);
+            
+            String pattern = "select ";
+            
+            
+            if (triggerType.equals("mouseMove")) {
+                pattern += String.format("'%s' as triggerId DistanceXRule.distance as x DistanceYRule.distance as y from pattern[",gestureId);
+            }
+            else {
+                pattern += String.format("'%s' as triggerId from pattern[",gestureId);
+            }
             
             for (int i=0; i<rulePattern.size(); i++) {
                 pattern += rulePattern.get(i);
@@ -131,7 +140,7 @@ public class ConfigParser {
                 eHandler.addListener(gestureId, (UpdateListener)new KeyPress());
             }
             else if (triggerType.equals("mouseMove")) {
-                //TODO
+                eHandler.addListener(gestureId, (UpdateListener)new MouseMove());
             }
         }
         
@@ -145,12 +154,16 @@ public class ConfigParser {
     //                      retrieve from the kinect.
     //@param ruleType       This will identify the rule that we're dealing with. It should be analogous to
     //                      the Java Bean that we're dealing with also.
+    //@param triggerType    This gives information on how the each of the rules are added to the query.
     //@param attributes     This should have some data that will directly go into one of the Java beans for
     //                      Esper to deal with. There will also be thresholds and other information for
     //                      the Esper pattern. (ach rule will have some specific format.)
     //@return               This String is going to be placed within the Esper query pattern.
-    private String configureRule(EventFactory eFactory, String ruleType, Map<String, String> attributes) {
+    private String configureRule(EventFactory eFactory, String ruleType, String triggerType, Map<String, String> attributes) {
         String patternChunk = "";
+        String patternChunk1 = "";
+        String patternChunk2 = "";
+        String patternChunk3 = "";
         if (ruleType.equals("AngleRule")) {
             String ruleId   = attributes.get("id");
             int end1 = Conversions.getJointId(attributes.get("endJoint1"));
@@ -163,23 +176,21 @@ public class ConfigParser {
             double minAngle = Double.parseDouble(attributes.get("min-angle"));
             double maxAngle = Double.parseDouble(attributes.get("max-angle"));
             
-            String patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
+            patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
                                                                                                            vertex, 
                                                                                                            end2, 
                                                                                                            minAngle,
                                                                                                            maxAngle);
                                                                                                            
-            String patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1, 
+            patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1, 
                                                                                                 vertex, 
                                                                                                 end2, 
                                                                                                 minAngle);
                                                                                                            
-            String patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1, 
+            patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1, 
                                                                                                 vertex,
                                                                                                 end2,
                                                                                                 maxAngle);
-                                                                                                           
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("DistanceRule")) {
             String ruleId   = attributes.get("id");
@@ -192,20 +203,18 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
+            patternChunk1 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
                                                                                                              joint2,
                                                                                                              minDist,
                                                                                                              maxDist);
 
-            String patternChunk2 = String.format("DistanceRule(joint1=%d, joint2=%d, distance < %f)", joint1,
+            patternChunk2 = String.format("DistanceRule(joint1=%d, joint2=%d, distance < %f)", joint1,
                                                                                                       joint2,
                                                                                                       minDist);
                                                                                                              
-            String patternChunk3 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f)", joint1,
+            patternChunk3 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f)", joint1,
                                                                                                       joint2,
                                                                                                       maxDist);
-                                                                                                             
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("DistanceXRule")) {
             String ruleId   = attributes.get("id");
@@ -218,23 +227,21 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("DistanceXRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
+            patternChunk1 = String.format("DistanceXRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("DistanceXRule(joint1=%d, joint2=%d, distance < %f)",
+            patternChunk2 = String.format("DistanceXRule(joint1=%d, joint2=%d, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("DistanceXRule(joint1=%d, joint1=%d, distance > %f)",
+            patternChunk3 = String.format("DistanceXRule(joint1=%d, joint1=%d, distance > %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("DistanceYRule")) {
             String ruleId   = attributes.get("id");
@@ -247,23 +254,21 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
+            patternChunk1 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance < %f)",
+            patternChunk2 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance > %f)",
+            patternChunk3 = String.format("DistanceYRule(joint1=%d, joint2=%d, distance > %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("DistanceZRule")) {
             String ruleId   = attributes.get("id");
@@ -276,23 +281,21 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
+            patternChunk1 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance > %f, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance < %f)",
+            patternChunk2 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance < %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance > %f)",
+            patternChunk3 = String.format("DistanceZRule(joint1=%d, joint2=%d, distance > %f)",
                                                                         joint1,
                                                                         joint2,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("AbsoluteDistance")) {
             String ruleId   = attributes.get("id");
@@ -309,7 +312,7 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f, distance < %f)",
+            patternChunk1 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
@@ -317,21 +320,19 @@ public class ConfigParser {
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance < %f)",
+            patternChunk2 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance < %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
                                                                         absolutePoint[2],
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f)",
+            patternChunk3 = String.format("AbsoluteDistance(jointId=%d, absPoint[0]=%f, absPoint[1]=%f, absPoint[2]=%f, distance > %f)",
                                                                         jointId,
                                                                         absolutePoint[0],
                                                                         absolutePoint[1],
                                                                         absolutePoint[2],
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("AbsoluteDistX")) {
             String ruleId   = attributes.get("id");
@@ -345,23 +346,21 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f, distance < %f)",
+            patternChunk1 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance < %f)",
+            patternChunk2 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance < %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f)",
+            patternChunk3 = String.format("AbsoluteDistX(jointId=%d, absPointX=%f, distance > %f)",
                                                                         jointId,
                                                                         absPointX,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("AbsoluteDistY")) {
             String ruleId   = attributes.get("id");
@@ -375,23 +374,21 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f, distance < %f)",
+            patternChunk1 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance < %f)",
+            patternChunk2 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance < %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f)",
+            patternChunk3 = String.format("AbsoluteDistY(jointId=%d, absPointY=%f, distance > %f)",
                                                                         jointId,
                                                                         absoluteY,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("AbsoluteDistZ")) {
             String ruleId   = attributes.get("id");
@@ -405,26 +402,35 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            String patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f, distance < %f)",
+            patternChunk1 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f, distance < %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         minDist,
                                                                         maxDist);
 
-            String patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance < %f)",
+            patternChunk2 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance < %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         minDist);
                                                                                                              
-            String patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f)",
+            patternChunk3 = String.format("AbsoluteDistZ(jointId=%d, absPointZ=%f, distance > %f)",
                                                                         jointId,
                                                                         absoluteZ,
                                                                         maxDist);
-                                                                        
-            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else {
             log.error("RuleType is invalid: "+ruleType);
+            System.exit(1);
+        }
+        
+        if (triggerType.equals("keyPress")) {
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
+        }
+        else if (triggerType.equals("mouseMove")) {
+            patternChunk = String.format("every %s", patternChunk1);
+        }
+        else {
+            log error("Invalid Trigger Type: "+triggerType);
             System.exit(1);
         }
         

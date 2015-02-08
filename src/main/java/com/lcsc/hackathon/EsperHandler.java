@@ -27,6 +27,9 @@ public class EsperHandler {
         config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
         config.addEventType("AngleRule", "com.lcsc.hackathon.events.AngleRule");
         config.addEventType("DistanceRule", "com.lcsc.hackathon.events.DistanceRule");
+        config.addEventType("DistanceXRule", "com.lcsc.hackathon.events.DistanceXRule");
+        config.addEventType("DistanceYRule", "com.lcsc.hackathon.events.DistanceYRule");
+        config.addEventType("DistanceZRule", "com.lcsc.hackathon.events.DistanceZRule");
         config.addEventType("AbsoluteDistZ", "com.lcsc.hackathon.events.AbsoluteDistZ");
         config.addEventType("AbsoluteDistX", "com.lcsc.hackathon.events.AbsoluteDistX");
         config.addEventType("AbsoluteDistY", "com.lcsc.hackathon.events.AbsoluteDistY");
