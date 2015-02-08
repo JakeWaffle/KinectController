@@ -7,6 +7,16 @@ public class SkeletonTest extends J4KSDK {
 
 	Skeleton skeletons[];
 	
+	//If joint A is greater that joint B on the chosen axis, returns true otherwise false.
+	//Accepts 0,1,2 as X,Y,Z
+	private boolean getRelationship(double[] jointA, double[] jointB, int axis) {
+		if (jointA[axis] > jointB[axis]) {
+			return true; 
+		} else {
+			return false;
+		}
+	}
+	
 	// Get the distance between two joints.
 	private double getDistance(double[] jointA, double[] jointB) {
 		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));
@@ -25,7 +35,8 @@ public class SkeletonTest extends J4KSDK {
 		for (int i=0; i<skeletons.length;i++){
 			skeletons[i]=Skeleton.getSkeleton(i,skeleton_tracked,positions, orientations, joint_status,this);
 			if (skeletons[i].isTracked()){
-				System.out.println(this.getAngle(skeletons[i].get3DJoint(4),skeletons[i].get3DJoint(5),skeletons[i].get3DJoint(6))); // SEW Left
+				//System.out.println(this.getAngle(skeletons[i].get3DJoint(4),skeletons[i].get3DJoint(5),skeletons[i].get3DJoint(6))); // SEW Left
+				System.out.println(skeletons[i].get3DJoint(0)[2]);
 				//System.out.println(this.getAngle(skeletons[i].get3DJoint(8),skeletons[i].get3DJoint(9),skeletons[i].get3DJoint(10))); // SEW Right
 			}
 		}
