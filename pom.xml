@@ -21,7 +21,11 @@
       <artifactId>j4k</artifactId>  
       <version>1.0</version>
       <scope>system</scope>
+<<<<<<< HEAD
       <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
+=======
+	  <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
+>>>>>>> 686579f175634287c25175da7f3d9174459a0caf
     </dependency>
 	<dependency>
       <groupId>edu.ufl</groupId>  
