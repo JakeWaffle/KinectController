@@ -5,26 +5,30 @@ import edu.ufl.digitalworlds.j4k.Skeleton;
 
 public class SkeletonTest extends J4KSDK {
 
-	int counter=0;
-	long time=0;
 	Skeleton skeletons[];
+	
+	// Get the distance between two joints.
+	private double getDistance(double[] jointA, double[] jointB) {
+		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));
+	}
+	
+	// Get the angle at a vertex given three joints.
+	private double getAngle(double[] jointA, double[] vertex, double[] jointB) { 
+		double distA = getDistance(vertex, jointA);
+		double distB = getDistance(vertex, jointB);
+		double distC = getDistance(jointA, jointB);
+		return Math.toDegrees(Math.acos((Math.pow(distA, 2)+Math.pow(distB, 2)-Math.pow(distC, 2))/(2*distA*distB)));
+	}
 	
 	@Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
-		System.out.println("A new skeleton frame was received.");
-		//System.out.println(join_status);
-		skeletons[0]=Skeleton.getSkeleton(0,skeleton_tracked,positions, orientations, joint_status,this);
-		skeletons[1]=Skeleton.getSkeleton(1,skeleton_tracked,positions, orientations, joint_status,this);
-		skeletons[2]=Skeleton.getSkeleton(2,skeleton_tracked,positions, orientations, joint_status,this);
-		skeletons[3]=Skeleton.getSkeleton(3,skeleton_tracked,positions, orientations, joint_status,this);
-		skeletons[4]=Skeleton.getSkeleton(4,skeleton_tracked,positions, orientations, joint_status,this);
-		skeletons[5]=Skeleton.getSkeleton(5,skeleton_tracked,positions, orientations, joint_status,this);
-		System.out.println(skeletons[0].get3DJoint(9));
-		System.out.println(skeletons[1].get3DJoint(9));
-		System.out.println(skeletons[2].get3DJoint(9));
-		System.out.println(skeletons[3].get3DJoint(9));
-		System.out.println(skeletons[4].get3DJoint(9));
-		System.out.println(skeletons[5].get3DJoint(9));
+		for (int i=0; i<skeletons.length;i++){
+			skeletons[i]=Skeleton.getSkeleton(i,skeleton_tracked,positions, orientations, joint_status,this);
+			if (skeletons[i].isTracked()){
+				System.out.println(this.getAngle(skeletons[i].get3DJoint(4),skeletons[i].get3DJoint(5),skeletons[i].get3DJoint(6))); // SEW Left
+				//System.out.println(this.getAngle(skeletons[i].get3DJoint(8),skeletons[i].get3DJoint(9),skeletons[i].get3DJoint(10))); // SEW Right
+			}
+		}
 	}
 
 	public void run(){
@@ -36,13 +40,11 @@ public class SkeletonTest extends J4KSDK {
 		
 		//Sleep for 20 seconds.
 		try {Thread.sleep(20000);} catch (InterruptedException e) {}
-				
-		this.stop();		
-		//System.out.println("FPS: "+kinect.counter*1000.0/(new Date().getTime()-kinect.time));
+		this.stop();
 	}
 	
 	public static void main(String[] args)
-	{		
+	{
 		SkeletonTest skeletonTest;
 		skeletonTest = new SkeletonTest();
 		skeletonTest.run();
