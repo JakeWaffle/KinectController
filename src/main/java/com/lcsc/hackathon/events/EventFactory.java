@@ -1,5 +1,7 @@
 package com.lcsc.hackathon.events;
 
+import com.lcsc.hackathon.EsperHandler;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -7,8 +9,10 @@ public class EventFactory {
     List<AngleRule> angleRules = new ArrayList<AngleRule>();
     List<DistanceRule> distRules = new ArrayList<DistanceRule>();
     
-    public EventFactory() {
-        
+    EsperHandler eHandler;
+    
+    public EventFactory(EsperHandler eHandler) {
+        this.eHandler = eHandler;
     }
     
     public void addAngleRule(AngleRule rule) {
@@ -18,4 +22,6 @@ public class EventFactory {
     public void addDistanceRule(DistanceRule rule) {
         distRules.add(rule);
     }
+    
+    
 }

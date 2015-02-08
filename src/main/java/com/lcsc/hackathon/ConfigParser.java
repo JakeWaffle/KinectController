@@ -21,13 +21,11 @@ import org.apache.log4j.Logger;
 
 public class ConfigParser {
     static Logger log = Logger.getRootLogger();
-    private EsperHandler eHandler;
     
-    public ConfigParser(EsperHandler eHandler) {
-        this.eHandler = eHandler;
+    public ConfigParser() {
     }
     
-    public EventFactory parseConfigFile(String configPath) {
+    public EventFactory parseConfigFile(String configPath, EsperHandler eHandler) {
         //Load the config file
         Map<String, Object> config = null;
         try {
@@ -40,8 +38,7 @@ public class ConfigParser {
             
         }
         
-        List<AngleRule> angleRules      = new ArrayList<AngleRule>();
-        List<DistanceRule> distRules    = new ArrayList<DistanceRule>();
+        EventFactory eFactory = new EventFactory(eHandler);
         
         Object[] gestures = (Object[])config.get("gestures");
         
@@ -67,6 +64,8 @@ public class ConfigParser {
                     //int end2 = attributes.get("endpoint2");
                     //int vertex = attributes.get("vertex");
                     
+                    //AngleRule angRule = new AngleRule();
+                    
                     //int minAngle = Integer.parseInt(attributes.get("min-angle"));
                     //int maxAngle = Integer.parseInt(attributes.get("max-angle"));
                     
@@ -84,6 +83,8 @@ public class ConfigParser {
                     
                     //int minDist = Integer.parseInt(attributes.get("min-dist"));
                     //int maxDist = Integer.parseInt(attributes.get("max-dist"));
+                    
+                    //DistanceRule distRule = new DistanceRule();
                     
                     /*
                     rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %d, distance < %d)", end1,
@@ -136,9 +137,9 @@ public class ConfigParser {
             log.info("Pattern:\n"+pattern);
             
             //Sets up the patterns and listeners for this gesture!
-            this.eHandler.setPattern(gestureId, pattern);
+            eHandler.setPattern(gestureId, pattern);
             if (triggerType.equals("keyPress")) {
-                this.eHandler.addListener(gestureId, (UpdateListener)new KeyPress());
+                eHandler.addListener(gestureId, (UpdateListener)new KeyPress());
             }
             else if (triggerType.equals("mouseMove")) {
                 //TODO
@@ -149,6 +150,6 @@ public class ConfigParser {
         //Pass some information about the rules into the EventFactory
         
         //return the Event Factory so it can retrieve information from the Kinect.
-        return new EventFactory();
+        return eFactory;
     }
 }
