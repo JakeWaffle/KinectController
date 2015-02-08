@@ -4,10 +4,10 @@ public class DistanceRule {
 	private String id = "";
 	private int joint1;
 	private int joint2;
-    private int distance;
+    private double distance;
     
 	
-	public DistanceRule(String id, int joint1, int joint2, int distance) {
+	public DistanceRule(String id, int joint1, int joint2, double distance) {
 		this.id = id;
         this.joint1 = joint1;
         this.joint2 = joint2;
@@ -36,5 +36,13 @@ public class DistanceRule {
 	
 	public void setJoint2(int j2) {
 		this.joint2 = j2;
+	}
+    
+    public double getDistance() {
+		return this.distance;
+	}
+	
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }

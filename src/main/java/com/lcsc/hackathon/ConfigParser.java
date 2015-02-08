@@ -3,6 +3,8 @@ package com.lcsc.hackathon;
 import com.lcsc.hackathon.events.*;
 import com.lcsc.hackathon.listeners.*;
 
+import java.io.File;
+
 import com.espertech.esper.client.UpdateListener;
 
 import java.util.Map;
@@ -25,11 +27,13 @@ public class ConfigParser {
     public ConfigParser() {
     }
     
-    public EventFactory parseConfigFile(String configPath, EsperHandler eHandler) {
+    public EventFactory parseConfigFile(String configFilename, EsperHandler eHandler) {
+        String projRoot = new File("").getAbsolutePath();
+        
         //Load the config file
         Map<String, Object> config = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(configPath));
+            BufferedReader reader = new BufferedReader(new FileReader(new File(projRoot, "config/"+configFilename).getAbsolutePath()));
             config = (Map<String, Object>)JSON.parse(reader);
         } catch (FileNotFoundException e) {
             log.error("", e);
@@ -67,10 +71,10 @@ public class ConfigParser {
                     AngleRule angRule = new AngleRule(ruleId, end1, vertex, end2, -1);
                     eFactory.addAngleRule(angRule);
                     
-                    int minAngle = Integer.parseInt(attributes.get("min-angle"));
-                    int maxAngle = Integer.parseInt(attributes.get("max-angle"));
+                    double minAngle = Double.parseDouble(attributes.get("min-angle"));
+                    double maxAngle = Double.parseDouble(attributes.get("max-angle"));
                     
-                    rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1, 
+                    rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
                                                                                                                     vertex, 
                                                                                                                     end2, 
                                                                                                                     minAngle,
@@ -83,10 +87,10 @@ public class ConfigParser {
                     DistanceRule distRule = new DistanceRule(ruleId, joint1, joint2, -1);
                     eFactory.addDistanceRule(distRule);
                     
-                    int minDist = Integer.parseInt(attributes.get("min-dist"));
-                    int maxDist = Integer.parseInt(attributes.get("max-dist"));
+                    double minDist = Double.parseDouble(attributes.get("min-dist"));
+                    double maxDist = Double.parseDouble(attributes.get("max-dist"));
                     
-                    rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %d, distance < %d)", joint1,
+                    rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
                                                                                                                       joint2,
                                                                                                                       minDist,
                                                                                                                       maxDist));
@@ -120,7 +124,7 @@ public class ConfigParser {
             
             //The gestureId will identify the trigger and be accessible in the pattern.
             Triggers.addTrigger(gestureId, trigger);
-            pattern += gestureId+" as triggerId from pattern[";
+            pattern += String.format("'%s' as triggerId from pattern[",gestureId);
             
             for (int i=0; i<rulePattern.size(); i++) {
                 pattern += rulePattern.get(i);

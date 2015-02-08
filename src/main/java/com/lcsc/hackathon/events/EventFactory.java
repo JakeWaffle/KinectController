@@ -20,7 +20,7 @@ public class EventFactory {
         distRules.add(rule);
     }
     
-    public List<Object> getEventData(/*j4k skeleton,*/ EsperHandler eHandler) {
+    public void getEventData(/*j4k skeleton,*/ EsperHandler eHandler) {
         //loop through all of the angle/distRules and 
         //update them with information from the current skeleton.
         

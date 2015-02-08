@@ -14,9 +14,9 @@ public class Conversions {
 	public static int getKeyId(String key) {
 		String fieldName = String.format("VK_%s", key);
 		
-		Object value = null;
+		int value = -1;
 		try {
-			value = KeyEvent.class.getDeclaredField(fieldName).get(KeyEvent.class);
+			value = KeyEvent.class.getDeclaredField(fieldName).getInt(KeyEvent.class);
 		} catch (IllegalArgumentException e) {
 			// if the specified object is not an instance of the class or
 			// interface declaring the underlying field (or a subclass or
@@ -33,16 +33,14 @@ public class Conversions {
 			// if a field with the specified name is not found
 			e.printStackTrace();
 		}
-		
-		System.out.println(value);
-		return 0;
+		return value;
 	}
 	
 	public static int getJointId(String key) {
 		String fieldName = String.format(key);
-		Object value = null;
+		int value = -1;
 		try {
-			value = Skeleton.class.getDeclaredField(fieldName).get(Skeleton.class);
+			value = Skeleton.class.getDeclaredField(fieldName).getInt(Skeleton.class);
 		} catch (IllegalArgumentException e) {
 			// if the specified object is not an instance of the class or
 			// interface declaring the underlying field (or a subclass or
@@ -59,8 +57,6 @@ public class Conversions {
 			// if a field with the specified name is not found
 			e.printStackTrace();
 		}
-		
-		System.out.println(value);
-		return 0;
+		return value;
 	}
 }

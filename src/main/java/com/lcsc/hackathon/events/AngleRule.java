@@ -5,13 +5,14 @@ public class AngleRule {
 	private int end1;
 	private int vertex;
 	private int end2;
-    private int angle;
+    private double angle;
 	
-	public AngleRule(String id, int end1, int vertex, int end2, int angle) {
+	public AngleRule(String id, int end1, int vertex, int end2, double angle) {
 		this.id = id;
         this.end1 = end1;
         this.vertex = vertex;
         this.end2 = end2;
+        this.angle = angle;
     }
 	
 	public String getId() {
@@ -44,5 +45,13 @@ public class AngleRule {
 	
 	public void setEnd2(int e2) {
 		this.end2 = e2;
+	}
+    
+    public double getAngle() {
+		return this.angle;
+	}
+	
+	public void setAngle(double angle) {
+		this.angle = angle;
 	}
 }

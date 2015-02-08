@@ -1,4 +1,3 @@
-asdfasdf
 Resolving class com.espertech.esper.client.Configuration id -220881974438617882 classloader class sun.misc.Launcher$AppClassLoader
 Resolving class java.util.HashMap id 362498820763181265 classloader class sun.misc.Launcher$AppClassLoader
 Resolving class com.espertech.esper.client.ConfigurationEngineDefaults id -528835191586154300 classloader class sun.misc.Launcher$AppClassLoader
@@ -59,19 +58,28 @@ Adding import java.util.*
 Adding import com.espertech.esper.client.annotation.*
 Adding import com.espertech.esper.dataflow.ops.*
 .startInternalClock Starting internal clock daemon thread, resolution=100
-.createEPLStmt statementName=null eplStatement=select 87 as keyID from AngleRule
-.parse Parsing expr=select 87 as keyID from AngleRule
+Pattern:
+select 'move-right' as triggerId from pattern[DistanceRule(joint1=3, joint2=7, distance > 0.500000, distance < 0.500000)]
+.createEPLStmt statementName=null eplStatement=select 'move-right' as triggerId from pattern[DistanceRule(joint1=3, joint2=7, distance > 0.500000, distance < 0.500000)]
+.parse Parsing expr=select 'move-right' as triggerId from pattern[DistanceRule(joint1=3, joint2=7, distance > 0.500000, distance < 0.500000)]
+reportAttemptingFullContext
+reportAmbiguity
+reportAttemptingFullContext
+reportAmbiguity
+reportAttemptingFullContext
+reportAmbiguity
+reportAttemptingFullContext
+reportAmbiguity
 .parse Dumping AST...
 .walk Walking AST using walker com.espertech.esper.epl.parse.EPLTreeWalkerListener
 .ctor
-.makeFilterSpec spec=FilterSpecCompiled type=BeanEventType name=AngleRule clazz=com.lcsc.hackathon.events.AngleRule parameters=[]
-.start Starting statement 9c8dfa28-a81b-4130-8391-8f6c2693a702 from desc=com.espertech.esper.core.service.StatementLifecycleSvcImpl$EPStatementDesc@10d3326
-.startInternal Starting statement 9c8dfa28-a81b-4130-8391-8f6c2693a702 from desc=com.espertech.esper.core.service.StatementLifecycleSvcImpl$EPStatementDesc@10d3326
+.makeFilterSpec spec=FilterSpecCompiled type=BeanEventType name=DistanceRule clazz=com.lcsc.hackathon.events.DistanceRule parameters=[FilterSpecParam lookupable=com.espertech.esper.filter.FilterSpecLookupable@bb2f48e7 filterOp=EQUAL filterConstant=3, FilterSpecParam lookupable=com.espertech.esper.filter.FilterSpecLookupable@bb2f48e8 filterOp=EQUAL filterConstant=7, FilterSpecParam lookupable=com.espertech.esper.filter.FilterSpecLookupable@11318bf5 filterOp=LESS filterConstant=0.5, FilterSpecParam lookupable=com.espertech.esper.filter.FilterSpecLookupable@11318bf5 filterOp=GREATER filterConstant=0.5]
+.start Starting statement b6e67bb1-1f65-4da2-aa3b-386cb61e7c84 from desc=com.espertech.esper.core.service.StatementLifecycleSvcImpl$EPStatementDesc@5386659f
+.startInternal Starting statement b6e67bb1-1f65-4da2-aa3b-386cb61e7c84 from desc=com.espertech.esper.core.service.StatementLifecycleSvcImpl$EPStatementDesc@5386659f
 .addMergeViews Incoming specifications=[]
 .addMergeViews Outgoing specifications=[]
 .getProcessor Using no OrderByProcessor
 .getProcessor Using no result processor
-.createStream hashCode=15890667 filter=FilterSpecCompiled type=BeanEventType name=AngleRule clazz=com.lcsc.hackathon.events.AngleRule parameters=[]
-.createView No new views created, dumping stream ... com.espertech.esper.view.ZeroDepthStreamNoIterate@d2d9cb
+.createView No new views created, dumping stream ... com.espertech.esper.view.ZeroDepthStreamNoIterate@7975d1d8
 .createEPLStmt Statement created and started
 .updatedListeners No action for base implementation
