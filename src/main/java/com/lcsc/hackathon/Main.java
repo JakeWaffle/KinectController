@@ -17,7 +17,6 @@ public class Main {
         //VK_W = 87
         eHandler.setPattern("pat1", "select 87 as keyID from AngleRule");
         eHandler.addListener("pat1", new KeyPress());
-        
-        eHandler.sendEvent(new AngleRule(1, 1, 1));
+        //eHandler.sendEvent(new AngleRule(1, 1, 1));
     }
 }
