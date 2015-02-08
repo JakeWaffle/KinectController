@@ -24,12 +24,32 @@
                     }
                 ]
             }
+        },
+        {
+            "id" : "move-backward",
+            "rules" : [
+                {
+                    "type" : "AngleRule",
+                    "attributes" : {
+                        "id" : "left-arm-angle",
+                        "endJoint1" : "HAND_LEFT",
+                        "vertex" : "ELBOW_LEFT",
+                        "endJoint2" : "SHOULDER_LEFT",
+                        "min-angle" : "90",
+                        "max-angle" : "180"
+                    }
+                }
+            ],
+            
+            "trigger": {
+                "type" : "keyPress",
+                "keys" : [
+                    {
+                        "key" : "Q",
+                        "type" : "KeyDownUp"
+                    }
+                ]
+            }
         }
 	]
 }
-
-
-
-
-
-

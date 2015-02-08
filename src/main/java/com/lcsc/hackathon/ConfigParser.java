@@ -163,11 +163,23 @@ public class ConfigParser {
             double minAngle = Double.parseDouble(attributes.get("min-angle"));
             double maxAngle = Double.parseDouble(attributes.get("max-angle"));
             
-            patternChunk = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
+            String patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
                                                                                                            vertex, 
                                                                                                            end2, 
                                                                                                            minAngle,
                                                                                                            maxAngle);
+                                                                                                           
+            String patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1, 
+                                                                                                vertex, 
+                                                                                                end2, 
+                                                                                                minAngle);
+                                                                                                           
+            String patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1, 
+                                                                                                vertex,
+                                                                                                end2,
+                                                                                                maxAngle);
+                                                                                                           
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else if (ruleType.equals("DistanceRule")) {
             String ruleId   = attributes.get("id");
@@ -180,10 +192,20 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            patternChunk = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
+            String patternChunk1 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
                                                                                                              joint2,
                                                                                                              minDist,
                                                                                                              maxDist);
+
+            String patternChunk2 = String.format("DistanceRule(joint1=%d, joint2=%d, distance < %f)", joint1,
+                                                                                                      joint2,
+                                                                                                      minDist);
+                                                                                                             
+            String patternChunk3 = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f)", joint1,
+                                                                                                      joint2,
+                                                                                                      maxDist);
+                                                                                                             
+            patternChunk = String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1);
         }
         else {
             log.error("RuleType is invalid: "+ruleType);

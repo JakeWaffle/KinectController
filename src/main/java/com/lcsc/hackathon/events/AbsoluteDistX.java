@@ -12,7 +12,7 @@ public class AbsoluteDistX {
 							int jointId,
 							double distance) {
 		this.id = id;
-        this.absolutejoint = absolutejoint;
+        this.absoluteJoint = absoluteJoint;
         this.jointId = jointId;
         this.distance = distance;
     }
@@ -25,12 +25,12 @@ public class AbsoluteDistX {
 		this.id = id;
 	}
     
-	public int getAbsoluteJoint() {
-		return this.absolutejoint;
+	public double[] getAbsoluteJoint() {
+		return this.absoluteJoint;
 	}
 	
 	public void setAbsoluteJoint(double[] array) {
-		this.AbsoluteJoint = array;
+		this.absoluteJoint = array;
 	}
 	
 	public int getjointId() {
