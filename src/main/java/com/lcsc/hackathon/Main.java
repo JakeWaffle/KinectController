@@ -5,6 +5,8 @@ import com.lcsc.hackathon.events.EventFactory;
 import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
 
+import java.io.Console;
+
 import edu.ufl.digitalworlds.j4k.J4KSDK;
 import edu.ufl.digitalworlds.j4k.Skeleton;
 
@@ -16,6 +18,8 @@ public class Main extends J4KSDK {
     private EsperHandler eHandler;
     private ConfigParser cParser;
     private EventFactory eFactory;
+    
+    Skeleton skeletons[];
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -37,12 +41,12 @@ public class Main extends J4KSDK {
         
         this.eHandler = new EsperHandler();
         this.cParser = new ConfigParser();
-        this.eFactory = configParser.parseConfigFile(arguments.getOptionValue("f", eHandler);
+        this.eFactory = this.cParser.parseConfigFile(arguments.getOptionValue("f"), this.eHandler);
     }
     
-    public run() {
+    public void run() {
         this.start(J4KSDK.NONE|J4KSDK.NONE|J4KSDK.SKELETON);
-		skeletons = new Skeleton[6];
+		this.skeletons = new Skeleton[6];
         
         if (this.arguments.hasOption('d')) {
             this.showViewerDialog();
@@ -56,18 +60,27 @@ public class Main extends J4KSDK {
                 done = true;
             }
         }
-        
+        System.out.println("Goodbye");
 		this.stop();
     }
     
     @Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
-		for (int i=0; i<skeletons.length;i++){
-			skeletons[i]=Skeleton.getSkeleton(i,skeleton_tracked,positions, orientations, joint_status,this);
-			if (skeletons[i].isTracked()){
-				System.out.println(this.getAngle(skeletons[i].get3DJoint(4),skeletons[i].get3DJoint(5),skeletons[i].get3DJoint(6))); // SEW Left
-				//System.out.println(this.getAngle(skeletons[i].get3DJoint(8),skeletons[i].get3DJoint(9),skeletons[i].get3DJoint(10))); // SEW Right
+		for (int i=0; i<this.skeletons.length;i++){
+			this.skeletons[i]=Skeleton.getSkeleton(i,skeleton_tracked,positions, orientations, joint_status,this);
+			if (this.skeletons[i].isTracked()){
+				this.eFactory.getEventData(this.skeletons[i], this.eHandler);
 			}
 		}
+	}
+    
+    @Override
+	public void onColorFrameEvent(byte[] color_frame) {
+		//We are not using this!
+	}
+
+	@Override
+	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] xyz, float[] uv) {
+		//We are not using this!
 	}
 }

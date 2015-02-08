@@ -104,6 +104,10 @@ public class ConfigParser {
             else if (triggerType.equals("mouseMove")) {
                 //TODO
             }
+            else {
+                log.error(String.format("Invalid Trigger Type: %s", triggerType));
+                System.exit(1);
+            }
             
             //The gestureId will identify the trigger and be accessible in the pattern.
             Triggers.addTrigger(gestureId, trigger);
@@ -149,8 +153,8 @@ public class ConfigParser {
         String patternChunk = "";
         if (ruleType.equals("AngleRule")) {
             String ruleId   = attributes.get("id");
-            int end1 = Conversions.getJointId(attributes.get("endjoint1"));
-            int end2 = Conversions.getJointId(attributes.get("endjoint2"));
+            int end1 = Conversions.getJointId(attributes.get("endJoint1"));
+            int end2 = Conversions.getJointId(attributes.get("endJoint2"));
             int vertex = Conversions.getJointId(attributes.get("vertex"));
             
             AngleRule angRule = new AngleRule(ruleId, end1, vertex, end2, -1);
@@ -159,11 +163,11 @@ public class ConfigParser {
             double minAngle = Double.parseDouble(attributes.get("min-angle"));
             double maxAngle = Double.parseDouble(attributes.get("max-angle"));
             
-            rulePattern.add(String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
-                                                                                                            vertex, 
-                                                                                                            end2, 
-                                                                                                            minAngle,
-                                                                                                            maxAngle));
+            patternChunk = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1, 
+                                                                                                           vertex, 
+                                                                                                           end2, 
+                                                                                                           minAngle,
+                                                                                                           maxAngle);
         }
         else if (ruleType.equals("DistanceRule")) {
             String ruleId   = attributes.get("id");
@@ -176,10 +180,10 @@ public class ConfigParser {
             double minDist = Double.parseDouble(attributes.get("min-dist"));
             double maxDist = Double.parseDouble(attributes.get("max-dist"));
             
-            rulePattern.add(String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
-                                                                                                              joint2,
-                                                                                                              minDist,
-                                                                                                              maxDist));
+            patternChunk = String.format("DistanceRule(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1,
+                                                                                                             joint2,
+                                                                                                             minDist,
+                                                                                                             maxDist);
         }
         else {
             log.error("RuleType is invalid: "+ruleType);

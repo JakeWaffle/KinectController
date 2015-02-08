@@ -3,6 +3,10 @@ package com.lcsc.hackathon.listeners;
 import com.lcsc.hackathon.Triggers;
 import com.lcsc.hackathon.Trigger;
 
+import java.util.Map;
+
+import com.lcsc.hackathon.Conversions;
+
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
@@ -25,19 +29,25 @@ public class KeyPress implements UpdateListener {
     
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
-            Trigger trigger = Triggers.getTrigger(event.get("triggerId"));
+            String triggerId = (String)event.get("triggerId");
+            //log.info(String.format("TriggerId: %s", triggerId));
+            Trigger trigger = Triggers.getTrigger(triggerId);
             
             for (Map<String, String> attributes : trigger.getDefinition()) {
                 String type = attributes.get("type");
-                if (type == "KeyDownUp") {
+                if (type.equals("KeyDownUp")) {
+                    log.info(String.format("\n\nKeyPress: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
                     this.rob.keyPress(Conversions.getKeyId(attributes.get("key")));
                     this.rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
                 }
-                else if (type == "KeyDown") {
+                else if (type.equals("KeyDown")) {
                     this.rob.keyPress(Conversions.getKeyId(attributes.get("key")));
                 }
-                else if (type == "KeyUp") {
+                else if (type.equals("KeyUp")) {
                     this.rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
+                }
+                else {
+                    log.error(String.format("Invalude Tigger Type: %s", type));
                 }
             }
         }

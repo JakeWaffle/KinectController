@@ -10,7 +10,7 @@
                         "joint1" : "HEAD",
                         "joint2" : "HAND_LEFT",
                         "min-dist" : "0.0",
-                        "max-dist" : "0.2"
+                        "max-dist" : "0.5"
                     }
                 }
             ],
@@ -20,32 +20,6 @@
                 "keys" : [
                     {
                         "key" : "D",
-                        "type" : "KeyDownUp"
-                    }
-                ]
-            }
-        },
-        {
-            "id" : "move-forward",
-            "rules" : [
-                {
-                    "type" : "AngleRule",
-                    "attributes" :{
-                        "id" : "armAngle",
-                        "endJoint1" : "SHOULDER_LEFT",
-                        "endJoint2" : "HAND_LEFT",
-                        "vertex" : "ELBOW_LEFT",
-                        "min-angle" : "110",
-                        "max-angle" : "180"
-                    }
-                }
-            ],
-            
-            "trigger": {
-                "type" : "keyPress",
-                "keys" : [
-                    {
-                        "key" : "W",
                         "type" : "KeyDownUp"
                     }
                 ]
