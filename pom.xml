@@ -19,8 +19,9 @@
     <dependency>
       <groupId>com.j4k</groupId>  
       <artifactId>j4k</artifactId>  
-      <version>1.0</version> 
+      <version>1.0</version>
       <scope>system</scope>
+      <systemPath>${project.basedir}/lib/j4k-natives-windows-amd64.jar</systemPath>
     </dependency>
 	<dependency>
       <groupId>edu.ufl</groupId>  
@@ -33,6 +34,11 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util-ajax</artifactId>
       <version>9.2.7.v20150116</version>
+    </dependency>
+    <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
     </dependency>
   </dependencies>
   

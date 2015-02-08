@@ -3,8 +3,13 @@ package com.lcsc.hackathon;
 import com.lcsc.hackathon.listeners.KeyPress;
 import com.lcsc.hackathon.eventdefs.AngleRule;
 
+import org.apache.log4j.Logger;
+
 public class Main {
+    static Logger log = Logger.getRootLogger();
+    
     public static void main(String[] args) {
+        log.info("asdfasdf");
         EsperHandler eHandler = new EsperHandler();
         
         //This has the values for the KeyEvents
