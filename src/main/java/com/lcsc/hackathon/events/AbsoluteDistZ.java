@@ -33,11 +33,11 @@ public class AbsoluteDistZ {
 		this.absPointZ = absPointZ;
 	}
 	
-	public int getjointId() {
+	public int getJointId() {
 		return this.jointId;
 	}
 	
-	public void setjointId(int jnt) {
+	public void setJointId(int jnt) {
 		this.jointId = jnt;
 	}
     

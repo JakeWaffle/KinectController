@@ -93,7 +93,7 @@ public class EventFactory {
         for (AbsoluteDistX rule : this.absDistXRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointX();
-            double joint = rule.getJointId()[0];
+            double joint = skele.get3DJoint(rule.getJointId())[0];
             
             double distance = Formulas.getDistanceX(point, joint);
             log.info(String.format("Distance: %f", distance));
@@ -106,7 +106,7 @@ public class EventFactory {
         for (AbsoluteDistY rule : this.absDistYRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointY();
-            double joint = rule.getJointId()[1];
+            double joint = skele.get3DJoint(rule.getJointId())[1];
             
             double distance = Formulas.getDistanceY(point, joint);
             log.info(String.format("Distance: %f", distance));
@@ -119,7 +119,7 @@ public class EventFactory {
         for (AbsoluteDistZ rule : this.absDistZRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointZ();
-            double joint = rule.getJointId()[2];
+            double joint = skele.get3DJoint(rule.getJointId())[2];
             
             double distance = Formulas.getDistanceZ(point, joint);
             log.info(String.format("Distance: %f", distance));
