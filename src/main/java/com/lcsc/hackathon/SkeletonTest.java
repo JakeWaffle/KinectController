@@ -1,89 +1,60 @@
 package com.lcsc.hackathon;
 
-import java.util.Date;
-
-import edu.ufl.digitalworlds.gui.DWApp;
 import edu.ufl.digitalworlds.j4k.J4KSDK;
+import edu.ufl.digitalworlds.j4k.Skeleton;
 
-/*
- * Copyright 2011-2014, Digital Worlds Institute, University of 
- * Florida, Angelos Barmpoutis.
- * All rights reserved.
- *
- * When this program is used for academic or research purposes, 
- * please cite the following article that introduced this Java library: 
- * 
- * A. Barmpoutis. "Tensor Body: Real-time Reconstruction of the Human Body 
- * and Avatar Synthesis from RGB-D', IEEE Transactions on Cybernetics, 
- * October 2013, Vol. 43(5), Pages: 1347-1356. 
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *     * Redistributions of source code must retain this copyright
- * notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce this
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 public class SkeletonTest extends J4KSDK {
 
 	int counter=0;
 	long time=0;
+	Skeleton skeletons[];
 	
 	@Override
 	public void onSkeletonFrameEvent(boolean[] skeleton_tracked, float[] positions, float[] orientations, byte[] joint_status) {
 		System.out.println("A new skeleton frame was received.");
 		//System.out.println(join_status);
+		skeletons[0]=Skeleton.getSkeleton(0,skeleton_tracked,positions, orientations, joint_status,this);
+		skeletons[1]=Skeleton.getSkeleton(1,skeleton_tracked,positions, orientations, joint_status,this);
+		skeletons[2]=Skeleton.getSkeleton(2,skeleton_tracked,positions, orientations, joint_status,this);
+		skeletons[3]=Skeleton.getSkeleton(3,skeleton_tracked,positions, orientations, joint_status,this);
+		skeletons[4]=Skeleton.getSkeleton(4,skeleton_tracked,positions, orientations, joint_status,this);
+		skeletons[5]=Skeleton.getSkeleton(5,skeleton_tracked,positions, orientations, joint_status,this);
+		System.out.println(skeletons[0].get3DJoint(9));
+		System.out.println(skeletons[1].get3DJoint(9));
+		System.out.println(skeletons[2].get3DJoint(9));
+		System.out.println(skeletons[3].get3DJoint(9));
+		System.out.println(skeletons[4].get3DJoint(9));
+		System.out.println(skeletons[5].get3DJoint(9));
 	}
 
-	@Override
-	public void onColorFrameEvent(byte[] color_frame) {
-		System.out.println("A new color frame was received.");
-	}
+	public void run(){
 
-	@Override
-	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] xyz, float[] uv) {
-		System.out.println("A new depth frame was received.");
-		
-		if(counter==0)
-			time=new Date().getTime();
-		counter+=1;
-	}
-	
-	public static void main(String[] args)
-	{
-		
-		if(System.getProperty("os.arch").toLowerCase().indexOf("64")<0)
-		{
-			System.out.println("WARNING: You are running a 32bit version of Java.");
-			System.out.println("This may reduce significantly the performance of this application.");
-			System.out.println("It is strongly adviced to exit this program and install a 64bit version of Java.\n");
-		}
-		
 		System.out.println("This program will run for about 20 seconds.");
-		SkeletonTest kinect=new SkeletonTest();
-		kinect.start(J4KSDK.NONE|J4KSDK.NONE|J4KSDK.SKELETON);
+		this.start(J4KSDK.NONE|J4KSDK.NONE|J4KSDK.SKELETON);
+		skeletons = new Skeleton[6];
+		this.showViewerDialog();
 		
 		//Sleep for 20 seconds.
 		try {Thread.sleep(20000);} catch (InterruptedException e) {}
 				
-		kinect.stop();		
-		System.out.println("FPS: "+kinect.counter*1000.0/(new Date().getTime()-kinect.time));
+		this.stop();		
+		//System.out.println("FPS: "+kinect.counter*1000.0/(new Date().getTime()-kinect.time));
+	}
+	
+	public static void main(String[] args)
+	{		
+		SkeletonTest skeletonTest;
+		skeletonTest = new SkeletonTest();
+		skeletonTest.run();
+	}
+	
+	@Override
+	public void onColorFrameEvent(byte[] color_frame) {
+		//We are not using this!
 	}
 
-	
+	@Override
+	public void onDepthFrameEvent(short[] depth_frame, byte[] body_index, float[] xyz, float[] uv) {
+		//We are not using this!
+	}
 }
