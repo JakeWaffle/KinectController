@@ -43,7 +43,8 @@ import com.lcsc.hackathon.Conversions;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Robot;
 import java.awt.AWTException;
@@ -52,14 +53,14 @@ import java.lang.Thread;
 import java.lang.InterruptedException;
 
 public class KeyPress implements UpdateListener {
-    static Logger log = Logger.getRootLogger();
-    private Robot rob;
+    private static final Logger _logger      = LoggerFactory.getLogger(KeyPress.class);
+    private              Robot  _rob;
     
     public KeyPress() {
         try {
-            this.rob = new Robot();
+            _rob = new Robot();
         } catch (AWTException e) {
-            log.error("", e);
+            _logger.error("", e);
         }
     }
     
@@ -72,25 +73,25 @@ public class KeyPress implements UpdateListener {
             for (Map<String, String> attributes : trigger.getDefinition()) {
                 String type = attributes.get("type");
                 if (type.equals("KeyDownUp")) {
-                    log.info(String.format("\n\nKeyPressRelease: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
-                    this.rob.keyPress(Conversions.getKeyId(attributes.get("key")));
+                    _logger.info(String.format("\n\nKeyPressRelease: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
+                    _rob.keyPress(Conversions.getKeyId(attributes.get("key")));
                     try {
                         Thread.sleep(100);
                     } catch(InterruptedException ex) {
                         Thread.currentThread().interrupt();
                     }
-                    this.rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
+                    _rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
                 }
                 else if (type.equals("KeyDown")) {
-                    log.info(String.format("\n\nKeyPress: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
-                    this.rob.keyPress(Conversions.getKeyId(attributes.get("key")));
+                    _logger.info(String.format("\n\nKeyPress: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
+                    _rob.keyPress(Conversions.getKeyId(attributes.get("key")));
                 }
                 else if (type.equals("KeyUp")) {
-                    log.info(String.format("\n\nKeyRelease: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
-                    this.rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
+                    _logger.info(String.format("\n\nKeyRelease: %s %d\n\n", attributes.get("key"), Conversions.getKeyId(attributes.get("key"))));
+                    _rob.keyRelease(Conversions.getKeyId(attributes.get("key")));
                 }
                 else {
-                    log.error(String.format("Invalude Tigger Type: %s", type));
+                    _logger.error(String.format("Invalude Tigger Type: %s", type));
                 }
             }
         }

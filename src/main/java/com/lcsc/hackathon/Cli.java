@@ -33,30 +33,27 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import edu.ufl.digitalworlds.j4k.Skeleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Cli {
-	private static final Logger log = Logger.getLogger(Cli.class.getName());
-	private String[] args = null;
-	private Options options = new Options();
+	private static final Logger 	_logger     = LoggerFactory.getLogger(Cli.class);
+	private 			 String[] 	_args 		= null;
+	private 			 Options 	_options 	= new Options();
 
 	public Cli(String[] args) {
 
-		this.args = args;
+		_args = args;
 
-		options.addOption("h", "help", false, "show help.");
-		options.addOption("f", "filename", true, "Name the configuration file");
-		options.addOption("d", "debug", false, "Display debug skeleton");
+		_options.addOption("h", "help", false, "Show help");
+		_options.addOption("f", "filename", true, "Name the configuration file");
+		_options.addOption("d", "debug", false, "Display debug skeleton");
 
 	}
 
@@ -65,22 +62,22 @@ public class Cli {
 
 		CommandLine cmd = null;
 		try {
-			cmd = parser.parse(options, args);
+			cmd = parser.parse(_options, _args);
 
 			if (cmd.hasOption("h"))
 				help();
 
 			if (cmd.hasOption("f")) {
-				log.log(Level.INFO, "Using cli argument -f=" + cmd.getOptionValue("f"));
+				_logger.info("Using cli argument -f=" + cmd.getOptionValue("f"));
 				// Whatever you want to do with the setting goes here
 				System.out.println("Thank you for entering the config name");
 			} else {
-				log.log(Level.SEVERE, "Missing configuration filename");
+				_logger.error("Missing configuration filename");
 				System.out.println("Warning: Missing configuration file.");
 				help();
 			}
 		} catch (ParseException e) {
-			log.log(Level.SEVERE, "Failed to parse comand line properties", e);
+			_logger.error("Failed to parse comand line properties", e);
 			help();
 		}
 		
@@ -91,7 +88,7 @@ public class Cli {
 		// This prints out some help
 		HelpFormatter formater = new HelpFormatter();
 
-		formater.printHelp("Main", options);
+		formater.printHelp("Main", _options);
 		System.exit(0);
 	}
 }

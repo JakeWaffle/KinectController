@@ -1,2 +1,6 @@
-/target/
+build
 log.txt
+.idea
+.gradle
+KinectController.iml
+gradle

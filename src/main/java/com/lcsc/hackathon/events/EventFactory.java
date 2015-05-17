@@ -35,16 +35,14 @@ package com.lcsc.hackathon.events;
 
 import com.lcsc.hackathon.EsperHandler;
 import com.lcsc.hackathon.Formulas;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ArrayList;
 
-import edu.ufl.digitalworlds.j4k.Skeleton;
-
-import org.apache.log4j.Logger;
-
 public class EventFactory {
-    static Logger log = Logger.getRootLogger();
+    private static final Logger _logger      = LoggerFactory.getLogger(EventFactory.class);
     
     //These lists of rules are instantiated based off of the config file.
     //They are meant to be updated periodically by the Kinect and then
@@ -97,7 +95,9 @@ public class EventFactory {
     public void addAbsDistZRules(AbsoluteDistZ rule) {
         absDistZRules.add(rule);
     }
-    
+
+    /*
+    //TODO Modify this to work with the new Kinect SDK
     public void getEventData(Skeleton skele, EsperHandler eHandler) {
         //loop through all of the angle/distRules and 
         for (AngleRule rule : this.angleRules) {
@@ -225,5 +225,5 @@ public class EventFactory {
             //Then pass all of the rules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
-    }
+    }*/
 }

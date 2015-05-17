@@ -41,13 +41,16 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.UpdateListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EsperHandler {
-    private EPServiceProvider engine;
-    private Map<String, EPStatement> patterns;
+    private static final Logger                     _logger     = LoggerFactory.getLogger(EsperHandler.class);
+    private              EPServiceProvider          _engine;
+    private              Map<String, EPStatement>   _patterns;
     
     public EsperHandler() {
-        this.patterns = new HashMap<String, EPStatement>();
+        _patterns = new HashMap<String, EPStatement>();
         config();
         
         //Register all of the classes here.
@@ -67,22 +70,22 @@ public class EsperHandler {
         config.addEventType("AbsoluteDistX", "com.lcsc.hackathon.events.AbsoluteDistX");
         config.addEventType("AbsoluteDistY", "com.lcsc.hackathon.events.AbsoluteDistY");
         config.addEventType("AbsoluteDistance", "com.lcsc.hackathon.events.AbsoluteDistance");
-        
-        this.engine = EPServiceProviderManager.getDefaultProvider(config);
-        this.engine.initialize();
+
+        _engine = EPServiceProviderManager.getDefaultProvider(config);
+        _engine.initialize();
     }
     
     public void setPattern(String patternId, String pattern) {
-        EPStatement statement = this.engine.getEPAdministrator().createEPL(pattern);
-        
-        this.patterns.put(patternId, statement);
+        EPStatement statement = _engine.getEPAdministrator().createEPL(pattern);
+
+        _patterns.put(patternId, statement);
     }
     
     public void addListener(String patternId, UpdateListener listener) {
-        this.patterns.get(patternId).addListener(listener);
+        _patterns.get(patternId).addListener(listener);
     }
     
     public void sendEvent(Object event) {
-        this.engine.getEPRuntime().sendEvent(event);
+        _engine.getEPRuntime().sendEvent(event);
     }
 }

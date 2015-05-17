@@ -33,7 +33,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon;
 
-import edu.ufl.digitalworlds.j4k.Skeleton;
 import java.awt.event.*;
 import java.lang.reflect.*;
 
@@ -66,10 +65,12 @@ public class Conversions {
 		}
 		return value;
 	}
-	
+
+	//TODO This needs to be adapted to whatever Kinect SDK we switch to.
 	public static int getJointId(String key) {
 		String fieldName = String.format(key);
 		int value = -1;
+		/*
 		try {
 			value = Skeleton.class.getDeclaredField(fieldName).getInt(Skeleton.class);
 		} catch (IllegalArgumentException e) {
@@ -88,6 +89,7 @@ public class Conversions {
 			// if a field with the specified name is not found
 			e.printStackTrace();
 		}
+		*/
 		return value;
 	}
 }

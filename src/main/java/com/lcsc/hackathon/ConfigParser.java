@@ -46,13 +46,13 @@ import java.util.ArrayList;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
-import java.lang.StringBuilder;
 
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
 import org.eclipse.jetty.util.ajax.JSON;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
     Important Note:
@@ -70,10 +70,9 @@ import org.apache.log4j.Logger;
 
 
 public class ConfigParser {
-    static Logger log = Logger.getRootLogger();
+    private static final Logger _logger     = LoggerFactory.getLogger(ConfigParser.class);
     
-    public ConfigParser() {
-    }
+    public ConfigParser() {}
     
     //This will parse the config file, pass listeners and patterns over to esper and
     //then it will return an EventFactry that is setup to relay information from the
@@ -95,9 +94,9 @@ public class ConfigParser {
             BufferedReader reader = new BufferedReader(new FileReader(new File(projRoot, "config/"+configFilename).getAbsolutePath()));
             config = (Map<String, Object>)JSON.parse(reader);
         } catch (FileNotFoundException e) {
-            log.error("", e);
+            _logger.error("", e);
         } catch (IOException e) {
-            log.error("", e);
+            _logger.error("", e);
             
         }
         
@@ -134,7 +133,7 @@ public class ConfigParser {
                 trigger = new Trigger(triggerType, defs);
             }
             else {
-                log.error(String.format("Invalid Trigger Type: %s", triggerType));
+                _logger.error(String.format("Invalid Trigger Type: %s", triggerType));
                 System.exit(1);
             }
             
@@ -154,7 +153,7 @@ public class ConfigParser {
                     rulePattern.add(configureRule(eFactory, ruleType, triggerType, count, attributes));
                     count += 1;
                 } catch (Exception e) {
-                    log.error("", e);
+                    _logger.error("", e);
                     System.exit(1);
                 }
             }
@@ -171,8 +170,8 @@ public class ConfigParser {
                 boolean y = false;
                 for (int i=0; i<rulePattern.size(); i++) {
                     String tmp = rulePattern.get(i);
-                    
-                    log.info("TMP: "+tmp);
+
+                    _logger.info("TMP: "+tmp);
                     
                     if (tmp.contains("DistanceXRule") && !x) {
                         tmp = tmp.replaceAll("DistanceXRule", "every e1=DistanceXRule");
@@ -210,8 +209,8 @@ public class ConfigParser {
                     }
                 }
             }
-            
-            log.info("Pattern:\n"+pattern);
+
+            _logger.info("Pattern:\n"+pattern);
             
             //Sets up the patterns and listeners for this gesture!
             eHandler.setPattern(gestureId, pattern);
@@ -498,7 +497,7 @@ public class ConfigParser {
                                                                         maxDist);
         }
         else {
-            log.error("RuleType is invalid: "+ruleType);
+            _logger.error("RuleType is invalid: "+ruleType);
             System.exit(1);
         }
         
@@ -509,7 +508,7 @@ public class ConfigParser {
             patternChunk = String.format("%s", patternChunk1);
         }
         else {
-            log.error("Invalid Trigger Type: "+triggerType);
+            _logger.error("Invalid Trigger Type: "+triggerType);
             System.exit(1);
         }
         
