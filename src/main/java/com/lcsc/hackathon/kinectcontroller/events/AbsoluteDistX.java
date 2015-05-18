@@ -31,26 +31,54 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon;
+package com.lcsc.hackathon.kinectcontroller.events;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
-//This class is meant to store information about the things that the listeners are triggering.
-//  That information couldn't be transferred over with Esper so it's stored here.
-public class Triggers {
-    private static Logger log = Logger.getRootLogger();
-    //This maps a trigger id1 to a list of specific triggers.
-    private static Map<String, Trigger> triggers = new HashMap<String, Trigger>();
+public class AbsoluteDistX {
+	private String id = "";
+	private double absPointX;
+	private int jointId;
+    private double distance;
     
-    public static void addTrigger(String triggerId, Trigger trigger) {
-        Triggers.triggers.put(triggerId, trigger);
+	
+	public AbsoluteDistX(	String id,
+							double absPointX,
+							int jointId,
+							double distance) {
+		this.id = id;
+        this.absPointX = absPointX;
+        this.jointId = jointId;
+        this.distance = distance;
     }
+	
+	public String getId() {
+		return this.id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
     
-    public static Trigger getTrigger(String triggerId) {
-        return Triggers.triggers.get(triggerId);
-    }
+	public double getAbsPointX() {
+		return this.absPointX;
+	}
+	
+	public void setAbsPointX(double absPointX) {
+		this.absPointX = absPointX;
+	}
+	
+	public int getJointId() {
+		return this.jointId;
+	}
+	
+	public void setJointId(int jnt) {
+		this.jointId = jnt;
+	}
+    
+    public double getDistance() {
+		return this.distance;
+	}
+	
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 }

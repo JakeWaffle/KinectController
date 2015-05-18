@@ -31,14 +31,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.listeners;
+package com.lcsc.hackathon.kinectcontroller.listeners;
 
 import com.lcsc.hackathon.Triggers;
 import com.lcsc.hackathon.Trigger;
 
 import java.util.Map;
 
-import com.lcsc.hackathon.Conversions;
+import com.lcsc.hackathon.kinectcontroller.Conversions;
 
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;

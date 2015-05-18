@@ -31,34 +31,54 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon;
+package com.lcsc.hackathon.kinectcontroller.events;
 
-import java.util.Map;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class Trigger {
-    private static final Logger _logger      = LoggerFactory.getLogger(Main.class);
-
-    //This is corresponds with 'trigger: {type:triggerType}' in the config file.
-    //It defines the Trigger as a key press, mouse movement or whatever.
-    private String _type;
-    private List<Map<String, String>> _definition;
+public class DistanceYRule {
+	private String id = "";
+	private int joint1;
+	private int joint2;
+    private double distance;
     
-    public Trigger(String type, List<Map<String, String>> definition) {
-        _type = type;
-        assert(definition != null);
-        _definition = definition;
+	
+	public DistanceYRule(	String id,
+							int joint1,
+							int joint2,
+							double distance) {
+		this.id = id;
+        this.joint1 = joint1;
+        this.joint2 = joint2;
+        this.distance = distance;
     }
+	
+	public String getId() {
+		return this.id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
     
-    public String getType() {
-        return _type;
-    }
+	public int getJoint1() {
+		return this.joint1;
+	}
+	
+	public void setJoint1(int joint) {
+		this.joint1 = joint;
+	}
+	
+	public int getJoint2() {
+		return this.joint2;
+	}
+	
+	public void setJoint2(int joint) {
+		this.joint2 = joint;
+	}
     
-    public List<Map<String, String>> getDefinition() {
-        //log.info(String.format("definition size: %d", this.definition.size()));
-        return _definition;
-    }
+    public double getDistance() {
+		return this.distance;
+	}
+	
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 }

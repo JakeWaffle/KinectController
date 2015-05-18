@@ -16,7 +16,7 @@ repositories {
 jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest {
-        attributes 'Main-Class': 'com.lcsc.hackathon.Main'
+        attributes 'Main-Class': 'com.lcsc.hackathon.kinectcontroller.Main'
     }
 }
 
@@ -27,4 +27,5 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile 'ch.qos.logback:logback-core:1.1.2'
     compile group: 'commons-cli', name: 'commons-cli', version:'1.2'
+    compile 'net.java.dev.javacc:javacc:6.1.2'
 }

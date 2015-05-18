@@ -31,54 +31,44 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.events;
+package com.lcsc.hackathon.kinectcontroller;
 
-public class DistanceXRule {
-	private String id = "";
-	private int joint1;
-	private int joint2;
-    private double distance;
-    
-	
-	public DistanceXRule(	String id,
-							int joint1,
-							int joint2,
-							double distance) {
-		this.id = id;
-        this.joint1 = joint1;
-        this.joint2 = joint2;
-        this.distance = distance;
-    }
-	
-	public String getId() {
-		return this.id;
+public class Formulas {
+    //If joint A is greater that joint B on the chosen axis, returns true otherwise false.
+	//Accepts 0,1,2 as X,Y,Z
+	public static boolean getRelationship(double[] jointA, double[] jointB, int axis) {
+		if (jointA[axis] > jointB[axis]) {
+			return true; 
+		} else {
+			return false;
+		}
 	}
 	
-	public void setId(String id) {
-		this.id = id;
-	}
-    
-	public int getJoint1() {
-		return this.joint1;
+	// Get distance between two joints (can be negative)
+	public static double getDistanceX(double jointA, double jointB) {
+		return jointA-jointB;
 	}
 	
-	public void setJoint1(int joint) {
-		this.joint1 = joint;
+	// Get distance between two joints (can be negative)
+	public static double getDistanceY(double jointA, double jointB) {
+		return jointA-jointB;
 	}
 	
-	public int getJoint2() {
-		return this.joint2;
+	// Get distance between two joints (can be negative)
+	public static double getDistanceZ(double jointA, double jointB) {
+		return jointA-jointB;
 	}
 	
-	public void setJoint2(int joint) {
-		this.joint2 = joint;
-	}
-    
-    public double getDistance() {
-		return this.distance;
+	// Get the distance between two joints.
+	public static double getDistance(double[] jointA, double[] jointB) {
+		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));
 	}
 	
-	public void setDistance(double distance) {
-		this.distance = distance;
+	// Get the angle at a vertex given three joints.
+	public static double getAngle(double[] jointA, double[] vertex, double[] jointB) { 
+		double distA = getDistance(vertex, jointA);
+		double distB = getDistance(vertex, jointB);
+		double distC = getDistance(jointA, jointB);
+		return Math.toDegrees(Math.acos((Math.pow(distA, 2)+Math.pow(distB, 2)-Math.pow(distC, 2))/(2*distA*distB)));
 	}
 }

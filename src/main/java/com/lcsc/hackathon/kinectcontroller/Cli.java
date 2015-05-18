@@ -31,49 +31,64 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon;
+package com.lcsc.hackathon.kinectcontroller;
 
-import com.lcsc.hackathon.events.EventFactory;
+import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
+public class Cli {
+	private static final Logger 	_logger     = LoggerFactory.getLogger(Cli.class);
+	private 			 String[] 	_args 		= null;
+	private 			 Options 	_options 	= new Options();
 
+	public Cli(String[] args) {
 
-public class Main {
-    private static final Logger _logger      = LoggerFactory.getLogger(Main.class);
+		_args = args;
 
-    private CommandLine         _arguments;
-    private EsperHandler        _eHandler;
-    private ConfigParser        _cParser;
-    private EventFactory        _eFactory;
-    
-    public static void main(String[] args) {
-        Main main = new Main(args);
-        main.run();
-    }
-    
-    public Main(String[] args) {
-        _arguments  = new Cli(args).parse();
-        _eHandler   = new EsperHandler();
-        _cParser    = new ConfigParser();
-        _eFactory   = _cParser.parseConfigFile(_arguments.getOptionValue("f"), _eHandler);
-    }
-    
-    public void run() {
-        //If the debug option is being used, then we'll show the skeleton window.
-        if (_arguments.hasOption('d')) {
-        }
-        
-		Console console = System.console();
-        boolean done    = false;
-        while (!done) {
-            String input = console.readLine("Enter quit: ");
-            if (input.equals("quit")) {
-                done = true;
-            }
-        }
-        System.out.println("Goodbye");
-    }
+		_options.addOption("h", "help", false, "Show help");
+		_options.addOption("f", "filename", true, "Name the configuration file");
+		_options.addOption("d", "debug", false, "Display debug skeleton");
+
+	}
+
+	public CommandLine parse() {
+		CommandLineParser parser = new BasicParser();
+
+		CommandLine cmd = null;
+		try {
+			cmd = parser.parse(_options, _args);
+
+			if (cmd.hasOption("h"))
+				help();
+
+			if (cmd.hasOption("f")) {
+				_logger.info("Using cli argument -f=" + cmd.getOptionValue("f"));
+				// Whatever you want to do with the setting goes here
+				System.out.println("Thank you for entering the config name");
+			} else {
+				_logger.error("Missing configuration filename");
+				System.out.println("Warning: Missing configuration file.");
+				help();
+			}
+		} catch (ParseException e) {
+			_logger.error("Failed to parse comand line properties", e);
+			help();
+		}
+		
+		return cmd;
+	}
+
+	private void help() {
+		// This prints out some help
+		HelpFormatter formater = new HelpFormatter();
+
+		formater.printHelp("Main", _options);
+		System.exit(0);
+	}
 }

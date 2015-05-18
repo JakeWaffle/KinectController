@@ -31,10 +31,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon;
+package com.lcsc.hackathon.kinectcontroller;
 
-import com.lcsc.hackathon.events.*;
-import com.lcsc.hackathon.listeners.*;
+import com.lcsc.hackathon.kinectcontroller.events.*;
+import com.lcsc.hackathon.kinectcontroller.listeners.*;
 
 import java.io.File;
 

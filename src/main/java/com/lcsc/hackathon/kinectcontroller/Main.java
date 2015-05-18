@@ -31,54 +31,49 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.events;
+package com.lcsc.hackathon.kinectcontroller;
 
-public class AbsoluteDistX {
-	private String id = "";
-	private double absPointX;
-	private int jointId;
-    private double distance;
+import com.lcsc.hackathon.kinectcontroller.events.EventFactory;
+import org.apache.commons.cli.CommandLine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Console;
+
+
+public class Main {
+    private static final Logger _logger      = LoggerFactory.getLogger(Main.class);
+
+    private CommandLine         _arguments;
+    private EsperHandler        _eHandler;
+    private ConfigParser        _cParser;
+    private EventFactory        _eFactory;
     
-	
-	public AbsoluteDistX(	String id,
-							double absPointX,
-							int jointId,
-							double distance) {
-		this.id = id;
-        this.absPointX = absPointX;
-        this.jointId = jointId;
-        this.distance = distance;
+    public static void main(String[] args) {
+        Main main = new Main(args);
+        main.run();
     }
-	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
     
-	public double getAbsPointX() {
-		return this.absPointX;
-	}
-	
-	public void setAbsPointX(double absPointX) {
-		this.absPointX = absPointX;
-	}
-	
-	public int getJointId() {
-		return this.jointId;
-	}
-	
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
-	}
+    public Main(String[] args) {
+        _arguments  = new Cli(args).parse();
+        _eHandler   = new EsperHandler();
+        _cParser    = new ConfigParser();
+        _eFactory   = _cParser.parseConfigFile(_arguments.getOptionValue("f"), _eHandler);
+    }
     
-    public double getDistance() {
-		return this.distance;
-	}
-	
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
+    public void run() {
+        //If the debug option is being used, then we'll show the skeleton window.
+        if (_arguments.hasOption('d')) {
+        }
+        
+		Console console = System.console();
+        boolean done    = false;
+        while (!done) {
+            String input = console.readLine("Enter quit: ");
+            if (input.equals("quit")) {
+                done = true;
+            }
+        }
+        System.out.println("Goodbye");
+    }
 }

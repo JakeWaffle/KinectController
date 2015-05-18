@@ -1,0 +1,59 @@
+version 1.0
+
+starting_state is Menu
+
+state Menu
+    gesture left_click
+        rule Angle
+            end1       is   right_hand
+            vertex     is   right_elbow
+            end2       is   right_shoulder
+            min_angle  is   150
+            max_angle  is   180
+
+        rule Angle
+            end1       is   right_hand
+            vertex     is   right_shoulder
+            end2       is   left_shoulder
+            min_angle  is   80
+            max_angle  is   100
+
+        rule Angle
+            end1       is   right_hand
+            vertex     is   right_shoulder
+            end2       is   right_hip
+            min_angle  is   80
+            max_angle  is   100
+
+        reaction Key_Press
+            key        is   left_mouse_button
+
+    gesture mouse using left_arm
+
+state Game
+    gesture left_click
+        rule Angle
+            end1       is   left_hand
+            vertex     is   right_hand
+            end2       is   right_hand
+            min_angle  is   150
+            max_angle  is   180
+
+        rule Angle
+            end1       is   right_hand
+            vertex     is   right_shoulder
+            end2       is   left_shoulder
+            min_angle  is   80
+            max_angle  is   100
+
+        rule Angle
+            end1       is   right_hand
+            vertex     is   right_shoulder
+            end2       is   right_hip
+            min_angle  is   80
+            max_angle  is   100
+
+        reaction Key_Press
+            key        is   left_mouse_button
+
+    gesture mouse using left_arm

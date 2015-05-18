@@ -31,46 +31,51 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.listeners;
+package com.lcsc.hackathon.kinectcontroller.events;
 
-import com.espertech.esper.client.UpdateListener;
-import com.espertech.esper.client.EventBean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.Robot;
-import java.awt.AWTException;
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
-import java.awt.Point;
-
-public class MouseMove implements UpdateListener {
-    private static final Logger _logger      = LoggerFactory.getLogger(MouseMove.class);
-    private              Robot  _rob;
-
-    public MouseMove() {
-        try {
-            _rob = new Robot();
-        } catch (AWTException e) {
-            _logger.error("", e);
-        }
-    }
+public class DistanceRule {
+	private String id = "";
+	private int joint1;
+	private int joint2;
+    private double distance;
     
-    public void update(EventBean[] newEvents, EventBean[] oldEvents) {
-        for (EventBean event : newEvents) {
-            String direction = (String)event.get("direction");
-            //_logger.info("DIrection: "+direction);
-            if (direction.equals("LEFT")) {
-                PointerInfo a = MouseInfo.getPointerInfo();
-                Point b = a.getLocation();
-                int x = (int) b.getX();
-                int y = (int) b.getY();
-
-                _logger.info(String.format("X: %d Y: %d", x, y));
-
-                _rob.mouseMove(x-5, y);
-            }
-        }
+	
+	public DistanceRule(String id, int joint1, int joint2, double distance) {
+		this.id = id;
+        this.joint1 = joint1;
+        this.joint2 = joint2;
+        this.distance = distance;
     }
+	
+	public String getId() {
+		return this.id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+    
+	public int getJoint1() {
+		return this.joint1;
+	}
+	
+	public void setJoint1(int j1) {
+		this.joint1 = j1;
+	}
+	
+	public int getJoint2() {
+		return this.joint2;
+	}
+	
+	public void setJoint2(int j2) {
+		this.joint2 = j2;
+	}
+    
+    public double getDistance() {
+		return this.distance;
+	}
+	
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 }

@@ -31,22 +31,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.events;
+package com.lcsc.hackathon.kinectcontroller.events;
 
-public class AbsoluteDistZ {
+public class DistanceXRule {
 	private String id = "";
-	private double absPointZ;
-	private int jointId;
+	private int joint1;
+	private int joint2;
     private double distance;
     
 	
-	public AbsoluteDistZ(	String id,
-							double absPointZ,
-							int jointId,
+	public DistanceXRule(	String id,
+							int joint1,
+							int joint2,
 							double distance) {
 		this.id = id;
-        this.absPointZ = absPointZ;
-        this.jointId = jointId;
+        this.joint1 = joint1;
+        this.joint2 = joint2;
         this.distance = distance;
     }
 	
@@ -58,20 +58,20 @@ public class AbsoluteDistZ {
 		this.id = id;
 	}
     
-	public double getAbsPointZ() {
-		return this.absPointZ;
+	public int getJoint1() {
+		return this.joint1;
 	}
 	
-	public void setAbsPointZ(double absPointZ) {
-		this.absPointZ = absPointZ;
+	public void setJoint1(int joint) {
+		this.joint1 = joint;
 	}
 	
-	public int getJointId() {
-		return this.jointId;
+	public int getJoint2() {
+		return this.joint2;
 	}
 	
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
+	public void setJoint2(int joint) {
+		this.joint2 = joint;
 	}
     
     public double getDistance() {

@@ -31,19 +31,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.events;
+package com.lcsc.hackathon.kinectcontroller.events;
 
-public class DistanceYRule {
+public class DistanceZRule {
 	private String id = "";
 	private int joint1;
 	private int joint2;
     private double distance;
     
 	
-	public DistanceYRule(	String id,
-							int joint1,
-							int joint2,
-							double distance) {
+	public DistanceZRule(String id,
+						 int joint1,
+						 int joint2,
+						 double distance) {
 		this.id = id;
         this.joint1 = joint1;
         this.joint2 = joint2;
