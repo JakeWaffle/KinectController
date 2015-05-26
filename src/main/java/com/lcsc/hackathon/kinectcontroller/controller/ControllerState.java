@@ -1,4 +1,4 @@
-package com.lcsc.hackathon.kinectcontroller;
+package com.lcsc.hackathon.kinectcontroller.controller;
 
 /**
  * Created by Jake on 5/17/2015.
@@ -6,7 +6,8 @@ package com.lcsc.hackathon.kinectcontroller;
  * Each state has their own gestures and respective reactions.
  */
 public class ControllerState {
-    public ControllerState() {
-
+    public final String stateId;
+    public ControllerState(String stateId) {
+        this.stateId = stateId;
     }
 }

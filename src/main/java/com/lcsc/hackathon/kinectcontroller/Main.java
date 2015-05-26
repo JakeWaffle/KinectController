@@ -33,12 +33,17 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller;
 
+import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
+import com.lcsc.hackathon.kinectcontroller.config.ParseException;
+import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
 import com.lcsc.hackathon.kinectcontroller.events.EventFactory;
 import org.apache.commons.cli.CommandLine;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Console;
+import java.io.*;
+import java.util.Map;
 
 
 public class Main {
@@ -46,7 +51,6 @@ public class Main {
 
     private CommandLine         _arguments;
     private EsperHandler        _eHandler;
-    private ConfigParser        _cParser;
     private EventFactory        _eFactory;
     
     public static void main(String[] args) {
@@ -57,8 +61,26 @@ public class Main {
     public Main(String[] args) {
         _arguments  = new Cli(args).parse();
         _eHandler   = new EsperHandler();
-        _cParser    = new ConfigParser();
-        _eFactory   = _cParser.parseConfigFile(_arguments.getOptionValue("f"), _eHandler);
+
+        ControllerStateMachine csm = parseConfig(_arguments.getOptionValue("f"));
+
+        //Old configuration setup.
+        //_cParser    = new ConfigParser();
+        //_eFactory   = _cParser.parseConfigFile(_arguments.getOptionValue("f"), _eHandler);
+    }
+
+    private ControllerStateMachine parseConfig(String configFilename) {
+        ControllerStateMachine csm = null;
+        try {
+            FileInputStream in = new FileInputStream(configFilename);
+            ControllerFSMFactory csf = new ControllerFSMFactory(in);
+            csm = csf.create();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return csm;
     }
     
     public void run() {

@@ -1,4 +1,6 @@
-package com.lcsc.hackathon.kinectcontroller;
+package com.lcsc.hackathon.kinectcontroller.controller;
+
+import com.lcsc.hackathon.kinectcontroller.controller.ControllerState;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,15 +21,25 @@ public class ControllerStateMachine {
 
     /**
      * This interface allows Javacc to pass in ControllerStates into the state machine.
-     * @param stateId An identifier for the Controller state.
      * @param newState A state containing all the information needed for handling a particular state of the Controller.
      */
-    public void addState(String stateId, ControllerState newState) {
-        _states.put(stateId, newState);
+    public void addState(ControllerState newState) {
+        _states.put(newState.stateId, newState);
     }
 
-    public void changeState(String stateId) {
-        _curState = _states.get(stateId);
+
+    /**
+     * This will change the current state of the controller.
+     * @param stateId This is the id of the state we're switching to.
+     * @return True if the stateId existed, false if it doesn't exist in the state machine.
+     */
+    public boolean changeState(String stateId) {
+        boolean success = false;
+        if (_states.containsKey(stateId)) {
+            _curState   = _states.get(stateId);
+            success     = true;
+        }
+        return success;
     }
 
     /**

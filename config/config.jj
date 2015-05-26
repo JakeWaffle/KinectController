@@ -1,55 +1,134 @@
+
+
+//TODO Start adding enumerations so that I don't have to deal with spelling mistakes. They're just nice for later anyway.
+
 options {
     STATIC = false;
 }
-PARSER_BEGIN(ControllerStateMachine)
-
-package org.dojo.jsl.parser;
+PARSER_BEGIN(ControllerFSMFactory)
+package com.lcsc.hackathon.kinectcontroller.config;
 
 import java.io.*;
 import java.util.*;
+import com.lcsc.hackathon.kinectcontroller.controller.*;
 
-public class ControllerSMFactory {
-    private ControllerStateMachine _csm = new ControllerStateMachine();
+public class ControllerFSMFactory {
+    private ControllerStateMachine _csm;
+    private String _startingStateId = null;
 
-    public static ControllerStateMachine parseConfig(InputStream configFile) {
-        ControllerSMFactory csmf = new ControllerSMFactory(configFile);
-        return csmf.start();
+    private void addStartingState(String stateId) {
+        //If we can't change the state, then we'll just store the id until the state is added later.
+        if (!_csm.changeState(stateId)) {
+            _startingStateId = stateId;
+        }
     }
 
-    /**
-     * This interface allows Javacc to pass in ControllerStates into the state machine.
-     * @param stateId An identifier for the Controller state.
-     * @param newState A state containing all the information needed for handling a particular state of the Controller.
-     */
-    public void addState(String stateId, ControllerState newState) {
-        _states.put(stateId, newState);
-    }
+    private void addState(ControllerState state) {
+        _csm.addState(state);
 
-    public void changeState(String stateId) {
-        _curState = _states.get(stateId);
-    }
-
-    /**
-     * @return This returns the current state of the state machine.
-     */
-    public ControllerState state() {
-        return _curState;
+        //If the starting state hasn't been set and this state is the starting state.
+        if (_startingStateId != null && _startingStateId.equals(state.stateId)) {
+            if (_csm.changeState(_startingStateId)) {
+                _startingStateId = null;
+            }
+        }
     }
 }
 
-PARSER_END(ControllerStateMachine)
+PARSER_END(ControllerFSMFactory)
 
-TOKEN : { < EOL : ”\n” | ”\r” | ”\r\n” > }
-TOKEN : { < STATE : "state" > }
-TOKEN : { < GESTURE : "gesture" > }
-TOKEN : { < RULE : "rule" > }
-TOKEN : { < REACTION : "reaction" > }
-
-ControllerStateMachine parse() :
+TOKEN:
 {
+    < STARTING_STATE : "starting_state" > |
+    < IS : "is" > |
+    < VERSION : "version" > |
+    < STATE : "state" > |
+    < GESTURE : "gesture" > |
+    < MOUSE_GESTURE : "gesture mouse using" > |
+    < RULE : "rule" > |
+    < REACTION : "reaction" > |
+    < NUMBER : (["0"-"9"])+ (".") (["0"-"9"])* > |
+    < IDENTIFIER : (["0"-"9"]) | (["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
+}
 
+SKIP: {
+    " " |
+    "\t" |
+    "\n" |
+    "\r" |
+    <"//" (~["\n","\r"])* ("\n"|"\r")>
+}
+
+ControllerStateMachine create() :
+{
+    Token t;
+    int version;
 }
 {
+    {_csm = new ControllerStateMachine();}
     
-    { return _csm; }
+    <VERSION>
+    
+    t = <NUMBER>
+
+    {version = Integer.parseInt(t.image);}
+    
+    {
+        switch(version) {
+            case 1:
+                parseVersion1();
+                break;
+        }
+    }
+
+    <EOF>
+    {return _csm;}
+}
+
+void parseVersion1() :
+{
+    String stateId;
+    ControllerState state;
+}
+{
+    (
+        (
+            <STARTING_STATE>
+            <IS>
+            stateId = <IDENTIFIER>.image
+            {addStartingState(stateId);}
+        )
+        |
+        (
+            <STATE>
+            stateId = <IDENTIFIER>.image
+            state = parseState(stateId)
+            {addState(state);}
+        )
+    )*
+}
+
+ControllerState parseState(String stateId) :
+{
+    ControllerState state;
+    String gestureId;
+    String armId;
+}
+{
+    {state = new ControllerState(stateId);}
+    (
+        (
+            <GESTURE>
+            gestureId = <IDENTIFIER>.image
+            //This needs to return some information that can be given to the controller state.
+            //parseGesture()
+        )
+        |
+        (
+            <MOUSE_GESTURE>
+            armId = <IDENTIFIER>.image
+            //TODO Add mouse gesture to the state
+        )
+    )*
+    {return state;}
 }
