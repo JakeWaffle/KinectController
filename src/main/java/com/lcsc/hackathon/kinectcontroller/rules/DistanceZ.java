@@ -31,21 +31,23 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.kinectcontroller.events;
+package com.lcsc.hackathon.kinectcontroller.rules;
 
-public class AngleRule {
+public class DistanceZ {
 	private String id = "";
-	private int end1;
-	private int vertex;
-	private int end2;
-    private double angle;
+	private int joint1;
+	private int joint2;
+    private double distance;
+    
 	
-	public AngleRule(String id, int end1, int vertex, int end2, double angle) {
+	public DistanceZ(String id,
+					 int joint1,
+					 int joint2,
+					 double distance) {
 		this.id = id;
-        this.end1 = end1;
-        this.vertex = vertex;
-        this.end2 = end2;
-        this.angle = angle;
+        this.joint1 = joint1;
+        this.joint2 = joint2;
+        this.distance = distance;
     }
 	
 	public String getId() {
@@ -55,36 +57,28 @@ public class AngleRule {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	public int getEnd1() {
-		return this.end1;
+    
+	public int getJoint1() {
+		return this.joint1;
 	}
 	
-	public void setEnd1(int e1) {
-		this.end1 = e1;
+	public void setJoint1(int joint) {
+		this.joint1 = joint;
 	}
 	
-	public int getVertex() {
-		return this.vertex;
+	public int getJoint2() {
+		return this.joint2;
 	}
 	
-	public void setVertex(int vertex) {
-		this.vertex = vertex;
-	}
-	
-	public int getEnd2() {
-		return this.end2;
-	}
-	
-	public void setEnd2(int e2) {
-		this.end2 = e2;
+	public void setJoint2(int joint) {
+		this.joint2 = joint;
 	}
     
-    public double getAngle() {
-		return this.angle;
+    public double getDistance() {
+		return this.distance;
 	}
 	
-	public void setAngle(double angle) {
-		this.angle = angle;
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 }

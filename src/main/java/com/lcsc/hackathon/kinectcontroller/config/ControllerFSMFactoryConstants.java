@@ -27,9 +27,17 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int REACTION = 8;
   /** RegularExpression Id. */
-  int NUMBER = 9;
+  int END = 9;
   /** RegularExpression Id. */
-  int IDENTIFIER = 10;
+  int VERTEX = 10;
+  /** RegularExpression Id. */
+  int MIN_ANGLE = 11;
+  /** RegularExpression Id. */
+  int MAX_ANGLE = 12;
+  /** RegularExpression Id. */
+  int NUMBER = 13;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 14;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -45,13 +53,17 @@ public interface ControllerFSMFactoryConstants {
     "\"gesture mouse using\"",
     "\"rule\"",
     "\"reaction\"",
+    "\"end\"",
+    "\"vertex\"",
+    "\"min_angle\"",
+    "\"max_angle\"",
     "<NUMBER>",
     "<IDENTIFIER>",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
-    "<token of kind 15>",
+    "<token of kind 19>",
   };
 
 }

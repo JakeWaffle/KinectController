@@ -36,14 +36,12 @@ package com.lcsc.hackathon.kinectcontroller;
 import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
 import com.lcsc.hackathon.kinectcontroller.config.ParseException;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.events.EventFactory;
+import com.lcsc.hackathon.kinectcontroller.rules.EventFactory;
 import org.apache.commons.cli.CommandLine;
-import org.eclipse.jetty.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
-import java.util.Map;
 
 
 public class Main {
@@ -80,6 +78,7 @@ public class Main {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         return csm;
     }
     

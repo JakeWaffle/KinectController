@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-group = 'com.lcsc.hackathon'
+group = 'com.lcsc.hackathon.kinectcontroller'
 version = '0.0.1'
 
 description = """KinectController"""

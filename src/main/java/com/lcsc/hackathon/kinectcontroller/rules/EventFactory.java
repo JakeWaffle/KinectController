@@ -31,7 +31,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.kinectcontroller.events;
+package com.lcsc.hackathon.kinectcontroller.rules;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +45,11 @@ public class EventFactory {
     //These lists of rules are instantiated based off of the config file.
     //They are meant to be updated periodically by the Kinect and then
     //passed to Esper to be processed.
-    List<AngleRule> angleRules = new ArrayList<AngleRule>();
-    List<DistanceRule> distRules = new ArrayList<DistanceRule>();
-    List<DistanceXRule> distXRules = new ArrayList<DistanceXRule>();
-    List<DistanceYRule> distYRules = new ArrayList<DistanceYRule>();
-    List<DistanceZRule> distZRules = new ArrayList<DistanceZRule>();
+    List<Angle> angleRules = new ArrayList<Angle>();
+    List<Distance> distRules = new ArrayList<Distance>();
+    List<DistanceX> distXRules = new ArrayList<DistanceX>();
+    List<DistanceY> distYRules = new ArrayList<DistanceY>();
+    List<DistanceZ> distZRules = new ArrayList<DistanceZ>();
     List<AbsoluteDistance> absDistRules = new ArrayList<AbsoluteDistance>();
     List<AbsoluteDistX> absDistXRules = new ArrayList<AbsoluteDistX>();
     List<AbsoluteDistY> absDistYRules = new ArrayList<AbsoluteDistY>();
@@ -58,23 +58,23 @@ public class EventFactory {
     public EventFactory() {
     }
     
-    public void addAngleRule(AngleRule rule) {
+    public void addAngleRule(Angle rule) {
         angleRules.add(rule);
     }
     
-    public void addDistanceRule(DistanceRule rule) {
+    public void addDistanceRule(Distance rule) {
         distRules.add(rule);
     }
     
-    public void addDistXRules(DistanceXRule rule) {
+    public void addDistXRules(DistanceX rule) {
         distXRules.add(rule);
     }
     
-    public void addDistYRules(DistanceYRule rule) {
+    public void addDistYRules(DistanceY rule) {
         distYRules.add(rule);
     }
     
-    public void addDistZRules(DistanceZRule rule) {
+    public void addDistZRules(DistanceZ rule) {
         distZRules.add(rule);
     }
     

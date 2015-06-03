@@ -11,6 +11,7 @@ package com.lcsc.hackathon.kinectcontroller.config;
 import java.io.*;
 import java.util.*;
 import com.lcsc.hackathon.kinectcontroller.controller.*;
+import com.lcsc.hackathon.kinectcontroller.rules.*;
 
 public class ControllerFSMFactory {
     private ControllerStateMachine _csm;
@@ -37,8 +38,8 @@ public class ControllerFSMFactory {
 
 PARSER_END(ControllerFSMFactory)
 
-TOKEN:
-{
+//Generic tokens
+TOKEN: {
     < STARTING_STATE : "starting_state" > |
     < IS : "is" > |
     < VERSION : "version" > |
@@ -47,8 +48,12 @@ TOKEN:
     < MOUSE_GESTURE : "gesture mouse using" > |
     < RULE : "rule" > |
     < REACTION : "reaction" > |
-    < NUMBER : (["0"-"9"])+ (".") (["0"-"9"])* > |
-    < IDENTIFIER : (["0"-"9"]) | (["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
+    < END : "end" > |
+    < VERTEX : "vertex" > |
+    < MIN_ANGLE : "min_angle" > |
+    < MAX_ANGLE : "max_angle" > |
+    < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
+    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
 }
 
 SKIP: {
@@ -131,4 +136,132 @@ ControllerState parseState(String stateId) :
         )
     )*
     {return state;}
+}
+
+List<Object> parseGesture(String gestureId) :
+{
+    String          ruleType;
+    String          reactionType;
+    Token           t;
+    List<Object>    rules               = new ArrayList<Object>();
+    Gesture         gesture             = new Gesture(gestureId);
+    String          gestureMatchQuery   = String.format("%s as gestureId from pattern[", gestureId);
+}
+{
+    (
+        (
+            <RULE>
+            ruleType = <IDENTIFIER>.image
+            {
+                switch(RuleType.fromString(ruleType)) {
+                    case RuleType.ABS_DISTANCE:
+                        break;
+                    case RuleType.ABS_DISTANCEX:
+                        break;
+                    case RuleType.ABS_DISTANCEY:
+                        break;
+                    case RuleType.ABS_DISTANCEZ:
+                        break;
+                    case RuleType.ANGLE:
+                        rules.add(parseAngleRule());
+                        break;
+                    case RuleType.DISTANCE:
+                        break;
+                    case RuleType.DISTANCEX:
+                        break;
+                    case RuleType.DISTANCEY:
+                        break;
+                    case RuleType.DISTANCEZ:
+                        break;
+                }
+            }
+        )
+        |
+        (
+            <REACTION>
+            reactionType = <IDENTIFIER>.image
+            {
+                switch(ReactionType.fromString(reactionType)) {
+                    case ReactionType.KEY_PRESS:
+                        break;
+                    case ReactionType.KEY_DOWN:
+                        break;
+                    case ReactionType.KEY_UP:
+                        break;
+                }
+            }
+        )
+    )*
+
+    {return rules;}
+}
+
+Object parseAngleRule() :
+{
+    String  end1        = null;
+    String  vertex      = null;
+    String  end2        = null;
+    Integer minAngle    = null;
+    Integer maxAngle    = null;
+    String  matchQuery  = null;
+}
+{
+    (
+        (
+            {
+                String end;
+            }
+            <END>
+            t = <NUMBER>
+            <IS>
+            end = <IDENTIFIER>.image
+            {
+                if (Integer.parseInt(t.image) == 1) {
+                    end1 = end;
+                }
+                else if (Integer.parseInt(t.image) == 2) {
+                    end2 = end;
+                }
+            }
+        )
+        |
+        (
+            <VERTEX> <IS>
+            vertex = <IDENTIFIER>.image
+        )
+        |
+        (
+            <MIN_ANGLE> <IS>
+            t = <NUMBER>
+            {minAngle = Integer.parseInt(t.image);}
+        )
+        |
+        (
+            <MAX_ANGLE> <IS>
+            t = <NUMBER>
+            {maxAngle = Integer.parseInt(t.image);}
+        )
+    )*
+    //TODO Along with the java bean, we need to compile a list of the esper queries for this gesture.
+    //TODO Calculate the sha256 hash for the unique rule and reference it in the esper query for lookup of java beans.
+    //"gestureId as triggerId from pattern[every ((%s or %s) -> %s], patternChunk3, patternChunk2, patternChunk1)
+    /*
+    patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
+                                                                                   vertex,
+                                                                                   end2,
+                                                                                   minAngle,
+                                                                                   maxAngle);
+
+    patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
+                                                                                        vertex,
+                                                                                        end2,
+                                                                                        minAngle);
+
+    patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
+                                                                                        vertex,
+                                                                                        end2,
+                                                                                        maxAngle);
+    */
+
+    {return new Angle("some_hash", end1, vertex, end2, 0);}
 }

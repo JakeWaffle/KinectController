@@ -5,6 +5,7 @@ package com.lcsc.hackathon.kinectcontroller.config;
 import java.io.*;
 import java.util.*;
 import com.lcsc.hackathon.kinectcontroller.controller.*;
+import com.lcsc.hackathon.kinectcontroller.rules.*;
 
 public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     private ControllerStateMachine _csm;
@@ -118,6 +119,139 @@ state = new ControllerState(stateId);
     throw new Error("Missing return statement in function");
   }
 
+  final public List<Object> parseGesture(String gestureId) throws ParseException {String          ruleType;
+    String          reactionType;
+    Token           t;
+    List<Object>    rules               = new ArrayList<Object>();
+    Gesture         gesture             = new Gesture(gestureId);
+    String          gestureMatchQuery   = String.format("%s as gestureId from pattern[", gestureId);
+    label_3:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case RULE:
+      case REACTION:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[4] = jj_gen;
+        break label_3;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case RULE:{
+        jj_consume_token(RULE);
+        ruleType = jj_consume_token(IDENTIFIER).image;
+switch(RuleType.fromString(ruleType)) {
+                    case RuleType.ABS_DISTANCE:
+                        break;
+                    case RuleType.ABS_DISTANCEX:
+                        break;
+                    case RuleType.ABS_DISTANCEY:
+                        break;
+                    case RuleType.ABS_DISTANCEZ:
+                        break;
+                    case RuleType.ANGLE:
+                        rules.add(parseAngleRule());
+                        break;
+                    case RuleType.DISTANCE:
+                        break;
+                    case RuleType.DISTANCEX:
+                        break;
+                    case RuleType.DISTANCEY:
+                        break;
+                    case RuleType.DISTANCEZ:
+                        break;
+                }
+        break;
+        }
+      case REACTION:{
+        jj_consume_token(REACTION);
+        reactionType = jj_consume_token(IDENTIFIER).image;
+switch(ReactionType.fromString(reactionType)) {
+                    case ReactionType.KEY_PRESS:
+                        break;
+                    case ReactionType.KEY_DOWN:
+                        break;
+                    case ReactionType.KEY_UP:
+                        break;
+                }
+        break;
+        }
+      default:
+        jj_la1[5] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+{if ("" != null) return rules;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Object parseAngleRule() throws ParseException {String  end1        = null;
+    String  vertex      = null;
+    String  end2        = null;
+    Integer minAngle    = null;
+    Integer maxAngle    = null;
+    String  matchQuery  = null;
+    label_4:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case END:
+      case VERTEX:
+      case MIN_ANGLE:
+      case MAX_ANGLE:{
+        ;
+        break;
+        }
+      default:
+        jj_la1[6] = jj_gen;
+        break label_4;
+      }
+      switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
+      case END:{
+String end;
+        jj_consume_token(END);
+        t = jj_consume_token(NUMBER);
+        jj_consume_token(IS);
+        end = jj_consume_token(IDENTIFIER).image;
+if (Integer.parseInt(t.image) == 1) {
+                    end1 = end;
+                }
+                else if (Integer.parseInt(t.image) == 2) {
+                    end2 = end;
+                }
+        break;
+        }
+      case VERTEX:{
+        jj_consume_token(VERTEX);
+        jj_consume_token(IS);
+        vertex = jj_consume_token(IDENTIFIER).image;
+        break;
+        }
+      case MIN_ANGLE:{
+        jj_consume_token(MIN_ANGLE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+minAngle = Integer.parseInt(t.image);
+        break;
+        }
+      case MAX_ANGLE:{
+        jj_consume_token(MAX_ANGLE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+maxAngle = Integer.parseInt(t.image);
+        break;
+        }
+      default:
+        jj_la1[7] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+{if ("" != null) return new Angle("some_hash", end1, vertex, end2, 0);}
+    throw new Error("Missing return statement in function");
+  }
+
   /** Generated Token Manager. */
   public ControllerFSMFactoryTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -127,13 +261,13 @@ state = new ControllerState(stateId);
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[4];
+  final private int[] jj_la1 = new int[8];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,};
+      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,0x180,0x180,0x1e00,0x1e00,};
    }
 
   /** Constructor with InputStream. */
@@ -147,7 +281,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -161,7 +295,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -171,7 +305,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -181,7 +315,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -190,7 +324,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -199,7 +333,7 @@ state = new ControllerState(stateId);
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -250,12 +384,12 @@ state = new ControllerState(stateId);
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[16];
+    boolean[] la1tokens = new boolean[20];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 8; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -264,7 +398,7 @@ state = new ControllerState(stateId);
         }
       }
     }
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 20; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

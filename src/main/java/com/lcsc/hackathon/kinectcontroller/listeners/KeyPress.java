@@ -33,9 +33,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.listeners;
 
-import com.lcsc.hackathon.Triggers;
-import com.lcsc.hackathon.Trigger;
-
 import java.util.Map;
 
 import com.lcsc.hackathon.kinectcontroller.Conversions;
@@ -68,8 +65,9 @@ public class KeyPress implements UpdateListener {
         for (EventBean event : newEvents) {
             String triggerId = (String)event.get("triggerId");
             //log.info(String.format("TriggerId: %s", triggerId));
-            Trigger trigger = Triggers.getTrigger(triggerId);
-            
+            //Trigger trigger = Triggers.getTrigger(triggerId);
+
+            /*
             for (Map<String, String> attributes : trigger.getDefinition()) {
                 String type = attributes.get("type");
                 if (type.equals("KeyDownUp")) {
@@ -94,6 +92,7 @@ public class KeyPress implements UpdateListener {
                     _logger.error(String.format("Invalude Tigger Type: %s", type));
                 }
             }
+            */
         }
     }
 }
