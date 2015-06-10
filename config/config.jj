@@ -126,7 +126,7 @@ ControllerState parseState(String stateId) :
             <GESTURE>
             gestureId = <IDENTIFIER>.image
             //This needs to return some information that can be given to the controller state.
-            //parseGesture()
+            parseGesture(gestureId, state)
         )
         |
         (
@@ -138,14 +138,13 @@ ControllerState parseState(String stateId) :
     {return state;}
 }
 
-List<Object> parseGesture(String gestureId) :
+void parseGesture(String gestureId, ControllerState state) :
 {
     String          ruleType;
     String          reactionType;
     Token           t;
-    List<Object>    rules               = new ArrayList<Object>();
-    Gesture         gesture             = new Gesture(gestureId);
-    String          gestureMatchQuery   = String.format("%s as gestureId from pattern[", gestureId);
+    Gesture         gesture                 = new Gesture(gestureId);
+    //String          gestureMatchQuery     = String.format("%s as gestureId from pattern[", gestureId);
 }
 {
     (
@@ -154,24 +153,24 @@ List<Object> parseGesture(String gestureId) :
             ruleType = <IDENTIFIER>.image
             {
                 switch(RuleType.fromString(ruleType)) {
-                    case RuleType.ABS_DISTANCE:
+                    case ABS_DISTANCE:
                         break;
-                    case RuleType.ABS_DISTANCEX:
+                    case ABS_DISTANCEX:
                         break;
-                    case RuleType.ABS_DISTANCEY:
+                    case ABS_DISTANCEY:
                         break;
-                    case RuleType.ABS_DISTANCEZ:
+                    case ABS_DISTANCEZ:
                         break;
-                    case RuleType.ANGLE:
-                        rules.add(parseAngleRule());
+                    case ANGLE:
+                        parseAngleRule(state, gesture);
                         break;
-                    case RuleType.DISTANCE:
+                    case DISTANCE:
                         break;
-                    case RuleType.DISTANCEX:
+                    case DISTANCEX:
                         break;
-                    case RuleType.DISTANCEY:
+                    case DISTANCEY:
                         break;
-                    case RuleType.DISTANCEZ:
+                    case DISTANCEZ:
                         break;
                 }
             }
@@ -182,28 +181,32 @@ List<Object> parseGesture(String gestureId) :
             reactionType = <IDENTIFIER>.image
             {
                 switch(ReactionType.fromString(reactionType)) {
-                    case ReactionType.KEY_PRESS:
+                    case KEY_PRESS:
                         break;
-                    case ReactionType.KEY_DOWN:
+                    case KEY_DOWN:
                         break;
-                    case ReactionType.KEY_UP:
+                    case KEY_UP:
                         break;
                 }
             }
         )
     )*
-
-    {return rules;}
 }
 
-Object parseAngleRule() :
+void parseAngleRule(ControllerState state, Gesture gesture) :
 {
+    Token   t;
     String  end1        = null;
     String  vertex      = null;
     String  end2        = null;
     Integer minAngle    = null;
     Integer maxAngle    = null;
     String  matchQuery  = null;
+    Angle   angleRule   = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
 }
 {
     (
@@ -242,26 +245,25 @@ Object parseAngleRule() :
             {maxAngle = Integer.parseInt(t.image);}
         )
     )*
-    //TODO Along with the java bean, we need to compile a list of the esper queries for this gesture.
-    //TODO Calculate the sha256 hash for the unique rule and reference it in the esper query for lookup of java beans.
-    //"gestureId as triggerId from pattern[every ((%s or %s) -> %s], patternChunk3, patternChunk2, patternChunk1)
-    /*
-    patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
-                                                                                   vertex,
-                                                                                   end2,
-                                                                                   minAngle,
-                                                                                   maxAngle);
+    {
+        patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
+                                                                                       vertex,
+                                                                                       end2,
+                                                                                       minAngle,
+                                                                                       maxAngle);
 
-    patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
-                                                                                        vertex,
-                                                                                        end2,
-                                                                                        minAngle);
+        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            minAngle);
 
-    patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
-                                                                                        vertex,
-                                                                                        end2,
-                                                                                        maxAngle);
-    */
+        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            maxAngle);
 
-    {return new Angle("some_hash", end1, vertex, end2, 0);}
+
+        state.addRule(new Angle(Integer.parseInt(end1), Integer.parseInt(vertex), Integer.parseInt(end2), 0));
+        gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
+    }
 }
