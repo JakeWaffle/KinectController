@@ -48,8 +48,6 @@ public class Main {
     private static final Logger _logger      = LoggerFactory.getLogger(Main.class);
 
     private CommandLine         _arguments;
-    private EsperHandler        _eHandler;
-    private EventFactory        _eFactory;
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -58,13 +56,7 @@ public class Main {
     
     public Main(String[] args) {
         _arguments  = new Cli(args).parse();
-        _eHandler   = new EsperHandler();
-
         ControllerStateMachine csm = parseConfig(_arguments.getOptionValue("f"));
-
-        //Old configuration setup.
-        //_cParser    = new ConfigParser();
-        //_eFactory   = _cParser.parseConfigFile(_arguments.getOptionValue("f"), _eHandler);
     }
 
     private ControllerStateMachine parseConfig(String configFilename) {

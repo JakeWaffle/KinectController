@@ -102,6 +102,7 @@ state = new ControllerState(stateId);
       case GESTURE:{
         jj_consume_token(GESTURE);
         gestureId = jj_consume_token(IDENTIFIER).image;
+        parseGesture(gestureId, state);
         break;
         }
       case MOUSE_GESTURE:{
@@ -119,12 +120,12 @@ state = new ControllerState(stateId);
     throw new Error("Missing return statement in function");
   }
 
-  final public List<Object> parseGesture(String gestureId) throws ParseException {String          ruleType;
+  final public void parseGesture(String gestureId, ControllerState state) throws ParseException {String          ruleType;
     String          reactionType;
     Token           t;
-    List<Object>    rules               = new ArrayList<Object>();
-    Gesture         gesture             = new Gesture(gestureId);
-    String          gestureMatchQuery   = String.format("%s as gestureId from pattern[", gestureId);
+    Gesture         gesture                 = new Gesture(gestureId);
+    //String          gestureMatchQuery     = String.format("%s as gestureId from pattern[", gestureId);
+
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -142,24 +143,24 @@ state = new ControllerState(stateId);
         jj_consume_token(RULE);
         ruleType = jj_consume_token(IDENTIFIER).image;
 switch(RuleType.fromString(ruleType)) {
-                    case RuleType.ABS_DISTANCE:
+                    case ABS_DISTANCE:
                         break;
-                    case RuleType.ABS_DISTANCEX:
+                    case ABS_DISTANCEX:
                         break;
-                    case RuleType.ABS_DISTANCEY:
+                    case ABS_DISTANCEY:
                         break;
-                    case RuleType.ABS_DISTANCEZ:
+                    case ABS_DISTANCEZ:
                         break;
-                    case RuleType.ANGLE:
-                        rules.add(parseAngleRule());
+                    case ANGLE:
+                        parseAngleRule(state, gesture);
                         break;
-                    case RuleType.DISTANCE:
+                    case DISTANCE:
                         break;
-                    case RuleType.DISTANCEX:
+                    case DISTANCEX:
                         break;
-                    case RuleType.DISTANCEY:
+                    case DISTANCEY:
                         break;
-                    case RuleType.DISTANCEZ:
+                    case DISTANCEZ:
                         break;
                 }
         break;
@@ -168,11 +169,11 @@ switch(RuleType.fromString(ruleType)) {
         jj_consume_token(REACTION);
         reactionType = jj_consume_token(IDENTIFIER).image;
 switch(ReactionType.fromString(reactionType)) {
-                    case ReactionType.KEY_PRESS:
+                    case KEY_PRESS:
                         break;
-                    case ReactionType.KEY_DOWN:
+                    case KEY_DOWN:
                         break;
-                    case ReactionType.KEY_UP:
+                    case KEY_UP:
                         break;
                 }
         break;
@@ -183,16 +184,21 @@ switch(ReactionType.fromString(reactionType)) {
         throw new ParseException();
       }
     }
-{if ("" != null) return rules;}
-    throw new Error("Missing return statement in function");
+state.addGesture(gestureId, gesture);
   }
 
-  final public Object parseAngleRule() throws ParseException {String  end1        = null;
+  final public void parseAngleRule(ControllerState state, Gesture gesture) throws ParseException {Token   t;
+    String  end1        = null;
     String  vertex      = null;
     String  end2        = null;
     Integer minAngle    = null;
     Integer maxAngle    = null;
     String  matchQuery  = null;
+    Angle   angleRule   = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
@@ -248,8 +254,25 @@ maxAngle = Integer.parseInt(t.image);
         throw new ParseException();
       }
     }
-{if ("" != null) return new Angle("some_hash", end1, vertex, end2, 0);}
-    throw new Error("Missing return statement in function");
+patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
+                                                                                       vertex,
+                                                                                       end2,
+                                                                                       minAngle,
+                                                                                       maxAngle);
+
+        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            minAngle);
+
+        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            maxAngle);
+
+
+        state.addRule(new Angle(Integer.parseInt(end1), Integer.parseInt(vertex), Integer.parseInt(end2), 0));
+        gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
   }
 
   /** Generated Token Manager. */

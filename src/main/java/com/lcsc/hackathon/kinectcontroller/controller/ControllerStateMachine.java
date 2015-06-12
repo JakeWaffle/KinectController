@@ -1,7 +1,10 @@
 package com.lcsc.hackathon.kinectcontroller.controller;
 
+import com.espertech.esper.client.UpdateListener;
+import com.lcsc.hackathon.kinectcontroller.EsperHandler;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerState;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +17,8 @@ public class ControllerStateMachine {
     //This maps a state id to a Controller state. This mapping is defined in the config file.
     private Map<String, ControllerState>    _states;
     private ControllerState                 _curState = null;
+
+    private EsperHandler                    _esperHandler = new EsperHandler();
 
     public ControllerStateMachine() {
         _states = new HashMap<String, ControllerState>();
@@ -37,11 +42,24 @@ public class ControllerStateMachine {
         boolean success = false;
         if (_states.containsKey(stateId)) {
             _curState   = _states.get(stateId);
+            loadGestures();
             success     = true;
         }
         return success;
     }
 
+    /**
+     * This will load gestures into Esper using the current state's Gestures.
+     */
+    private void loadGestures() {
+        Collection<Gesture> gestures = _curState.getGestures();
+        for (Gesture gesture : gestures) {
+            _esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
+            for (UpdateListener listener : gesture.getUpdateListeners()) {
+                _esperHandler.addListener(gesture.gestureId, listener);
+            }
+        }
+    }
     /**
      * @return This returns the current state of the state machine.
      */

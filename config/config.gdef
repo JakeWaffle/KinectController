@@ -33,9 +33,9 @@ state Menu
 state Game
     gesture left_click
         rule Angle
-            end1       is   left_hand
-            vertex     is   right_hand
-            end2       is   right_hand
+            end1       is   right_hand
+            vertex     is   right_elbow
+            end2       is   right_shoulder
             min_angle  is   150
             max_angle  is   180
 

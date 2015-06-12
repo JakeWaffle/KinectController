@@ -52,9 +52,6 @@ public class EsperHandler {
     public EsperHandler() {
         _patterns = new HashMap<String, EPStatement>();
         config();
-        
-        //Register all of the classes here.
-        //this.engine.setEventType(alias, className);
     }
     
     private void config() {
