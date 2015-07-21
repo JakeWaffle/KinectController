@@ -47,7 +47,8 @@ import java.io.*;
 public class Main {
     private static final Logger _logger      = LoggerFactory.getLogger(Main.class);
 
-    private CommandLine         _arguments;
+    private CommandLine             _arguments;
+    private ControllerStateMachine  _csm;
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -56,7 +57,7 @@ public class Main {
     
     public Main(String[] args) {
         _arguments  = new Cli(args).parse();
-        ControllerStateMachine csm = parseConfig(_arguments.getOptionValue("f"));
+        _csm        = parseConfig(_arguments.getOptionValue("f"));
     }
 
     private ControllerStateMachine parseConfig(String configFilename) {
@@ -66,9 +67,9 @@ public class Main {
             ControllerFSMFactory csf = new ControllerFSMFactory(in);
             csm = csf.create();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            _logger.error("Config file not found: "+configFilename, e);
         } catch (ParseException e) {
-            e.printStackTrace();
+            _logger.error("Problem parsing config file: "+configFilename, e);
         }
 
         return csm;
@@ -85,7 +86,7 @@ public class Main {
             String input = console.readLine("Enter quit: ");
             if (input.equals("quit")) {
                 done = true;
-            }
+            } 6 
         }
         System.out.println("Goodbye");
     }

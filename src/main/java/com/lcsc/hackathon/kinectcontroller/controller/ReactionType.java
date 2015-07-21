@@ -4,7 +4,7 @@ package com.lcsc.hackathon.kinectcontroller.controller;
  * Created by Jake on 6/2/2015.
  */
 public enum ReactionType {
-    KEY_PRESS("Key_Press"),
+    KEY_DOWN_UP("Key_Down_Up"),
     KEY_DOWN("Key_Down"),
     KEY_UP("Key_Up");
 

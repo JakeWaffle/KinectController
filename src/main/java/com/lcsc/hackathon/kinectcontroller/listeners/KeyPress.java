@@ -63,7 +63,7 @@ public class KeyPress implements UpdateListener {
     
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
-            String triggerId = (String)event.get("triggerId");
+            //String triggerId = (String)event.get("triggerId");
             //log.info(String.format("TriggerId: %s", triggerId));
             //Trigger trigger = Triggers.getTrigger(triggerId);
 

@@ -1,7 +1,3 @@
-
-
-//TODO Start adding enumerations so that I don't have to deal with spelling mistakes. They're just nice for later anyway.
-
 options {
     STATIC = false;
 }
@@ -47,11 +43,12 @@ TOKEN: {
     < GESTURE : "gesture" > |
     < MOUSE_GESTURE : "gesture mouse using" > |
     < RULE : "rule" > |
-    < REACTION : "reaction" > |
     < END : "end" > |
     < VERTEX : "vertex" > |
     < MIN_ANGLE : "min_angle" > |
     < MAX_ANGLE : "max_angle" > |
+    < REACTION : "reaction" > |
+    < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
     < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
 }
@@ -181,11 +178,10 @@ void parseGesture(String gestureId, ControllerState state) :
             reactionType = <IDENTIFIER>.image
             {
                 switch(ReactionType.fromString(reactionType)) {
-                    case KEY_PRESS:
-                        break;
+                    case KEY_DOWN_UP:
                     case KEY_DOWN:
-                        break;
                     case KEY_UP:
+                        parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
                 }
             }
@@ -267,4 +263,15 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
         state.addRule(new Angle(Integer.parseInt(end1), Integer.parseInt(vertex), Integer.parseInt(end2), 0));
         gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
     }
+}
+
+void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
+{
+    String keyId;
+}
+{
+    <KEY> <IS>
+    keyId = <IDENTIFIER>.image
+
+    {gesture.}
 }

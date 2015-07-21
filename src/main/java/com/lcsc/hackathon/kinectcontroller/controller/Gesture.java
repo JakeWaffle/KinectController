@@ -3,7 +3,9 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 import com.espertech.esper.client.UpdateListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jake on 6/2/2015.
@@ -20,12 +22,8 @@ public class Gesture {
     //when needed.
     private List<String>  _ruleQueries;
 
-    //Keys that are to be pressed when this gesture is activated.
-    private List<Integer> _keysPress;
-    //Keys that are to be unselected when this gesture is activated.
-    private List<Integer> _keysUp;
-    //Keys that are to be pressed down when this gesture is activated.
-    private List<Integer> _keysDown;
+    //TODO We need a better way to store/handle these (another class?)
+    private Map<ReactionType, String> _reactions;
 
     //TODO Some identifier for the mouse needs to go hear. Left_Arm and Right_Arm?
 
@@ -33,25 +31,15 @@ public class Gesture {
         this.gestureId  = gestureId;
         this.state      = state;
         _ruleQueries    = new ArrayList<String>();
-        _keysPress      = new ArrayList<Integer>();
-        _keysUp         = new ArrayList<Integer>();
-        _keysDown       = new ArrayList<Integer>();
+        _reactions      = new HashMap<ReactionType, String>();
     }
 
     public void addRuleQuery(String esperQuery) {
         _ruleQueries.add(esperQuery);
     }
 
-    public void addKeysPress(List<Integer> keysPress) {
-        _keysPress = keysPress;
-    }
-
-    public void addKeysUp(List<Integer> keysUp) {
-        _keysUp = keysUp;
-    }
-
-    public void addKeysDown(List<Integer> keysDown) {
-        _keysDown = keysDown;
+    public void addKeyReaction(String keyId, ReactionType reactionType) {
+        _reactions.put(reactionType, keyId);
     }
 
     /**
@@ -78,6 +66,17 @@ public class Gesture {
     //TODO Instantiate a bunch of UpdateListeners and return them back to the ControllerStateMachine.
     //TODO Don't forget to pass the ControllerState to the UpdateListener.
     public List<UpdateListener> getUpdateListeners() {
-        return null;
+        List<UpdateListener> listeners = new ArrayList<UpdateListener>();
+        for (Map.Entry<ReactionType, String> reaction : _reactions.entrySet()){
+            switch (reaction.getKey()) {
+                case KEY_DOWN_UP:
+                    break;
+                case KEY_DOWN:
+                    break;
+                case KEY_UP:
+                    break;
+            }
+        }
+        return listeners;
     }
 }
