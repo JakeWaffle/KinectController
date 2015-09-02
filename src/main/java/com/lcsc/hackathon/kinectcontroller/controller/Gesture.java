@@ -70,6 +70,7 @@ public class Gesture {
         for (Map.Entry<ReactionType, String> reaction : _reactions.entrySet()){
             switch (reaction.getKey()) {
                 case KEY_DOWN_UP:
+
                     break;
                 case KEY_DOWN:
                     break;

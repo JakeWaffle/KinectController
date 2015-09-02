@@ -40,6 +40,8 @@ import com.lcsc.hackathon.kinectcontroller.Conversions;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
+import com.lcsc.hackathon.kinectcontroller.controller.ControllerState;
+import com.lcsc.hackathon.kinectcontroller.controller.ReactionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,26 +50,38 @@ import java.awt.AWTException;
 
 import java.lang.Thread;
 import java.lang.InterruptedException;
-
+//TODO Figure out if this class is supposed to be reused on multiple types of events (KEY_DOWN, KEY_UP.)
+//TODO Should we interpret the events
 public class KeyPress implements UpdateListener {
-    private static final Logger _logger      = LoggerFactory.getLogger(KeyPress.class);
-    private              Robot  _rob;
+    private static final Logger             _logger = LoggerFactory.getLogger(KeyPress.class);
+    private              Robot              _rob;
+    private              ControllerState    _state;
+    private              ReactionType       _type;
     
-    public KeyPress() {
+    public KeyPress(ControllerState state, ReactionType type) {
+        _state  = state;
+        _type   = type;
+
         try {
             _rob = new Robot();
         } catch (AWTException e) {
             _logger.error("", e);
         }
     }
-    
+
+    public void update(EventBean[] newEvents, EventBean[] oldEvents) {
+        for (EventBean event : newEvents) {
+            //event.get();
+        }
+    }
+
+    /*
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
             //String triggerId = (String)event.get("triggerId");
             //log.info(String.format("TriggerId: %s", triggerId));
             //Trigger trigger = Triggers.getTrigger(triggerId);
 
-            /*
             for (Map<String, String> attributes : trigger.getDefinition()) {
                 String type = attributes.get("type");
                 if (type.equals("KeyDownUp")) {
@@ -92,7 +106,6 @@ public class KeyPress implements UpdateListener {
                     _logger.error(String.format("Invalude Tigger Type: %s", type));
                 }
             }
-            */
         }
-    }
+    }*/
 }
