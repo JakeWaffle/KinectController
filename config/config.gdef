@@ -25,7 +25,7 @@ state Menu
             min_angle  is   80
             max_angle  is   100
 
-        reaction Key_Press
+        reaction KEY_DOWN_UP
             key        is   left_mouse_button
 
     gesture mouse using left_arm
@@ -53,7 +53,7 @@ state Game
             min_angle  is   80
             max_angle  is   100
 
-        reaction Key_Press
+        reaction KEY_DOWN_UP
             key        is   left_mouse_button
 
     gesture mouse using left_arm
