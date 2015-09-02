@@ -1,1 +1,2 @@
-java -cp '/usr/share/java/javacc/bin/javacc' javacc $@
+javacc config.jj
+mv *.java ../src/main/java/com/lcsc/hackathon/kinectcontroller/config/

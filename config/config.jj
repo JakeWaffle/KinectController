@@ -273,5 +273,5 @@ void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
     <KEY> <IS>
     keyId = <IDENTIFIER>.image
 
-    {gesture.}
+    {gesture.addKeyReaction(keyId, reactionType);}
 }

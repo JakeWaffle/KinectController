@@ -86,7 +86,7 @@ public class Main {
             String input = console.readLine("Enter quit: ");
             if (input.equals("quit")) {
                 done = true;
-            } 6 
+            }
         }
         System.out.println("Goodbye");
     }
