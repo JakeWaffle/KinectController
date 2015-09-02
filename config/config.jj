@@ -1,0 +1,277 @@
+options {
+    STATIC = false;
+}
+PARSER_BEGIN(ControllerFSMFactory)
+package com.lcsc.hackathon.kinectcontroller.config;
+
+import java.io.*;
+import java.util.*;
+import com.lcsc.hackathon.kinectcontroller.controller.*;
+import com.lcsc.hackathon.kinectcontroller.rules.*;
+
+public class ControllerFSMFactory {
+    private ControllerStateMachine _csm;
+    private String _startingStateId = null;
+
+    private void addStartingState(String stateId) {
+        //If we can't change the state, then we'll just store the id until the state is added later.
+        if (!_csm.changeState(stateId)) {
+            _startingStateId = stateId;
+        }
+    }
+
+    private void addState(ControllerState state) {
+        _csm.addState(state);
+
+        //If the starting state hasn't been set and this state is the starting state.
+        if (_startingStateId != null && _startingStateId.equals(state.stateId)) {
+            if (_csm.changeState(_startingStateId)) {
+                _startingStateId = null;
+            }
+        }
+    }
+}
+
+PARSER_END(ControllerFSMFactory)
+
+//Generic tokens
+TOKEN: {
+    < STARTING_STATE : "starting_state" > |
+    < IS : "is" > |
+    < VERSION : "version" > |
+    < STATE : "state" > |
+    < GESTURE : "gesture" > |
+    < MOUSE_GESTURE : "gesture mouse using" > |
+    < RULE : "rule" > |
+    < END : "end" > |
+    < VERTEX : "vertex" > |
+    < MIN_ANGLE : "min_angle" > |
+    < MAX_ANGLE : "max_angle" > |
+    < REACTION : "reaction" > |
+    < KEY : "key" > |
+    < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
+    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
+}
+
+SKIP: {
+    " " |
+    "\t" |
+    "\n" |
+    "\r" |
+    <"//" (~["\n","\r"])* ("\n"|"\r")>
+}
+
+ControllerStateMachine create() :
+{
+    Token t;
+    int version;
+}
+{
+    {_csm = new ControllerStateMachine();}
+    
+    <VERSION>
+    
+    t = <NUMBER>
+
+    {version = Integer.parseInt(t.image);}
+    
+    {
+        switch(version) {
+            case 1:
+                parseVersion1();
+                break;
+        }
+    }
+
+    <EOF>
+    {return _csm;}
+}
+
+void parseVersion1() :
+{
+    String stateId;
+    ControllerState state;
+}
+{
+    (
+        (
+            <STARTING_STATE>
+            <IS>
+            stateId = <IDENTIFIER>.image
+            {addStartingState(stateId);}
+        )
+        |
+        (
+            <STATE>
+            stateId = <IDENTIFIER>.image
+            state = parseState(stateId)
+            {addState(state);}
+        )
+    )*
+}
+
+ControllerState parseState(String stateId) :
+{
+    ControllerState state;
+    String gestureId;
+    String armId;
+}
+{
+    {state = new ControllerState(stateId, _csm);}
+    (
+        (
+            <GESTURE>
+            gestureId = <IDENTIFIER>.image
+            //This needs to return some information that can be given to the controller state.
+            parseGesture(gestureId, state)
+        )
+        |
+        (
+            <MOUSE_GESTURE>
+            armId = <IDENTIFIER>.image
+            //TODO Add mouse gesture to the state
+        )
+    )*
+    {return state;}
+}
+
+void parseGesture(String gestureId, ControllerState state) :
+{
+    String          ruleType;
+    String          reactionType;
+    Token           t;
+    Gesture         gesture                 = new Gesture(gestureId, state);
+    //String          gestureMatchQuery     = String.format("%s as gestureId from pattern[", gestureId);
+}
+{
+    (
+        (
+            <RULE>
+            ruleType = <IDENTIFIER>.image
+            {
+                switch(RuleType.fromString(ruleType)) {
+                    case ABS_DISTANCE:
+                        break;
+                    case ABS_DISTANCEX:
+                        break;
+                    case ABS_DISTANCEY:
+                        break;
+                    case ABS_DISTANCEZ:
+                        break;
+                    case ANGLE:
+                        parseAngleRule(state, gesture);
+                        break;
+                    case DISTANCE:
+                        break;
+                    case DISTANCEX:
+                        break;
+                    case DISTANCEY:
+                        break;
+                    case DISTANCEZ:
+                        break;
+                }
+            }
+        )
+        |
+        (
+            <REACTION>
+            reactionType = <IDENTIFIER>.image
+            {
+                switch(ReactionType.fromString(reactionType)) {
+                    case KEY_DOWN_UP:
+                    case KEY_DOWN:
+                    case KEY_UP:
+                        parseKeyReaction(gesture, ReactionType.fromString(reactionType));
+                        break;
+                }
+            }
+        )
+    )*
+    {state.addGesture(gestureId, gesture);}
+}
+
+void parseAngleRule(ControllerState state, Gesture gesture) :
+{
+    Token   t;
+    String  end1        = null;
+    String  vertex      = null;
+    String  end2        = null;
+    Integer minAngle    = null;
+    Integer maxAngle    = null;
+    String  matchQuery  = null;
+    Angle   angleRule   = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+}
+{
+    (
+        (
+            {
+                String end;
+            }
+            <END>
+            t = <NUMBER>
+            <IS>
+            end = <IDENTIFIER>.image
+            {
+                if (Integer.parseInt(t.image) == 1) {
+                    end1 = end;
+                }
+                else if (Integer.parseInt(t.image) == 2) {
+                    end2 = end;
+                }
+            }
+        )
+        |
+        (
+            <VERTEX> <IS>
+            vertex = <IDENTIFIER>.image
+        )
+        |
+        (
+            <MIN_ANGLE> <IS>
+            t = <NUMBER>
+            {minAngle = Integer.parseInt(t.image);}
+        )
+        |
+        (
+            <MAX_ANGLE> <IS>
+            t = <NUMBER>
+            {maxAngle = Integer.parseInt(t.image);}
+        )
+    )*
+    {
+        patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
+                                                                                       vertex,
+                                                                                       end2,
+                                                                                       minAngle,
+                                                                                       maxAngle);
+
+        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            minAngle);
+
+        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
+                                                                                            vertex,
+                                                                                            end2,
+                                                                                            maxAngle);
+
+
+        state.addRule(new Angle(Integer.parseInt(end1), Integer.parseInt(vertex), Integer.parseInt(end2), 0));
+        gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
+    }
+}
+
+void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
+{
+    String keyId;
+}
+{
+    <KEY> <IS>
+    keyId = <IDENTIFIER>.image
+
+    {gesture.addKeyReaction(keyId, reactionType);}
+}

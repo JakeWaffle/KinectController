@@ -1,0 +1,33 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'com.lcsc.hackathon.kinectcontroller'
+version = '0.0.1'
+
+description = """KinectController"""
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    manifest {
+        attributes 'Main-Class': 'com.lcsc.hackathon.kinectcontroller.Main'
+    }
+}
+
+dependencies {
+    compile group: 'com.espertech', name: 'esper', version:'5.1.0'
+    compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version:'9.2.7.v20150116'
+    compile 'org.slf4j:slf4j-api:1.7.10'
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+    compile 'ch.qos.logback:logback-core:1.1.2'
+    compile group: 'commons-cli', name: 'commons-cli', version:'1.2'
+    compile 'net.java.dev.javacc:javacc:6.1.2'
+    compile 'org.bytedeco/javacpp-presets:libfreenect:0.5.2-1.0'
+    compile 'org.jogamp.jogl:jogl-all:2.3.1'
+}
