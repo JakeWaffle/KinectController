@@ -36,7 +36,6 @@ package com.lcsc.hackathon.kinectcontroller;
 import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
 import com.lcsc.hackathon.kinectcontroller.config.ParseException;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.rules.EventFactory;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

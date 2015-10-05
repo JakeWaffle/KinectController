@@ -7,7 +7,7 @@ package com.lcsc.hackathon.kinectcontroller.config;
 import java.io.*;
 import java.util.*;
 import com.lcsc.hackathon.kinectcontroller.controller.*;
-import com.lcsc.hackathon.kinectcontroller.rules.*;
+import com.lcsc.hackathon.kinectcontroller.posturerules.*;
 
 public class ControllerFSMFactory {
     private ControllerStateMachine _csm;

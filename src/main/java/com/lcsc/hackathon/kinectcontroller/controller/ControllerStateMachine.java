@@ -2,7 +2,6 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 
 import com.espertech.esper.client.UpdateListener;
 import com.lcsc.hackathon.kinectcontroller.EsperHandler;
-import com.lcsc.hackathon.kinectcontroller.controller.ControllerState;
 
 import java.util.Collection;
 import java.util.HashMap;

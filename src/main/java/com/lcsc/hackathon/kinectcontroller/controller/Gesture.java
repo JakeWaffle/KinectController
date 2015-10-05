@@ -1,6 +1,7 @@
 package com.lcsc.hackathon.kinectcontroller.controller;
 
 import com.espertech.esper.client.UpdateListener;
+import com.lcsc.hackathon.kinectcontroller.emulation.ReactionType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class Gesture {
     /**
      * This will bundle up all of the separate _ruleQueries pieces for Esper.
      * @return Some sort of sql query for Esper that has the gestureId of this Gesture
-     *         so the Listener can look up this Gesture's reactions.
+     *         so the Listener can look up this Gesture's emulation.
      */
     public String getEsperQuery() {
         String query = String.format("%s as gestureId from pattern[", gestureId);

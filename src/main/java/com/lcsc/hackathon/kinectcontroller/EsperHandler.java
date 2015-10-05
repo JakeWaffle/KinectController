@@ -58,15 +58,15 @@ public class EsperHandler {
         Configuration config = new Configuration();
         config.getEngineDefaults().getExecution().setPrioritized(true);
         config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
-        config.addEventType("Angle", "com.lcsc.hackathon.kinectcontroller.rules.Angle");
-        config.addEventType("Distance", "com.lcsc.hackathon.kinectcontroller.rules.Distance");
-        config.addEventType("DistanceX", "com.lcsc.hackathon.kinectcontroller.rules.DistanceX");
-        config.addEventType("DistanceY", "com.lcsc.hackathon.kinectcontroller.rules.DistanceY");
-        config.addEventType("DistanceZ", "com.lcsc.hackathon.kinectcontroller.rules.DistanceZ");
-        config.addEventType("AbsoluteDistZ", "com.lcsc.hackathon.kinectcontroller.rules.AbsoluteDistZ");
-        config.addEventType("AbsoluteDistX", "com.lcsc.hackathon.kinectcontroller.rules.AbsoluteDistX");
-        config.addEventType("AbsoluteDistY", "com.lcsc.hackathon.kinectcontroller.rules.AbsoluteDistY");
-        config.addEventType("AbsoluteDistance", "com.lcsc.hackathon.kinectcontroller.rules.AbsoluteDistance");
+        config.addEventType("Angle", "com.lcsc.hackathon.kinectcontroller.posturerules.Angle");
+        config.addEventType("Distance", "com.lcsc.hackathon.kinectcontroller.posturerules.Distance");
+        config.addEventType("DistanceX", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceX");
+        config.addEventType("DistanceY", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceY");
+        config.addEventType("DistanceZ", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceZ");
+        config.addEventType("AbsoluteDistZ", "com.lcsc.hackathon.kinectcontroller.posturerules.AbsoluteDistZ");
+        config.addEventType("AbsoluteDistX", "com.lcsc.hackathon.kinectcontroller.posturerules.AbsoluteDistX");
+        config.addEventType("AbsoluteDistY", "com.lcsc.hackathon.kinectcontroller.posturerules.AbsoluteDistY");
+        config.addEventType("AbsoluteDistance", "com.lcsc.hackathon.kinectcontroller.posturerules.AbsoluteDistance");
 
         _engine = EPServiceProviderManager.getDefaultProvider(config);
         _engine.initialize();
