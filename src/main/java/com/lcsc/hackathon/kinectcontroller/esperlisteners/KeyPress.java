@@ -44,6 +44,12 @@ import org.slf4j.LoggerFactory;
 import java.awt.Robot;
 import java.awt.AWTException;
 
+//////////////////////////////////////////////////////////////////////
+//!!!TODO Create a SINGLE listener that checks for some event and tells the EmulationController when needed.
+//////////////////////////////////////////////////////////////////////
+
+
+
 //TODO Figure out if this class is supposed to be reused on multiple types of events (KEY_DOWN, KEY_UP.)
 //TODO Should we interpret the events
 public class KeyPress implements UpdateListener {
