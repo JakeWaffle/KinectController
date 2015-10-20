@@ -36,46 +36,39 @@ package com.lcsc.hackathon.kinectcontroller.esperlisteners;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
+import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
+import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Robot;
-import java.awt.AWTException;
-import java.awt.MouseInfo;
-import java.awt.PointerInfo;
-import java.awt.Point;
+//////////////////////////////////////////////////////////////////////
+//!!!TODO Create a SINGLE listener that checks for some event and tells the EmulationController when needed.
+//
+//This could work by having the UpdateListener keep track of a dictionary of Reaction objects. Then
+//the patterns could reference each of those Reaction objects by their id. Reaction objects should be loaded
+//into the singleton every time a ControllerState has been switched to.
+//////////////////////////////////////////////////////////////////////
 
-//TODO This class hopefully has been replaced by EventListener, but we still need to determine how to get kinectcontroller
-//information to the EmulationController's scheduled reactions.
-//Maybe it's possible to update the Reaction object via the EventListener and it will in turn update the
-//EmulationController? Some shared information is probably needed.
 
-public class MouseMove implements UpdateListener {
-    private static final Logger _logger      = LoggerFactory.getLogger(MouseMove.class);
-    private              Robot  _rob;
-
-    public MouseMove() {
-        try {
-            _rob = new Robot();
-        } catch (AWTException e) {
-            _logger.error("", e);
-        }
-    }
+public class EventListener implements UpdateListener {
+    private static final Logger             	_logger = LoggerFactory.getLogger(KeyPress.class);
+    private              EmulationController	_emulationController;
+    private              Map<String, Reaction>  _reactions;
     
+	//TODO Support a sequence of reactions for any given UpdateListener
+    public KeyPress(EmulationController emualtionController) {
+        _emulationController  	= emualtionController;
+        _reactions				= new HashMap<String, Reaction>();
+    }
+	
+	public void addReaction(String reactionId, Reaction reaction) {
+		_reactions.put(reactionId, reaction);
+	}
+
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
-            String direction = (String)event.get("direction");
-            //_logger.info("DIrection: "+direction);
-            if (direction.equals("LEFT")) {
-                PointerInfo a = MouseInfo.getPointerInfo();
-                Point b = a.getLocation();
-                int x = (int) b.getX();
-                int y = (int) b.getY();
-
-                _logger.info(String.format("X: %d Y: %d", x, y));
-
-                _rob.mouseMove(x-5, y);
-            }
+			String reactionId = (String)event.get("reactionId");
+			_emulationController.scheduleReaction(_reactions.get(reactionId));
         }
     }
 }
