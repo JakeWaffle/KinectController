@@ -34,6 +34,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 package com.lcsc.hackathon.kinectcontroller.emulation;
 
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -49,7 +51,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * as we might hope. A priority queue could be used to improve the delay also.
  */
 public class EmulationController extends Thread {
-	private static final Logger             _logger = LoggerFactory.getLogger(EmulationController.class);
+	private static final Logger 			_logger = LoggerFactory.getLogger(EmulationController.class);
     private 			 boolean         	_done;
 	private 			 boolean         	_paused;
     private 			 Queue<Reaction> 	_reactions;
@@ -76,12 +78,12 @@ public class EmulationController extends Thread {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				_logger.error(e);
+				_logger.error("Interrupted sleep", e);
 			}
         }
     }
 	
-	public void stop() {
+	public void done() {
 		_done = true;
 	}
 	
@@ -91,10 +93,6 @@ public class EmulationController extends Thread {
 	 * @param reaction The reaction that is to be scheduled.
 	 */
 	public synchronized void scheduleReaction(Reaction reaction) {
-		try {
-			_reactions.add(reaction);
-		} catch(IllegalStateException e) {
-			_logger.error(e);
-		}
+		_reactions.add(reaction);
 	}
 }

@@ -77,7 +77,7 @@ public class ControllerStateMachine {
     public boolean changeState(String stateId) {
         boolean success = false;
         if (_states.containsKey(stateId)) {
-			_emulationController.stop();
+			_emulationController.done();
             _curState   = _states.get(stateId);
 			_emulationController.start();
             loadGestures();
@@ -93,10 +93,11 @@ public class ControllerStateMachine {
         Collection<Gesture> gestures = _curState.getGestures();
         for (Gesture gesture : gestures) {
             _esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
-			//TODO Use gesture.getReactions() to load reactions into the eventlistener!
-            _esperHandler.addListener(gesture.gestureId, _emulationController);
+            _eventListener.loadReactions(gesture.gestureId, gesture.getReactions());
+            _esperHandler.addListener(gesture.gestureId, _eventListener);
         }
     }
+
     /**
      * @return This returns the current state of the state machine.
      */

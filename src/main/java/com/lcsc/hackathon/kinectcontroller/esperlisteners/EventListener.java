@@ -41,34 +41,31 @@ import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//////////////////////////////////////////////////////////////////////
-//!!!TODO Create a SINGLE listener that checks for some event and tells the EmulationController when needed.
-//
-//This could work by having the UpdateListener keep track of a dictionary of Reaction objects. Then
-//the patterns could reference each of those Reaction objects by their id. Reaction objects should be loaded
-//into the singleton every time a ControllerState has been switched to.
-//////////////////////////////////////////////////////////////////////
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EventListener implements UpdateListener {
-    private static final Logger             	_logger = LoggerFactory.getLogger(KeyPress.class);
-    private              EmulationController	_emulationController;
-    private              Map<String, Reaction>  _reactions;
-    
-	//TODO Support a sequence of reactions for any given UpdateListener
-    public KeyPress(EmulationController emualtionController) {
+    private static final Logger             	        _logger = LoggerFactory.getLogger(EventListener.class);
+    private              EmulationController	        _emulationController;
+    //Maps a gestureId to a list of reactions.
+    private              Map<String, List<Reaction>>    _reactions;
+
+    public EventListener(EmulationController emualtionController) {
         _emulationController  	= emualtionController;
-        _reactions				= new HashMap<String, Reaction>();
+        _reactions				= new HashMap<String, List<Reaction>>();
     }
-	
-	public void addReaction(String reactionId, Reaction reaction) {
-		_reactions.put(reactionId, reaction);
-	}
+
+    public void loadReactions(String gestureId, List<Reaction> reactions){
+        _reactions.put(gestureId, reactions);
+    }
 
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
-			String reactionId = (String)event.get("reactionId");
-			_emulationController.scheduleReaction(_reactions.get(reactionId));
+			String gestureId = (String)event.get("gestureId");
+            for (Reaction reaction : _reactions.get(gestureId)) {
+                _emulationController.scheduleReaction(reaction);
+            }
         }
     }
 }

@@ -35,6 +35,7 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 
 import com.espertech.esper.client.UpdateListener;
 import com.lcsc.hackathon.kinectcontroller.emulation.ReactionType;
+import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,8 +83,6 @@ public class Gesture {
      *         so the Listener can look up this Gesture's emulation.
      */
     public String getEsperQuery() {
-		//TODO Add something to the pattern that allows us to reference a list of Reactions.
-		//Suggestion: Make the gestureId reference a list of reactionIds????
         String query = String.format("%s as gestureId from pattern[", gestureId);
 
         for (int i=0; i<_ruleQueries.size(); i++) {
