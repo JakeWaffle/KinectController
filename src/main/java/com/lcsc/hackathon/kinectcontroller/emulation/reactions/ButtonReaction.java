@@ -42,15 +42,14 @@ import java.awt.AWTException;
  * Created by jake on 10/15/2015.
  */
 public class ButtonReaction implements Reaction {
-	private String							_id;
     private ReactionConfig<String, Object> 	_config;
 
-    public ButtonReaction(String id, ReactionConfig config) {
+    public ButtonReaction(ReactionConfig config) {
         _config = config;
     }
 	
-	public String getId() {
-		return _id;
+	public ReactionConfig getConfig() {
+		return _config;
 	}
 
     public void trigger() {

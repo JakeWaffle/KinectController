@@ -55,10 +55,8 @@ public class Gesture {
     //These are a bunch of pieces of the overall gesture query. Each piece is specifically for
     //a rule that makes up the gesture. These will be able to be assembled into a complete gesture query for esper
     //when needed.
-    private List<String>  _ruleQueries;
-
-    //TODO We need a better way to store/handle these (another class?)
-    private Map<ReactionType, String> _reactions;
+    private 	 List<String>		_ruleQueries;
+    private 	 List<Reaction> 	_reactions;
 
     //TODO Some identifier for the mouse needs to go hear. Left_Arm and Right_Arm?
 
@@ -66,16 +64,16 @@ public class Gesture {
         this.gestureId  = gestureId;
         this.state      = state;
         _ruleQueries    = new ArrayList<String>();
-        _reactions      = new HashMap<ReactionType, String>();
+        _reactions      = new ArrayList<Reaction>();
     }
 
     public void addRuleQuery(String esperQuery) {
         _ruleQueries.add(esperQuery);
     }
 
-    public void addKeyReaction(String keyId, ReactionType reactionType) {
-        _reactions.put(reactionType, keyId);
-    }
+	public void addReaction(Reaction reaction) {
+		_reactions.add(reaction);
+	}
 
     /**
      * This will bundle up all of the separate _ruleQueries pieces for Esper.
@@ -99,9 +97,6 @@ public class Gesture {
     }
 
 	public List<Reaction> getReactions() {
-		List<Reaction> reactions = new ArrayList<Reaction>();
-		
-		//TODO Actually return some reaction objects.
-		return reactions;
+		return _reactions;
 	}
 }
