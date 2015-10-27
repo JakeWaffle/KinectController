@@ -70,7 +70,8 @@ public class ControllerStateMachine {
     }
 
     /**
-     * This will change the current state of the controller.
+     * This will change the current state of the controller. Javacc will call this to set the initial state of
+	 * the program.
      * @param stateId This is the id of the state we're switching to.
      * @return True if the stateId existed, false if it doesn't exist in the state machine.
      */

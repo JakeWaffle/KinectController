@@ -61,8 +61,6 @@ public class ControllerState {
         this.stateId    = stateId;
         this.csm        = csm;
         _rules 			= new HashMap<String, Object>();
-		
-
     }
 
     public void addRule(Object rule) {

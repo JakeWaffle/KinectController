@@ -145,7 +145,6 @@ void parseGesture(String gestureId, ControllerState state) :
     String          reactionType;
     Token           t;
     Gesture         gesture                 = new Gesture(gestureId, state);
-    //String          gestureMatchQuery     = String.format("%s as gestureId from pattern[", gestureId);
 }
 {
     (
