@@ -9,6 +9,8 @@ have the potential to do a lot of different things from emulating keyboard event
 After this project gets some headway and we reach a near 1.0 release, then there should be a good amount of configuration
 files already created for various games and applications of the project.
 
+Refer to the wiki for more information on the project and how the configuration files work.
+
 ## Building the Project
 
 The project isn't ready for use yet. The minimum features are still being worked on for the project to actually do what
