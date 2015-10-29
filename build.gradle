@@ -28,6 +28,6 @@ dependencies {
     compile 'ch.qos.logback:logback-core:1.1.2'
     compile group: 'commons-cli', name: 'commons-cli', version:'1.2'
     compile 'net.java.dev.javacc:javacc:6.1.2'
-    compile 'org.bytedeco/javacpp-presets:libfreenect:0.5.2-1.0'
     compile 'org.jogamp.jogl:jogl-all:2.3.1'
+    compile fileTree(dir:'lib', includes: ['*.jar'])
 }

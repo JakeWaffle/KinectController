@@ -47,7 +47,7 @@ public class ControllerState {
     public final String                 stateId;
     public final ControllerStateMachine csm;
 
-    //This will hold all of the java bean posturerules that will be updated by the Kinect and given to Esper.
+    //This will hold all of the java bean posturerules that will be updated by the KinectHandler and given to Esper.
     //It maps a SHA256 hash to a java bean that generated the hash.
     //The hash makes it so that there are no duplicate posturerules for separate gestures.
     private Map<String, Object>     _rules;

@@ -75,9 +75,7 @@ public class Main {
     }
     
     public void run() {
-        //If the debug option is being used, then we'll show the skeleton window.
-        if (_arguments.hasOption('d')) {
-        }
+        KinectHandler kinectHandler = KinectHandler(_arguments.hasOption('d'));
         
 		Console console = System.console();
         boolean done    = false;
