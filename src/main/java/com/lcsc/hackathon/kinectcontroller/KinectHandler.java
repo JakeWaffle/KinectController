@@ -1,12 +1,15 @@
 package com.lcsc.hackathon.kinectcontroller;
 
-import jogamp.graph.font.typecast.ot.table.Device;
-
-import javax.swing.*;
-
 import com.primesense.nite.*;
+import org.openni.Device;
+import org.openni.DeviceInfo;
+import org.openni.OpenNI;
 
-import java.awt.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
 
 /**
  * Created by Student on 10/29/2015.
@@ -14,8 +17,9 @@ import java.awt.*;
  * be handing off the positions of joints to Esper and Esper will then use that data to detect gestures.
  */
 public class KinectHandler implements UserTracker.NewFrameListener{
-    private KinectDebugWindow   _kinectWindow;
-    private UserTracker         _tracker;
+    private static final Logger             _logger = LoggerFactory.getLogger(KinectHandler.class);
+    private              KinectDebugWindow   _kinectWindow;
+    private              UserTracker         _tracker;
 
     public KinectHandler(boolean debug) {
         OpenNI.initialize();
@@ -23,18 +27,17 @@ public class KinectHandler implements UserTracker.NewFrameListener{
 
         List<DeviceInfo> devicesInfo = OpenNI.enumerateDevices();
         if (devicesInfo.size() == 0) {
-            JOptionPane.showMessageDialog(null, "No device is connected", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+            _logger.error("No Kinect device is connected!");
+            System.exit(1);
         }
 
         Device device = Device.open(devicesInfo.get(0).getUri());
         _tracker = UserTracker.create();
 
         if (debug) {
-            _kinectWindow = KinectDebugWindow(_tracker);
-            _kinectWindow.start();
+            _kinectWindow = new KinectDebugWindow(_tracker);
         }
-        else {
+            else {
             _kinectWindow = null;
         }
 

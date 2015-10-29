@@ -75,7 +75,7 @@ public class Main {
     }
     
     public void run() {
-        KinectHandler kinectHandler = KinectHandler(_arguments.hasOption('d'));
+        KinectHandler kinectHandler = new KinectHandler(_arguments.hasOption('d'));
         
 		Console console = System.console();
         boolean done    = false;

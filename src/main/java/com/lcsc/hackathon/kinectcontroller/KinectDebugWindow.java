@@ -1,5 +1,8 @@
 package com.lcsc.hackathon.kinectcontroller;
 
+import com.primesense.nite.*;
+import org.openni.VideoFrameRef;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
