@@ -140,8 +140,7 @@ void parseGesture(String gestureId, ControllerState state) :
     String          ruleType;
     String          reactionType;
     Token           t;
-    Gesture         gesture                 = new Gesture(gestureId, state);
-    //String          gestureMatchQuery     = String.format("%s as gestureId from pattern[", gestureId);
+    Gesture         gesture = new Gesture(gestureId, state);
 }
 {
     (
