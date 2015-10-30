@@ -72,13 +72,21 @@ public class EmulationController extends Thread {
     public void run() {
 		_done = false;
         while (!_done) {
-			Reaction reaction = _reactions.remove();
-			reaction.trigger();
-
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				_logger.error("Interrupted sleep", e);
+			if (_reactions.size() > 0) {
+				Reaction reaction = _reactions.remove();
+				reaction.trigger();
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					_logger.error("Interrupted sleep", e);
+				}
+			}
+			else {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					_logger.error("Interrupted sleep", e);
+				}
 			}
         }
     }

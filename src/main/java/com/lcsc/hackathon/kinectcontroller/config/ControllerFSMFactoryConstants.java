@@ -25,21 +25,25 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int RULE = 7;
   /** RegularExpression Id. */
-  int END = 8;
+  int END1 = 8;
   /** RegularExpression Id. */
-  int VERTEX = 9;
+  int END2 = 9;
   /** RegularExpression Id. */
-  int MIN_ANGLE = 10;
+  int VERTEX = 10;
   /** RegularExpression Id. */
-  int MAX_ANGLE = 11;
+  int MIN_ANGLE = 11;
   /** RegularExpression Id. */
-  int REACTION = 12;
+  int MAX_ANGLE = 12;
   /** RegularExpression Id. */
-  int KEY = 13;
+  int REACTION = 13;
   /** RegularExpression Id. */
-  int NUMBER = 14;
+  int KEY = 14;
   /** RegularExpression Id. */
-  int IDENTIFIER = 15;
+  int NUMBER = 15;
+  /** RegularExpression Id. */
+  int TEST_NUMBER = 16;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 17;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -54,19 +58,21 @@ public interface ControllerFSMFactoryConstants {
     "\"gesture\"",
     "\"gesture mouse using\"",
     "\"rule\"",
-    "\"end\"",
+    "\"end1\"",
+    "\"end2\"",
     "\"vertex\"",
     "\"min_angle\"",
     "\"max_angle\"",
     "\"reaction\"",
     "\"key\"",
     "<NUMBER>",
+    "<TEST_NUMBER>",
     "<IDENTIFIER>",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
-    "<token of kind 20>",
+    "<token of kind 22>",
   };
 
 }

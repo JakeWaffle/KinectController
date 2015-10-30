@@ -9,7 +9,11 @@ import java.util.*;
 import com.lcsc.hackathon.kinectcontroller.controller.*;
 import com.lcsc.hackathon.kinectcontroller.posturerules.*;
 
+import com.lcsc.hackathon.kinectcontroller.Conversions;
+
 //These are the Reaction objects.
+
+import com.lcsc.hackathon.kinectcontroller.emulation.*;
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.*;
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.*;
 
@@ -47,13 +51,15 @@ TOKEN: {
     < GESTURE : "gesture" > |
     < MOUSE_GESTURE : "gesture mouse using" > |
     < RULE : "rule" > |
-    < END : "end" > |
+    < END1 : "end1" > |
+    < END2 : "end2" > |
     < VERTEX : "vertex" > |
     < MIN_ANGLE : "min_angle" > |
     < MAX_ANGLE : "max_angle" > |
     < REACTION : "reaction" > |
     < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
+    < TEST_NUMBER : (["0"-"9"])+ > |
     < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
 }
 
@@ -211,21 +217,15 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
 {
     (
         (
-            {
-                String end;
-            }
-            <END>
-            t = <NUMBER>
+            <END1>
             <IS>
-            end = <IDENTIFIER>.image
-            {
-                if (Integer.parseInt(t.image) == 1) {
-                    end1 = end;
-                }
-                else if (Integer.parseInt(t.image) == 2) {
-                    end2 = end;
-                }
-            }
+            end1 = <IDENTIFIER>.image
+        )
+        |
+        (
+            <END2>
+            <IS>
+            end2 = <IDENTIFIER>.image
         )
         |
         (
@@ -246,24 +246,34 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
         )
     )*
     {
-        patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f, angle < %f)", end1,
-                                                                                       vertex,
-                                                                                       end2,
-                                                                                       minAngle,
-                                                                                       maxAngle);
+        System.out.printf("MAX_ANGLE: %d\n", maxAngle.intValue());
+        System.out.printf("MIN_ANGLE: %d\n", minAngle.intValue());
+        System.out.printf("END1: %s\n", end1);
+        System.out.printf("END2: %s\n", end2);
+        System.out.printf("VERTEX: %s\n", vertex);
+        
+        int end1_id     = Conversions.getJointId(end1);
+        int vertex_id   = Conversions.getJointId(vertex);
+        int end2_id     = Conversions.getJointId(end2);
+        
+        patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1_id,
+                                                                                       vertex_id,
+                                                                                       end2_id,
+                                                                                       minAngle.intValue(),
+                                                                                       maxAngle.intValue());
 
-        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %f)", end1,
-                                                                                            vertex,
-                                                                                            end2,
-                                                                                            minAngle);
+        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %d)", end1_id,
+                                                                                            vertex_id,
+                                                                                            end2_id,
+                                                                                            minAngle.intValue());
 
-        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %f)", end1,
-                                                                                            vertex,
-                                                                                            end2,
-                                                                                            maxAngle);
+        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d)", end1_id,
+                                                                                            vertex_id,
+                                                                                            end2_id,
+                                                                                            maxAngle.intValue());
 
 
-        state.addRule(new Angle(Integer.parseInt(end1), Integer.parseInt(vertex), Integer.parseInt(end2), 0));
+        state.addRule(new Angle(end1_id, vertex_id, end2_id, 0));
         gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
     }
 }
@@ -277,7 +287,7 @@ void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
     keyId = <IDENTIFIER>.image
 
     {
-		ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard")
+		ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
 		gesture.addReaction(new ButtonReaction(config));
 	}
 }

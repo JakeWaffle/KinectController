@@ -60,7 +60,8 @@ public class ControllerState {
     public ControllerState(String stateId, ControllerStateMachine csm) {
         this.stateId    = stateId;
         this.csm        = csm;
-        _rules 			= new HashMap<String, Object>();
+        _rules 			= new HashMap<>();
+        _gestures       = new HashMap<>();
     }
 
     public void addRule(Object rule) {

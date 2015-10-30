@@ -58,7 +58,7 @@ public class Conversions {
 
 	//TODO This needs to be adapted to whatever KinectHandler SDK we switch to.
 	public static int getJointId(String key) {
-		String fieldName = String.format(key);
+		//System.out.println("Key: "+key);
 		int value = -1;
 		/*
 		try {

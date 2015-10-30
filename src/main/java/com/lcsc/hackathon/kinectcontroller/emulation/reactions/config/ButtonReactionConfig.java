@@ -47,7 +47,7 @@ public class ButtonReactionConfig extends ReactionConfig<String,Object> {
      * @param btnId         ID of the button that's being utilized.
      * @param deviceType    The device that the key exists on (e.g. 'keyboard' or 'mouse'.)
      */
-    public ButtonReactionConfig(int btnId, String deviceType) {
+    public ButtonReactionConfig(String btnId, String deviceType) {
         //TODO Add support for more a sequence of keys to be executed.
         _config.put("DeviceType", deviceType);
         _config.put("ButtonId", btnId);
