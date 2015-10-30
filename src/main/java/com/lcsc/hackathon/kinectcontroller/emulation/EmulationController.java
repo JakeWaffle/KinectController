@@ -83,7 +83,7 @@ public class EmulationController extends Thread {
         }
     }
 	
-	public void done() {
+	public synchronized void done() {
 		_done = true;
 	}
 	

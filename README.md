@@ -1,13 +1,21 @@
-# WSUHackathon2015 Kinect Controller
+# Kinect Controller
 
-There will be a better description for this project someday. This project will also be worked on further it is not complete at all.
-But homework for school and work can make it a bit difficult to have free time for programming on side projects.
+## Description
 
-# Description
+This project's goal is to make the Kinect compatible with any possible video game on a computer. The idea behind it is that the user supplies a
+configuration file that defines the gestures that the Kinect Controller will observe. These gestures will be tied to one or many reactions that
+have the potential to do a lot of different things from emulating keyboard events to executing programs or macros.
 
-This project was meant to be a Kinect controller that would recognize gestures and simulate keyboard and mouse input.
-It only supports Windows because of the Kinect SDK (which I believe only supports Windows.)
-It's biggest feature is that it is data driven. Depending on the config file given to the program, there will be
-different gestures that trigger different keyboard/mouse inputs.
+After this project gets some headway and we reach a near 1.0 release, then there should be a good amount of configuration
+files already created for various games and applications of the project.
 
-Later I'll give a tutorial on how to setup the configuration file.
+Refer to the wiki for more information on the project and how the configuration files work.
+
+## Building the Project
+
+The project isn't ready for use yet. The minimum features are still being worked on for the project to actually do what
+it is supposed to do. There is however a working prototype in the 'prototype' branch. The prototype isn't being maintained
+at this point and is in the process of being replaced with the final version.
+
+Eventually Gradle will be paired with InstallBuilder in order to build the required Jars and install them in a 
+friendly manner. InstallBuilder should be freely available since this is an open source project.

@@ -1,225 +1,220 @@
 package com.lcsc.hackathon.kinectcontroller;
 
+import com.primesense.nite.*;
+import org.openni.VideoFrameRef;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * Created by jake on 7/20/15.
+ * This class' primary purpose is to just display the skeletons of the users visible to the Kinect.
  */
-public class KinectDebugWindow {
-    /*
-    static GLU glu = new GLU();
-    static GLCanvas canvas;
-    static JFrame frame;
-    static FPSAnimator animator;
-    static int[] gl_rgb_tex = new int[1];
-    static int mx = -1, my = -1;     // Previous mouse coordinates
-    static int[] rotangles = {0, 0}; // Panning angles
-    static float zoom = 1;           // Zoom factor
-    static boolean color = true;     // Use the RGB texture or just draw it as color
-    static IntBuffer indices = ByteBuffer.allocateDirect(4 * 480 * 640).order(ByteOrder.nativeOrder()).asIntBuffer();
-    static ShortBuffer xyz = ByteBuffer.allocateDirect(2 * 480 * 640 * 3).order(ByteOrder.nativeOrder()).asShortBuffer();
+public class KinectDebugWindow extends Component implements UserTracker.NewFrameListener{
+    private JFrame              _frame;
+    private boolean             _done;
 
-    // Do the projection from u,v,depth to X,Y,Z directly in an opengl matrix
-    // These numbers come from a combination of the ros kinect_node wiki, and
-    // nicolas burrus' posts.
-    static void LoadVertexMatrix(GL2 gl2) {
-        float fx = 594.21f;
-        float fy = 591.04f;
-        float a = -0.0030711f;
-        float b = 3.3309495f;
-        float cx = 339.5f;
-        float cy = 242.7f;
-        float mat[] = {
-                1/fx,     0,  0, 0,
-                0,    -1/fy,  0, 0,
-                0,       0,  0, a,
-                -cx/fx, cy/fy, -1, b
-        };
-        gl2.glMultMatrixf(mat, 0);
-    }
+    private float               mHistogram[];
+    private int[]               mDepthPixels;
+    private UserTracker         mTracker;
+    private UserTrackerFrameRef mLastFrame;
+    private BufferedImage       mBufferedImage;
+    private int[]               mColors;
 
+    public KinectDebugWindow(UserTracker tracker) {
+        _frame = new JFrame("NiTE User Tracker Viewer");
 
-    // This matrix comes from a combination of nicolas burrus's calibration post
-    // and some python code I haven't documented yet.
-    static void LoadRGBMatrix(GL2 gl2) {
-        float mat[] = {
-                5.34866271e+02f,   3.89654806e+00f,   0.00000000e+00f,   1.74704200e-02f,
-                -4.70724694e+00f,  -5.28843603e+02f,   0.00000000e+00f,  -1.22753400e-02f,
-                -3.19670762e+02f,  -2.60999685e+02f,   0.00000000e+00f,  -9.99772000e-01f,
-                -6.98445586e+00f,   3.31139785e+00f,   0.00000000e+00f,   1.09167360e-02f
-        };
-        gl2.glMultMatrixf(mat, 0);
-    }
-
-    static void mouseMoved(int x, int y) {
-        if (mx >= 0 && my >= 0) {
-            rotangles[0] += y - my;
-            rotangles[1] += x - mx;
-        }
-        mx = x;
-        my = y;
-    }
-
-    static void mousePress(int button, int state, int x, int y) {
-        if (button == MouseEvent.BUTTON1 && state == MouseEvent.MOUSE_PRESSED) {
-            mx = x;
-            my = y;
-        }
-        if (button == MouseEvent.BUTTON1 && state == MouseEvent.MOUSE_RELEASED) {
-            mx = -1;
-            my = -1;
-        }
-    }
-
-    static void no_kinect_quit() {
-        System.out.println("Error: Kinect not connected?");
-        frame.dispose();
-        System.exit(1);
-    }
-
-    static void DrawGLScene(GL2 gl2) {
-        ShortPointer depthPointer = new ShortPointer((Pointer)null);
-        BytePointer rgbPointer = new BytePointer((Pointer)null);
-        int[] ts = new int[1];
-        if (freenect_sync_get_depth(depthPointer, ts, 0, FREENECT_DEPTH_11BIT) < 0) {
-            no_kinect_quit();
-        }
-        if (freenect_sync_get_video(rgbPointer, ts, 0, FREENECT_VIDEO_RGB) < 0) {
-            no_kinect_quit();
-        }
-
-        ShortBuffer depth = depthPointer.capacity(640 * 480).asBuffer();
-        ByteBuffer rgb = rgbPointer.capacity(640 * 480 * 3).asBuffer();
-
-        for (int i = 0; i < 480; i++) {
-            for (int j = 0; j < 640; j++) {
-                xyz.put(i * 640 * 3 + j * 3 + 0, (short)j);
-                xyz.put(i * 640 * 3 + j * 3 + 1, (short)i);
-                xyz.put(i * 640 * 3 + j * 3 + 2, depth.get(i * 640 + j));
-                indices.put(i * 640 + j, i * 640 + j);
-            }
-        }
-
-        gl2.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-        gl2.glLoadIdentity();
-
-        gl2.glPushMatrix();
-        gl2.glScalef(zoom, zoom, 1);
-        gl2.glTranslatef(0, 0, -3.5f);
-        gl2.glRotatef(rotangles[0], 1, 0, 0);
-        gl2.glRotatef(rotangles[1], 0, 1, 0);
-        gl2.glTranslatef(0, 0, 1.5f);
-
-        LoadVertexMatrix(gl2);
-
-        // Set the projection from the XYZ to the texture image
-        gl2.glMatrixMode(GL2.GL_TEXTURE);
-        gl2.glLoadIdentity();
-        gl2.glScalef(1/640.0f,1/480.0f,1);
-        LoadRGBMatrix(gl2);
-        LoadVertexMatrix(gl2);
-        gl2.glMatrixMode(GL2.GL_MODELVIEW);
-
-        gl2.glPointSize(1);
-
-        gl2.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl2.glVertexPointer(3, GL2.GL_SHORT, 0, xyz);
-        gl2.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
-        gl2.glTexCoordPointer(3, GL2.GL_SHORT, 0, xyz);
-
-        if (color) {
-            gl2.glEnable(GL2.GL_TEXTURE_2D);
-        }
-        gl2.glBindTexture(GL2.GL_TEXTURE_2D, gl_rgb_tex[0]);
-        gl2.glTexImage2D(GL2.GL_TEXTURE_2D, 0, 3, 640, 480, 0, GL2.GL_RGB, GL2.GL_UNSIGNED_BYTE, rgb);
-
-        gl2.glPointSize(2.0f);
-        gl2.glDrawElements(GL2.GL_POINTS, 640*480, GL2.GL_UNSIGNED_INT, indices);
-        gl2.glPopMatrix();
-        gl2.glDisable(GL2.GL_TEXTURE_2D);
-    }
-
-    static void keyPressed(int key) {
-        if (key == KeyEvent.VK_ESCAPE) {
-            freenect_sync_stop();
-            frame.dispose();
-            System.exit(0);
-        }
-        if (key == KeyEvent.VK_W) {
-            zoom *= 1.1f;
-        }
-        if (key == KeyEvent.VK_S) {
-            zoom /= 1.1f;
-        }
-        if (key == KeyEvent.VK_C) {
-            color = !color;
-        }
-    }
-
-    static void ReSizeGLScene(GL2 gl2, int Width, int Height) {
-        gl2.glViewport(0,0,Width,Height);
-        gl2.glMatrixMode(GL2.GL_PROJECTION);
-        gl2.glLoadIdentity();
-        glu.gluPerspective(60, 4/3., 0.3, 200);
-        gl2.glMatrixMode(GL2.GL_MODELVIEW);
-    }
-
-    static void InitGL(GL2 gl2, int Width, int Height) {
-        gl2.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        gl2.glEnable(GL2.GL_DEPTH_TEST);
-        gl2.glGenTextures(1, gl_rgb_tex, 0);
-        gl2.glBindTexture(GL2.GL_TEXTURE_2D, gl_rgb_tex[0]);
-        gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MIN_FILTER, GL2.GL_LINEAR);
-        gl2.glTexParameteri(GL2.GL_TEXTURE_2D, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_LINEAR);
-        ReSizeGLScene(gl2, Width, Height);
-    }
-
-    static void KinectDebugWindow() {
-        Loader.load(freenect.class);
-
-        canvas = new GLCanvas();
-        canvas.addGLEventListener(new GLEventListener() {
-            @Override public void init(GLAutoDrawable glautodrawable) {
-                InitGL(glautodrawable.getGL().getGL2(), glautodrawable.getWidth(), glautodrawable.getHeight());
+        // register to key events
+        _frame.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg) {
             }
 
-            @Override public void display(GLAutoDrawable glautodrawable) {
-                DrawGLScene(glautodrawable.getGL().getGL2());
+            public void keyReleased(KeyEvent arg) {
             }
 
-            @Override public void dispose(GLAutoDrawable glautodrawable) {
-            }
-
-            @Override public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
-                ReSizeGLScene(glautodrawable.getGL().getGL2(), width, height);
-            }
-        });
-        canvas.addKeyListener(new KeyAdapter() {
-            @Override public void keyPressed(KeyEvent e) {
-                keyPressed(e.getKeyCode());
-            }
-        });
-        canvas.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override public void mouseDragged(MouseEvent e) {
-                GLPCLView.mouseMoved(e.getX(), e.getY());
-            }
-        });
-        canvas.addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e) {
-                mousePress(e.getButton(), MouseEvent.MOUSE_PRESSED, e.getX(), e.getY());
-            }
-
-            @Override public void mouseReleased(MouseEvent e) {
-                mousePress(e.getButton(), MouseEvent.MOUSE_RELEASED, e.getX(), e.getY());
+            public void keyPressed(KeyEvent arg) {
+                if (arg.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    done();
+                }
             }
         });
 
-        frame = new JFrame("LibFreenect");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setPreferredSize(new Dimension(640, 480));
-        frame.getContentPane().add(canvas);
-        frame.pack();
-        frame.setVisible(true);
+        // register to closing event
+        _frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                done();
+            }
+        });
 
-        animator = new FPSAnimator(canvas, 60, true);
-        animator.start();
-    }*/
+        this.setSize(800, 600);
+        _frame.add("Center", this);
+        _frame.setSize(this.getWidth(), this.getHeight());
+        _frame.setVisible(true);
+
+        mTracker.addNewFrameListener(this);
+        mColors = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
+    }
+
+    public synchronized void done() {
+        _frame.dispose();
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        if (mLastFrame == null) {
+            return;
+        }
+
+        int framePosX = 0;
+        int framePosY = 0;
+
+        VideoFrameRef depthFrame = mLastFrame.getDepthFrame();
+        if (depthFrame != null) {
+            int width = depthFrame.getWidth();
+            int height = depthFrame.getHeight();
+
+            // make sure we have enough room
+            if (mBufferedImage == null || mBufferedImage.getWidth() != width || mBufferedImage.getHeight() != height) {
+                mBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            }
+
+            mBufferedImage.setRGB(0, 0, width, height, mDepthPixels, 0, width);
+
+            framePosX = (getWidth() - width) / 2;
+            framePosY = (getHeight() - height) / 2;
+
+            g.drawImage(mBufferedImage, framePosX, framePosY, null);
+        }
+
+        for (UserData user : mLastFrame.getUsers()) {
+            if (user.getSkeleton().getState() == SkeletonState.TRACKED) {
+                drawLimb(g, framePosX, framePosY, user, JointType.HEAD, JointType.NECK);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_SHOULDER, JointType.LEFT_ELBOW);
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_ELBOW, JointType.LEFT_HAND);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_SHOULDER, JointType.RIGHT_ELBOW);
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_ELBOW, JointType.RIGHT_HAND);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_SHOULDER, JointType.RIGHT_SHOULDER);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_SHOULDER, JointType.TORSO);
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_SHOULDER, JointType.TORSO);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_HIP, JointType.TORSO);
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_HIP, JointType.TORSO);
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_HIP, JointType.RIGHT_HIP);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_HIP, JointType.LEFT_KNEE);
+                drawLimb(g, framePosX, framePosY, user, JointType.LEFT_KNEE, JointType.LEFT_FOOT);
+
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_HIP, JointType.RIGHT_KNEE);
+                drawLimb(g, framePosX, framePosY, user, JointType.RIGHT_KNEE, JointType.RIGHT_FOOT);
+            }
+        }
+    }
+
+    private void drawLimb(Graphics g, int x, int y, UserData user, JointType from, JointType to) {
+        com.primesense.nite.SkeletonJoint fromJoint = user.getSkeleton().getJoint(from);
+        com.primesense.nite.SkeletonJoint toJoint = user.getSkeleton().getJoint(to);
+
+        if (fromJoint.getPositionConfidence() == 0.0 || toJoint.getPositionConfidence() == 0.0) {
+            return;
+        }
+
+        com.primesense.nite.Point2D<Float> fromPos = mTracker.convertJointCoordinatesToDepth(fromJoint.getPosition());
+        com.primesense.nite.Point2D<Float> toPos = mTracker.convertJointCoordinatesToDepth(toJoint.getPosition());
+
+        // draw it in another color than the use color
+        g.setColor(new Color(mColors[(user.getId() + 1) % mColors.length]));
+        g.drawLine(x + fromPos.getX().intValue(), y + fromPos.getY().intValue(), x + toPos.getX().intValue(), y + toPos.getY().intValue());
+    }
+
+    public void onNewFrame(UserTracker tracker) {
+        if (mLastFrame != null) {
+            mLastFrame.release();
+            mLastFrame = null;
+        }
+
+        mLastFrame = mTracker.readFrame();
+
+        // check if any new user detected
+        for (UserData user : mLastFrame.getUsers()) {
+            if (user.isNew()) {
+                // start skeleton tracking
+                mTracker.startSkeletonTracking(user.getId());
+            }
+        }
+
+        VideoFrameRef depthFrame = mLastFrame.getDepthFrame();
+
+        if (depthFrame != null) {
+            ByteBuffer frameData = depthFrame.getData().order(ByteOrder.LITTLE_ENDIAN);
+            ByteBuffer usersFrame = mLastFrame.getUserMap().getPixels().order(ByteOrder.LITTLE_ENDIAN);
+
+            // make sure we have enough room
+            if (mDepthPixels == null || mDepthPixels.length < depthFrame.getWidth() * depthFrame.getHeight()) {
+                mDepthPixels = new int[depthFrame.getWidth() * depthFrame.getHeight()];
+            }
+
+            calcHist(frameData);
+            frameData.rewind();
+
+            int pos = 0;
+            while(frameData.remaining() > 0) {
+                short depth = frameData.getShort();
+                short userId = usersFrame.getShort();
+                short pixel = (short)mHistogram[depth];
+                int color = 0xFFFFFFFF;
+                if (userId > 0) {
+                    color = mColors[userId % mColors.length];
+                }
+
+                mDepthPixels[pos] = color & (0xFF000000 | (pixel << 16) | (pixel << 8) | pixel);
+                pos++;
+            }
+
+            depthFrame.release();
+            depthFrame = null;
+        }
+
+        repaint();
+    }
+
+    private void calcHist(ByteBuffer depthBuffer) {
+        // make sure we have enough room
+        if (mHistogram == null) {
+            mHistogram = new float[10000];
+        }
+
+        // reset
+        for (int i = 0; i < mHistogram.length; ++i)
+            mHistogram[i] = 0;
+
+        int points = 0;
+        while (depthBuffer.remaining() > 0) {
+            int depth = depthBuffer.getShort() & 0xFFFF;
+            if (depth != 0) {
+                mHistogram[depth]++;
+                points++;
+            }
+        }
+
+        for (int i = 1; i < mHistogram.length; i++) {
+            mHistogram[i] += mHistogram[i - 1];
+        }
+
+        if (points > 0) {
+            for (int i = 1; i < mHistogram.length; i++) {
+                mHistogram[i] = (int) (256 * (1.0f - (mHistogram[i] / (float) points)));
+            }
+        }
+    }
 }
