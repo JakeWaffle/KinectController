@@ -13,9 +13,12 @@ Refer to the wiki for more information on the project and how the configuration 
 
 ## Building the Project
 
-The project isn't ready for use yet. The minimum features are still being worked on for the project to actually do what
-it is supposed to do. There is however a working prototype in the 'prototype' branch. The prototype isn't being maintained
-at this point and is in the process of being replaced with the final version.
+The project still needs this part worked out a bit better, but I've been using Intellij for now (Gradle will be the goto later.)
 
-Eventually Gradle will be paired with InstallBuilder in order to build the required Jars and install them in a 
-friendly manner. InstallBuilder should be freely available since this is an open source project.
+1. Load up the project in Intellij.
+2. Make sure there is an Artifact in the Project Settings of the KinectController. If there isn't, then create a JAR artifact from the KinectController'should
+modules. Then make sure the project's jar is being built on make (there's a checkbox for it) and change the output directory to KinectController/lib.
+3. Get Gradle to refresh its dependencies (one way to do this is to go to View->Tool Windows->Gradle, then press the refresh icon in the Gradle window.)
+4. Get Intellij to make the project. There's a button for it at the top right of Intellij -- the icon has a downward arrow along with some 0's and 1's.
+5. Go into the KinectController/lib directory and execute the KinectController.jar with the below command.
+$java -cp KinectController.jar com.lcsc.hackathon.kinectcontroller.Main -d -f ../config/config.gdef
