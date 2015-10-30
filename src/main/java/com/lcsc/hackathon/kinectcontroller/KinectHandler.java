@@ -18,10 +18,11 @@ import java.util.List;
  */
 public class KinectHandler implements UserTracker.NewFrameListener{
     private static final Logger             _logger = LoggerFactory.getLogger(KinectHandler.class);
-    private              KinectDebugWindow   _kinectWindow;
-    private              UserTracker         _tracker;
+    public         final KinectDebugWindow  kinectWindow;
+    private              UserTracker        _tracker;
 
     public KinectHandler(boolean debug) {
+        System.out.println("Initializing the things.");
         OpenNI.initialize();
         NiTE.initialize();
 
@@ -35,16 +36,21 @@ public class KinectHandler implements UserTracker.NewFrameListener{
         _tracker = UserTracker.create();
 
         if (debug) {
-            _kinectWindow = new KinectDebugWindow(_tracker);
+            kinectWindow = new KinectDebugWindow(UserTracker.create());
         }
             else {
-            _kinectWindow = null;
+            kinectWindow = null;
         }
 
         _tracker.addNewFrameListener(this);
     }
 
+    /**
+     * This delegate method will be called by the _tracker periodically.
+     * @param tracker The tracker that called the method probably. Examples I've seen don't even utilize it because
+     *                there is already a copy of it saved in the class' private scope.
+     */
     public void onNewFrame(UserTracker tracker) {
-
+        //TODO Pull the posturerules Event Beans from the current ControllerState, fill those beans with data and give them to Esper.
     }
 }

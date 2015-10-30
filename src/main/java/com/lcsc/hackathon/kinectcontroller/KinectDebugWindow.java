@@ -21,15 +21,16 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
     private JFrame              _frame;
     private boolean             _done;
 
-    private float               mHistogram[];
-    private int[]               mDepthPixels;
-    private UserTracker         mTracker;
-    private UserTrackerFrameRef mLastFrame;
-    private BufferedImage       mBufferedImage;
-    private int[]               mColors;
+    private float               _histogram[];
+    private int[]               _depthPixels;
+    private UserTracker         _tracker;
+    private UserTrackerFrameRef _lastFrame;
+    private BufferedImage       _bufferedImage;
+    private int[]               _colors;
 
     public KinectDebugWindow(UserTracker tracker) {
-        _frame = new JFrame("NiTE User Tracker Viewer");
+        _tracker    = tracker;
+        _frame      = new JFrame("NiTE User Tracker Viewer");
 
         // register to key events
         _frame.addKeyListener(new KeyListener() {
@@ -58,8 +59,8 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
         _frame.setSize(this.getWidth(), this.getHeight());
         _frame.setVisible(true);
 
-        mTracker.addNewFrameListener(this);
-        mColors = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
+        _tracker.addNewFrameListener(this);
+        _colors = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
     }
 
     public synchronized void done() {
@@ -68,32 +69,32 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
 
     @Override
     public void paint(Graphics g) {
-        if (mLastFrame == null) {
+        if (_lastFrame == null) {
             return;
         }
 
         int framePosX = 0;
         int framePosY = 0;
 
-        VideoFrameRef depthFrame = mLastFrame.getDepthFrame();
+        VideoFrameRef depthFrame = _lastFrame.getDepthFrame();
         if (depthFrame != null) {
             int width = depthFrame.getWidth();
             int height = depthFrame.getHeight();
 
             // make sure we have enough room
-            if (mBufferedImage == null || mBufferedImage.getWidth() != width || mBufferedImage.getHeight() != height) {
-                mBufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            if (_bufferedImage == null || _bufferedImage.getWidth() != width || _bufferedImage.getHeight() != height) {
+                _bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             }
 
-            mBufferedImage.setRGB(0, 0, width, height, mDepthPixels, 0, width);
+            _bufferedImage.setRGB(0, 0, width, height, _depthPixels, 0, width);
 
             framePosX = (getWidth() - width) / 2;
             framePosY = (getHeight() - height) / 2;
 
-            g.drawImage(mBufferedImage, framePosX, framePosY, null);
+            g.drawImage(_bufferedImage, framePosX, framePosY, null);
         }
 
-        for (UserData user : mLastFrame.getUsers()) {
+        for (UserData user : _lastFrame.getUsers()) {
             if (user.getSkeleton().getState() == SkeletonState.TRACKED) {
                 drawLimb(g, framePosX, framePosY, user, JointType.HEAD, JointType.NECK);
 
@@ -129,39 +130,39 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
             return;
         }
 
-        com.primesense.nite.Point2D<Float> fromPos = mTracker.convertJointCoordinatesToDepth(fromJoint.getPosition());
-        com.primesense.nite.Point2D<Float> toPos = mTracker.convertJointCoordinatesToDepth(toJoint.getPosition());
+        com.primesense.nite.Point2D<Float> fromPos = _tracker.convertJointCoordinatesToDepth(fromJoint.getPosition());
+        com.primesense.nite.Point2D<Float> toPos = _tracker.convertJointCoordinatesToDepth(toJoint.getPosition());
 
         // draw it in another color than the use color
-        g.setColor(new Color(mColors[(user.getId() + 1) % mColors.length]));
+        g.setColor(new Color(_colors[(user.getId() + 1) % _colors.length]));
         g.drawLine(x + fromPos.getX().intValue(), y + fromPos.getY().intValue(), x + toPos.getX().intValue(), y + toPos.getY().intValue());
     }
 
     public void onNewFrame(UserTracker tracker) {
-        if (mLastFrame != null) {
-            mLastFrame.release();
-            mLastFrame = null;
+        if (_lastFrame != null) {
+            _lastFrame.release();
+            _lastFrame = null;
         }
 
-        mLastFrame = mTracker.readFrame();
+        _lastFrame = _tracker.readFrame();
 
         // check if any new user detected
-        for (UserData user : mLastFrame.getUsers()) {
+        for (UserData user : _lastFrame.getUsers()) {
             if (user.isNew()) {
                 // start skeleton tracking
-                mTracker.startSkeletonTracking(user.getId());
+                _tracker.startSkeletonTracking(user.getId());
             }
         }
 
-        VideoFrameRef depthFrame = mLastFrame.getDepthFrame();
+        VideoFrameRef depthFrame = _lastFrame.getDepthFrame();
 
         if (depthFrame != null) {
             ByteBuffer frameData = depthFrame.getData().order(ByteOrder.LITTLE_ENDIAN);
-            ByteBuffer usersFrame = mLastFrame.getUserMap().getPixels().order(ByteOrder.LITTLE_ENDIAN);
+            ByteBuffer usersFrame = _lastFrame.getUserMap().getPixels().order(ByteOrder.LITTLE_ENDIAN);
 
             // make sure we have enough room
-            if (mDepthPixels == null || mDepthPixels.length < depthFrame.getWidth() * depthFrame.getHeight()) {
-                mDepthPixels = new int[depthFrame.getWidth() * depthFrame.getHeight()];
+            if (_depthPixels == null || _depthPixels.length < depthFrame.getWidth() * depthFrame.getHeight()) {
+                _depthPixels = new int[depthFrame.getWidth() * depthFrame.getHeight()];
             }
 
             calcHist(frameData);
@@ -171,13 +172,13 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
             while(frameData.remaining() > 0) {
                 short depth = frameData.getShort();
                 short userId = usersFrame.getShort();
-                short pixel = (short)mHistogram[depth];
+                short pixel = (short) _histogram[depth];
                 int color = 0xFFFFFFFF;
                 if (userId > 0) {
-                    color = mColors[userId % mColors.length];
+                    color = _colors[userId % _colors.length];
                 }
 
-                mDepthPixels[pos] = color & (0xFF000000 | (pixel << 16) | (pixel << 8) | pixel);
+                _depthPixels[pos] = color & (0xFF000000 | (pixel << 16) | (pixel << 8) | pixel);
                 pos++;
             }
 
@@ -190,30 +191,30 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
 
     private void calcHist(ByteBuffer depthBuffer) {
         // make sure we have enough room
-        if (mHistogram == null) {
-            mHistogram = new float[10000];
+        if (_histogram == null) {
+            _histogram = new float[10000];
         }
 
         // reset
-        for (int i = 0; i < mHistogram.length; ++i)
-            mHistogram[i] = 0;
+        for (int i = 0; i < _histogram.length; ++i)
+            _histogram[i] = 0;
 
         int points = 0;
         while (depthBuffer.remaining() > 0) {
             int depth = depthBuffer.getShort() & 0xFFFF;
             if (depth != 0) {
-                mHistogram[depth]++;
+                _histogram[depth]++;
                 points++;
             }
         }
 
-        for (int i = 1; i < mHistogram.length; i++) {
-            mHistogram[i] += mHistogram[i - 1];
+        for (int i = 1; i < _histogram.length; i++) {
+            _histogram[i] += _histogram[i - 1];
         }
 
         if (points > 0) {
-            for (int i = 1; i < mHistogram.length; i++) {
-                mHistogram[i] = (int) (256 * (1.0f - (mHistogram[i] / (float) points)));
+            for (int i = 1; i < _histogram.length; i++) {
+                _histogram[i] = (int) (256 * (1.0f - (_histogram[i] / (float) points)));
             }
         }
     }

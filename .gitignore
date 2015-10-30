@@ -4,3 +4,4 @@ log.txt
 .gradle
 KinectController.iml
 gradle
+lib/KinectController.jar
