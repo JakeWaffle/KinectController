@@ -29,6 +29,7 @@ import com.espertech.esper.client.UpdateListener;
 import com.lcsc.hackathon.kinectcontroller.EsperHandler;
 import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
 import com.lcsc.hackathon.kinectcontroller.esperlisteners.EventListener;
+import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -77,6 +78,15 @@ public class ControllerStateMachine {
             success     = true;
         }
         return success;
+    }
+
+    /**
+     * The csm needs to be a mediator between the current state and the KinectHandler. That way there are no problems
+     * when the state changes.
+     * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
+     */
+    public Collection<Rule> getCurrentRules() {
+        return _curState.getRules();
     }
 
     /**

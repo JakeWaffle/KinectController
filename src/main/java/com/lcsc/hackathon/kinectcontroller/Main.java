@@ -28,6 +28,7 @@ package com.lcsc.hackathon.kinectcontroller;
 import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
 import com.lcsc.hackathon.kinectcontroller.config.ParseException;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
+import com.lcsc.hackathon.kinectcontroller.kinect.KinectHandler;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class Main {
     }
     
     public void run() {
-        KinectHandler kinectHandler = new KinectHandler(_arguments.hasOption('d'));
+        KinectHandler kinectHandler = new KinectHandler(_csm, _arguments.hasOption('d'));
         
 		Console console = System.console();
         boolean done    = false;

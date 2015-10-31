@@ -27,6 +27,7 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 
@@ -42,7 +43,7 @@ public class ControllerState {
     //This will hold all of the java bean posturerules that will be updated by the KinectHandler and given to Esper.
     //It maps a SHA256 hash to a java bean that generated the hash.
     //The hash makes it so that there are no duplicate posturerules for separate gestures.
-    private Map<String, Object>     _rules;
+    private Map<String, Rule>     _rules;
 
     //This will hold the gestures that the above posturerules are meant for.
     //It maps a gestureId (user defined) to a Gesture object.
@@ -58,7 +59,16 @@ public class ControllerState {
 
     public void addRule(Object rule) {
         String ruleId = ((Rule)rule).getId();
-        _rules.put(ruleId, rule);
+        _rules.put(ruleId, (Rule)rule);
+    }
+
+    /**
+     * This is for getting the posturerule event beans for the ControllerState so that they can be updated with Kinect data
+     * and given to Esper.
+     * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
+     */
+    public Collection<Rule> getRules() {
+        return _rules.values();
     }
 
     public void addGesture(String gestureId, Gesture gesture) {

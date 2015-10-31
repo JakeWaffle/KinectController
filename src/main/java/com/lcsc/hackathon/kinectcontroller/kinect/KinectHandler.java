@@ -23,8 +23,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.kinectcontroller;
+package com.lcsc.hackathon.kinectcontroller.kinect;
 
+import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
+import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 import com.primesense.nite.*;
 import org.openni.Device;
 import org.openni.DeviceInfo;
@@ -42,11 +44,14 @@ import java.util.List;
  * be handing off the positions of joints to Esper and Esper will then use that data to detect gestures.
  */
 public class KinectHandler implements UserTracker.NewFrameListener{
-    private static final Logger             _logger = LoggerFactory.getLogger(KinectHandler.class);
-    public         final KinectDebugWindow  kinectWindow;
-    private              UserTracker        _tracker;
+    private static final Logger                 _logger = LoggerFactory.getLogger(KinectHandler.class);
+    public         final KinectDebugWindow      kinectWindow;
+    private              UserTracker            _tracker;
+    private        final ControllerStateMachine _csm;
 
-    public KinectHandler(boolean debug) {
+    public KinectHandler(ControllerStateMachine csm, boolean debug) {
+        _csm = csm;
+
         System.out.println("Initializing the things.");
         OpenNI.initialize();
         NiTE.initialize();
@@ -77,5 +82,8 @@ public class KinectHandler implements UserTracker.NewFrameListener{
      */
     public void onNewFrame(UserTracker tracker) {
         //TODO Pull the posturerules Event Beans from the current ControllerState, fill those beans with data and give them to Esper.
+        for (Rule rule : _csm.getCurrentRules()) {
+            //Update that rule!
+        }
     }
 }
