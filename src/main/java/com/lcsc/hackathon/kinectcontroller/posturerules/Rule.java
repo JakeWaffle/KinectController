@@ -30,5 +30,6 @@ package com.lcsc.hackathon.kinectcontroller.posturerules;
  * An interface for all of the posturerules to expose the general Rule methods to our ControllerState.
  */
 public interface Rule {
-    public String getId();
+    String getId();
+    RuleType getType();
 }

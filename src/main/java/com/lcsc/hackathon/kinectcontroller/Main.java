@@ -28,7 +28,7 @@ package com.lcsc.hackathon.kinectcontroller;
 import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
 import com.lcsc.hackathon.kinectcontroller.config.ParseException;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.kinect.KinectHandler;
+import com.lcsc.hackathon.kinectcontroller.kinect.KinectUserTracker;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +68,7 @@ public class Main {
     }
     
     public void run() {
-        KinectHandler kinectHandler = new KinectHandler(_csm, _arguments.hasOption('d'));
+        KinectUserTracker kinectUserTracker = new KinectUserTracker(_csm, _arguments.hasOption('d'));
         
 		Console console = System.console();
         boolean done    = false;
@@ -76,8 +76,8 @@ public class Main {
             String input = console.readLine("Enter quit: ");
             if (input.equals("quit")) {
                 done = true;
-                if (kinectHandler.kinectWindow != null) {
-                    kinectHandler.kinectWindow.done();
+                if (kinectUserTracker.kinectWindow != null) {
+                    kinectUserTracker.kinectWindow.done();
                 }
             }
         }

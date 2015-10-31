@@ -35,7 +35,7 @@ public class EventFactory {
     private static final Logger _logger      = LoggerFactory.getLogger(EventFactory.class);
     
     //These lists of posturerules are instantiated based off of the config file.
-    //They are meant to be updated periodically by the KinectHandler and then
+    //They are meant to be updated periodically by the KinectUserTracker and then
     //passed to Esper to be processed.
     List<Angle> angleRules = new ArrayList<Angle>();
     List<Distance> distRules = new ArrayList<Distance>();
@@ -87,7 +87,7 @@ public class EventFactory {
     }
 
     /*
-    //TODO Modify this to work with the new KinectHandler SDK
+    //TODO Modify this to work with the new KinectUserTracker SDK
     public void getEventData(Skeleton skele, EsperHandler eHandler) {
         //loop through all of the angle/distRules and 
         for (AngleRule rule : this.angleRules) {

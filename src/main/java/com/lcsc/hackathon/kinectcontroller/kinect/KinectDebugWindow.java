@@ -208,7 +208,6 @@ public class KinectDebugWindow extends Component implements UserTracker.NewFrame
             }
 
             depthFrame.release();
-            depthFrame = null;
         }
 
         repaint();

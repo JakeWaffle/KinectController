@@ -65,6 +65,10 @@ public class Angle implements Rule{
 	public String getId() {
 		return this.id;
 	}
+
+	public RuleType getType() {
+		return RuleType.ANGLE;
+	}
 	
 	public void setId(String id) {
 		this.id = id;

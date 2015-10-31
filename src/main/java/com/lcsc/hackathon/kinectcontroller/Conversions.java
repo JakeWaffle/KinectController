@@ -48,7 +48,7 @@ public class Conversions {
 		return value;
 	}
 
-	//TODO This needs to be adapted to whatever KinectHandler SDK we switch to.
+	//TODO This needs to be adapted to whatever KinectUserTracker SDK we switch to.
 	public static int getJointId(String key) {
 		//System.out.println("Key: "+key);
 		int value = -1;

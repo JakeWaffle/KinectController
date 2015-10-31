@@ -25,10 +25,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.controller;
 
-import com.espertech.esper.client.UpdateListener;
-import com.lcsc.hackathon.kinectcontroller.EsperHandler;
+import com.lcsc.hackathon.kinectcontroller.esper.EsperHandler;
 import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
-import com.lcsc.hackathon.kinectcontroller.esperlisteners.EventListener;
+import com.lcsc.hackathon.kinectcontroller.esper.EventListener;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 
 import java.util.Collection;
@@ -81,7 +80,7 @@ public class ControllerStateMachine {
     }
 
     /**
-     * The csm needs to be a mediator between the current state and the KinectHandler. That way there are no problems
+     * The csm needs to be a mediator between the current state and the KinectUserTracker. That way there are no problems
      * when the state changes.
      * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
      */
