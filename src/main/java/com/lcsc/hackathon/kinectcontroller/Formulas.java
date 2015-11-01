@@ -25,6 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller;
 
+import com.primesense.nite.Point3D;
+
 public class Formulas {
     //If joint A is greater that joint B on the chosen axis, returns true otherwise false.
 	//Accepts 0,1,2 as X,Y,Z
@@ -52,12 +54,12 @@ public class Formulas {
 	}
 	
 	// Get the distance between two joints.
-	public static double getDistance(double[] jointA, double[] jointB) {
-		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));
+	public static double getDistance(Point3D<Float> jointA, Point3D<Float> jointB) {
+		return Math.sqrt(Math.pow(jointB.getX()-jointA.getX(), 2) + Math.pow(jointB.getY()-jointA.getY(), 2) + Math.pow(jointB.getZ()-jointA.getZ(), 2));
 	}
 	
 	// Get the angle at a vertex given three joints.
-	public static double getAngle(double[] jointA, double[] vertex, double[] jointB) { 
+	public static double getAngle(Point3D<Float> jointA, Point3D<Float> vertex, Point3D<Float> jointB) {
 		double distA = getDistance(vertex, jointA);
 		double distB = getDistance(vertex, jointB);
 		double distC = getDistance(jointA, jointB);

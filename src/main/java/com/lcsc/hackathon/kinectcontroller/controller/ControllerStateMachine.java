@@ -40,12 +40,14 @@ import java.util.Map;
  * area within the game where the controls possibly change.
  */
 public class ControllerStateMachine {
+    public final    EsperHandler                    esperHandler 	= new EsperHandler();
+
     //This maps a state id to a Controller state. This mapping is defined in the config file.
-    private Map<String, ControllerState>    _states;
-    private ControllerState                 _curState 		= null;
-    private EsperHandler                    _esperHandler 	= new EsperHandler();
-	private EventListener					_eventListener;
-	private EmulationController				_emulationController;
+    private         Map<String, ControllerState>    _states;
+    private         ControllerState                 _curState 		= null;
+
+	private         EventListener					_eventListener;
+	private         EmulationController				_emulationController;
 
     public ControllerStateMachine() {
         _states 				= new HashMap<String, ControllerState>();

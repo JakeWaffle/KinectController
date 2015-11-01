@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.kinect;
 
+import com.lcsc.hackathon.kinectcontroller.Formulas;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Angle;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
@@ -124,6 +125,12 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                             SkeletonJoint end1      = skeleton.getJoint(JointType.fromNative(angRule.getEnd1()));
                             SkeletonJoint vertex    = skeleton.getJoint(JointType.fromNative(angRule.getVertex()));
                             SkeletonJoint end2      = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
+
+                            double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
+                            angRule.setAngle(angle);
+
+                            //Send that rule object over to Esper now for some event processing and pattern matching.
+                            _csm.esperHandler.sendEvent(rule);
                             break;
                     }
                 }
