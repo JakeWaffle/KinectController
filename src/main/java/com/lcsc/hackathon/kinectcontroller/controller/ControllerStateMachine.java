@@ -96,9 +96,9 @@ public class ControllerStateMachine {
     private void loadGestures() {
         Collection<Gesture> gestures = _curState.getGestures();
         for (Gesture gesture : gestures) {
-            _esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
+            esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
             _eventListener.loadReactions(gesture.gestureId, gesture.getReactions());
-            _esperHandler.addListener(gesture.gestureId, _eventListener);
+            esperHandler.addListener(gesture.gestureId, _eventListener);
         }
     }
 

@@ -55,7 +55,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
     public KinectUserTracker(ControllerStateMachine csm, boolean debug) {
         _csm = csm;
 
-        System.out.println("Initializing the things.");
+        _logger.info("Initializing OpenNi and Nite.");
         OpenNI.initialize();
         NiTE.initialize();
 
@@ -69,9 +69,9 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         _tracker = UserTracker.create();
 
         if (debug) {
-            kinectWindow = new KinectDebugWindow(UserTracker.create());
+            kinectWindow = new KinectDebugWindow(_tracker);
         }
-            else {
+        else {
             kinectWindow = null;
         }
 
@@ -95,12 +95,18 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                 return;
             }
             else {
+                boolean userFound = false;
                 for (UserData user : users) {
                     if (user.isNew()) {
-                        _userId = user.getId();
+                        _userId     = user.getId();
                         _tracker.startSkeletonTracking(_userId);
-                        userData = user;
+                        userData    = user;
+                        userFound   = true;
+                        _logger.info(String.format("New User: %d", _userId));
                     }
+                }
+                if (!userFound) {
+                    return;
                 }
             }
         }
@@ -112,29 +118,32 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                 return;
             }
         }
-        if (userData != null) {
-            Skeleton skeleton = userData.getSkeleton();
-            if (skeleton.getState() == SkeletonState.TRACKED) {
-                //Here we will get the posturerule event beans from the current ControllerState.
-                //We'll then update them with data from the user that's being tracked and we'll pass
-                //those objects over to Esper for processing.
-                for (Rule rule : _csm.getCurrentRules()) {
-                    switch (rule.getType()) {
-                        case ANGLE:
-                            Angle angRule           = (Angle) rule;
-                            SkeletonJoint end1      = skeleton.getJoint(JointType.fromNative(angRule.getEnd1()));
-                            SkeletonJoint vertex    = skeleton.getJoint(JointType.fromNative(angRule.getVertex()));
-                            SkeletonJoint end2      = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
 
-                            double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
-                            angRule.setAngle(angle);
+        Skeleton skeleton = userData.getSkeleton();
+        if (skeleton.getState() == SkeletonState.TRACKED) {
+            //Here we will get the posturerule event beans from the current ControllerState.
+            //We'll then update them with data from the user that's being tracked and we'll pass
+            //those objects over to Esper for processing.
+            for (Rule rule : _csm.getCurrentRules()) {
+                switch (rule.getType()) {
+                    case ANGLE:
+                        Angle angRule           = (Angle) rule;
+                        SkeletonJoint end1      = skeleton.getJoint(JointType.fromNative(angRule.getEnd1()));
+                        SkeletonJoint vertex    = skeleton.getJoint(JointType.fromNative(angRule.getVertex()));
+                        SkeletonJoint end2      = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
 
-                            //Send that rule object over to Esper now for some event processing and pattern matching.
-                            _csm.esperHandler.sendEvent(rule);
-                            break;
-                    }
+                        double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
+                        angRule.setAngle(angle);
+
+                        //Send that rule object over to Esper now for some event processing and pattern matching.
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
                 }
             }
+        }
+
+        if (kinectWindow != null) {
+            kinectWindow.repaint();
         }
     }
 }

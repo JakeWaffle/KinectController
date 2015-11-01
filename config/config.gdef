@@ -5,23 +5,23 @@ starting_state is Menu
 state Menu
     gesture left_click
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_elbow
-            end2       is   right_shoulder
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_ELBOW
+            end2       is   RIGHT_SHOULDER
             min_angle  is   150
             max_angle  is   180
 
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_shoulder
-            end2       is   left_shoulder
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_SHOULDER
+            end2       is   LEFT_SHOULDER
             min_angle  is   80
             max_angle  is   100
 
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_shoulder
-            end2       is   right_hip
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_SHOULDER
+            end2       is   RIGHT_HIP
             min_angle  is   80
             max_angle  is   100
 
@@ -33,23 +33,23 @@ state Menu
 state Game
     gesture left_click
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_elbow
-            end2       is   right_shoulder
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_ELBOW
+            end2       is   RIGHT_SHOULDER
             min_angle  is   150
             max_angle  is   180
 
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_shoulder
-            end2       is   left_shoulder
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_SHOULDER
+            end2       is   LEFT_SHOULDER
             min_angle  is   80
             max_angle  is   100
 
         rule Angle
-            end1       is   right_hand
-            vertex     is   right_shoulder
-            end2       is   right_hip
+            end1       is   RIGHT_HAND
+            vertex     is   RIGHT_SHOULDER
+            end2       is   RIGHT_HIP
             min_angle  is   80
             max_angle  is   100
 
