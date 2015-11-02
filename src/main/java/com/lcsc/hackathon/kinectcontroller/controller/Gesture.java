@@ -28,6 +28,8 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 import com.espertech.esper.client.UpdateListener;
 import com.lcsc.hackathon.kinectcontroller.emulation.ReactionType;
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,8 +43,9 @@ import java.util.Map;
  * joint is being tracked for the mouse and stuff like that.
  */
 public class Gesture {
-    public final String             gestureId;
-    public final ControllerState    state;
+    private static final Logger             _logger      = LoggerFactory.getLogger(Gesture.class);
+    public         final String             gestureId;
+    public         final ControllerState    state;
 
     //These are a bunch of pieces of the overall gesture query. Each piece is specifically for
     //a rule that makes up the gesture. These will be able to be assembled into a complete gesture query for esper
@@ -73,16 +76,21 @@ public class Gesture {
      *         so the Listener can look up this Gesture's emulation.
      */
     public String getEsperQuery() {
-        String query = String.format("%s as gestureId from pattern[", gestureId);
+        String query = null;
+        if (_ruleQueries.size() > 0) {
+            query = String.format("%s as gestureId from pattern[", gestureId);
 
-        for (int i=0; i<_ruleQueries.size(); i++) {
-            query += _ruleQueries.get(i);
-            if (i != _ruleQueries.size()-1) {
-                query += " and ";
+            for (int i = 0; i < _ruleQueries.size(); i++) {
+                query += _ruleQueries.get(i);
+                if (i != _ruleQueries.size() - 1) {
+                    query += " and ";
+                } else {
+                    query += "]";
+                }
             }
-            else {
-                query += "]";
-            }
+        }
+        else {
+            _logger.warn(String.format("No Rule Queries were loaded into Gesture: %s", gestureId));
         }
 
         return query;

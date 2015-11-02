@@ -49,7 +49,7 @@ public class Main {
     
     public Main(String[] args) {
         _arguments  = new Cli(args).parse();
-        //_csm        = parseConfig(_arguments.getOptionValue("f"));
+        _csm        = parseConfig(_arguments.getOptionValue("f"));
     }
 
     private ControllerStateMachine parseConfig(String configFilename) {

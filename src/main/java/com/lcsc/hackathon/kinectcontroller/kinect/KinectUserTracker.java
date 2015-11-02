@@ -113,6 +113,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         else {
             userData = frame.getUserById(_userId);
             if (userData.isLost()) {
+                _logger.info(String.format("Lost User: %d", _userId));
                 _tracker.stopSkeletonTracking(_userId);
                 _userId = -1;
                 return;
@@ -121,6 +122,10 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
 
         Skeleton skeleton = userData.getSkeleton();
         if (skeleton.getState() == SkeletonState.TRACKED) {
+            //Note: If there is no ControllerState assigned to the ControllerStateMachine's curState, then
+            //the following will throw a null pointer exception! We will prevent this by making sure there is
+            //a current state when the config file is loaded.
+
             //Here we will get the posturerule event beans from the current ControllerState.
             //We'll then update them with data from the user that's being tracked and we'll pass
             //those objects over to Esper for processing.
