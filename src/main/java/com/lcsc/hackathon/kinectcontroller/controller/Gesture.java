@@ -78,7 +78,7 @@ public class Gesture {
     public String getEsperQuery() {
         String query = null;
         if (_ruleQueries.size() > 0) {
-            query = String.format("'%s' as gestureId from pattern[", gestureId);
+            query = String.format("select '%s' as gestureId from pattern[", gestureId);
 
             for (int i = 0; i < _ruleQueries.size(); i++) {
                 query += _ruleQueries.get(i);

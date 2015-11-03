@@ -257,18 +257,18 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         int vertex_id   = Conversions.getJointId(vertex);
         int end2_id     = Conversions.getJointId(end2);
 
-        patternChunk1 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1_id,
+        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1_id,
                                                                                        vertex_id,
                                                                                        end2_id,
                                                                                        minAngle.intValue(),
                                                                                        maxAngle.intValue());
 
-        patternChunk2 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle < %d)", end1_id,
+        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1_id,
                                                                                             vertex_id,
                                                                                             end2_id,
                                                                                             minAngle.intValue());
 
-        patternChunk3 = String.format("AngleRule(end1=%d, vertex=%d, end2=%d, angle > %d)", end1_id,
+        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1_id,
                                                                                             vertex_id,
                                                                                             end2_id,
                                                                                             maxAngle.intValue());

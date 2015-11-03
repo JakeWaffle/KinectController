@@ -86,7 +86,7 @@ Refer to the wiki for more information on the project and how the configuration 
 The project still needs this part worked out a bit better, but I've been using Intellij for now (Gradle will be the goto later.)
 
 1. Load up the project in Intellij.
-2. Make sure there is an Artifact in the Project Settings of the KinectController. If there isn't, then create a JAR artifact from the KinectController'should
+2. Make sure there is an Artifact in the Project Settings of the KinectController. If there isn't, then create a JAR artifact from the KinectController's
 modules. Then make sure the project's jar is being built on make (there's a checkbox for it) and change the output directory to KinectController/lib.
 3. Get Gradle to refresh its dependencies (one way to do this is to go to View->Tool Windows->Gradle, then press the refresh icon in the Gradle window.)
 4. Get Intellij to make the project. There's a button for it at the top right of Intellij -- the icon has a downward arrow along with some 0's and 1's.
