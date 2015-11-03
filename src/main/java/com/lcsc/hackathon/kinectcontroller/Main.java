@@ -48,6 +48,7 @@ public class Main {
     private ControllerStateMachine  _csm;
     private JFrame                  _frame;
     private boolean                 _done;
+	private JTextArea				_eventWindow;
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -103,7 +104,13 @@ public class Main {
         });
 
         kinectUserTracker.kinectWindow.setSize(800, 600);
+		
         _frame.add("Center", kinectUserTracker.kinectWindow);
+		
+		_eventWindow = new JTextArea();
+		_eventWindow.setVisible(!_arguments.hasOption('d'));
+		_frame.add(new JScrollPane(_eventWindow));
+		
         _frame.setSize(kinectUserTracker.kinectWindow.getWidth(), kinectUserTracker.kinectWindow.getHeight());
         _frame.setVisible(true);
 
