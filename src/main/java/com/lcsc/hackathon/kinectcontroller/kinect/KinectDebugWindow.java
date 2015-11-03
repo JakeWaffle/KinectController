@@ -55,34 +55,6 @@ public class KinectDebugWindow extends Component{
 
     public KinectDebugWindow(UserTracker tracker) {
         _tracker    = tracker;
-        _frame      = new JFrame("NiTE User Tracker Viewer");
-
-        // register to key events
-        _frame.addKeyListener(new KeyListener() {
-            public void keyTyped(KeyEvent arg) {
-            }
-
-            public void keyReleased(KeyEvent arg) {
-            }
-
-            public void keyPressed(KeyEvent arg) {
-                if (arg.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    done();
-                }
-            }
-        });
-
-        // register to closing event
-        _frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                done();
-            }
-        });
-
-        this.setSize(800, 600);
-        _frame.add("Center", this);
-        _frame.setSize(this.getWidth(), this.getHeight());
-        _frame.setVisible(true);
 
         _colors = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
     }

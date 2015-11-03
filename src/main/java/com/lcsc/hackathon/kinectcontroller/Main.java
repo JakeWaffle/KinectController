@@ -33,6 +33,11 @@ import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 
 
@@ -41,6 +46,8 @@ public class Main {
 
     private CommandLine             _arguments;
     private ControllerStateMachine  _csm;
+    private JFrame                  _frame;
+    private boolean                 _done;
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -68,19 +75,44 @@ public class Main {
     }
     
     public void run() {
-        KinectUserTracker kinectUserTracker = new KinectUserTracker(_csm, _arguments.hasOption('d'));
-        
-		Console console = System.console();
-        boolean done    = false;
-        while (!done) {
-            String input = console.readLine("Enter quit: ");
-            if (input.equals("quit")) {
-                done = true;
-                if (kinectUserTracker.kinectWindow != null) {
-                    kinectUserTracker.kinectWindow.done();
+        KinectUserTracker kinectUserTracker = new KinectUserTracker(_csm);
+
+        _done   = false;
+        _frame  = new JFrame("Kinect Controller");
+
+        // register to key events
+        _frame.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg) {
+            }
+
+            public void keyReleased(KeyEvent arg) {
+            }
+
+            public void keyPressed(KeyEvent arg) {
+                if (arg.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    _done = true;
                 }
             }
+        });
+
+        // register to closing event
+        _frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                _done = true;
+            }
+        });
+
+        kinectUserTracker.kinectWindow.setSize(800, 600);
+        _frame.add("Center", kinectUserTracker.kinectWindow);
+        _frame.setSize(kinectUserTracker.kinectWindow.getWidth(), kinectUserTracker.kinectWindow.getHeight());
+        _frame.setVisible(true);
+
+        while (!_done) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("Goodbye");
     }
 }

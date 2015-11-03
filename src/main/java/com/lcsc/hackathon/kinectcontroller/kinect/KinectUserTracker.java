@@ -47,13 +47,15 @@ import java.util.List;
  */
 public class KinectUserTracker implements UserTracker.NewFrameListener{
     private static final Logger                 _logger = LoggerFactory.getLogger(KinectUserTracker.class);
+
     public         final KinectDebugWindow      kinectWindow;
-    private              UserTracker            _tracker;
+    public         final UserTracker            tracker;
+
     private        final ControllerStateMachine _csm;
     private              short                  _userId = -1;
     private              double                 _lastUpdateTime;
 
-    public KinectUserTracker(ControllerStateMachine csm, boolean debug) {
+    public KinectUserTracker(ControllerStateMachine csm) {
         _csm = csm;
 
         _logger.info("Initializing OpenNi and Nite.");
@@ -67,20 +69,15 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         }
 
         Device device = Device.open(devicesInfo.get(0).getUri());
-        _tracker = UserTracker.create();
+        tracker = UserTracker.create();
 
-        if (debug) {
-            kinectWindow = new KinectDebugWindow(_tracker);
-        }
-        else {
-            kinectWindow = null;
-        }
+        kinectWindow = new KinectDebugWindow(tracker);
 
-        _tracker.addNewFrameListener(this);
+        tracker.addNewFrameListener(this);
     }
 
     /**
-     * This delegate method will be called by the _tracker periodically.
+     * This delegate method will be called by the tracker periodically.
      * @param tracker The tracker that called the method probably. Examples I've seen don't even utilize it because
      *                there is already a copy of it saved in the class' private scope.
      */
@@ -105,7 +102,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                 for (UserData user : users) {
                     if (user.isNew()) {
                         _userId     = user.getId();
-                        _tracker.startSkeletonTracking(_userId);
+                        this.tracker.startSkeletonTracking(_userId);
                         userData    = user;
                         userFound   = true;
                         _logger.info(String.format("New User: %d", _userId));
@@ -120,7 +117,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
             userData = frame.getUserById(_userId);
             if (userData.isLost()) {
                 _logger.info(String.format("Lost User: %d", _userId));
-                _tracker.stopSkeletonTracking(_userId);
+                this.tracker.stopSkeletonTracking(_userId);
                 _userId = -1;
                 return;
             }
@@ -153,8 +150,6 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
             }
         }
 
-        if (kinectWindow != null) {
-            kinectWindow.repaint();
-        }
+        kinectWindow.repaint();
     }
 }
