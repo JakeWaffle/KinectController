@@ -27,6 +27,10 @@ Refer to the wiki for more information on the project and how the configuration 
 
     	set JAVA_HOME=c:\Program Files (x86)\Java\jdk1.8.0_32
 
+- Javacc 5.0
+
+    - Download and add the bin directory to your path: https://java.net/projects/javacc/downloads
+
 ### Linux
 
 - GCC 5.x
@@ -54,6 +58,10 @@ Refer to the wiki for more information on the project and how the configuration 
     - Download and install from: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
     - Or use the package manager for you flavor of Linux.
+
+- Javacc 5.0
+
+    - Download and add the bin directory to your path: https://java.net/projects/javacc/downloads
 
 - FreeGLUT3
 
@@ -89,6 +97,9 @@ The project still needs this part worked out a bit better, but I've been using I
 2. Make sure there is an Artifact in the Project Settings of the KinectController. If there isn't, then create a JAR artifact from the KinectController's
 modules. Then make sure the project's jar is being built on make (there's a checkbox for it) and change the output directory to KinectController/lib.
 3. Get Gradle to refresh its dependencies (one way to do this is to go to View->Tool Windows->Gradle, then press the refresh icon in the Gradle window.)
-4. Get Intellij to make the project. There's a button for it at the top right of Intellij -- the icon has a downward arrow along with some 0's and 1's.
-5. Go into the KinectController/lib directory and execute the KinectController.jar with the below command.
+4. IF the config.jj file has been updated then it needs to be compiled by Javacc and the compiled .java files need to be added to the project before the final KinectController.jar is created.
+There are already a couple of scripts within the config/ directory that will compile the config.jj file and add the .java files to the project. Just make sure
+that Javacc's bin directory is on your path so the scripts can access it.
+5. Get Intellij to make the project. There's a button for it at the top right of Intellij -- the icon has a downward arrow along with some 0's and 1's.
+6. Go into the KinectController/lib directory and execute the KinectController.jar with the below command.
 $java -cp KinectController.jar com.lcsc.hackathon.kinectcontroller.Main -d -f ../config/config.gdef

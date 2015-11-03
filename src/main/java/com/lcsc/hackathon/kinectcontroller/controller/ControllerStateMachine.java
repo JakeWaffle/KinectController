@@ -38,6 +38,10 @@ import java.util.Map;
  * Created by Jake on 5/17/2015.
  * This will keep track of the different states of the controller. Each state should represent a different
  * area within the game where the controls possibly change.
+ *
+ * Assumptions:
+ *  - After the config file is parsed, _curState should be populated with some valid ControllerState.
+ *  -
  */
 public class ControllerStateMachine {
     public final    EsperHandler                    esperHandler 	= new EsperHandler();
