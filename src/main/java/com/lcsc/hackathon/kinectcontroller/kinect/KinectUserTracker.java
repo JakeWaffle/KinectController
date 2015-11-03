@@ -51,6 +51,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
     private              UserTracker            _tracker;
     private        final ControllerStateMachine _csm;
     private              short                  _userId = -1;
+    private              double                 _lastUpdateTime;
 
     public KinectUserTracker(ControllerStateMachine csm, boolean debug) {
         _csm = csm;
@@ -84,6 +85,11 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
      *                there is already a copy of it saved in the class' private scope.
      */
     public void onNewFrame(UserTracker tracker) {
+        //Rudimentary calculator for the rate at which the Kinect updates.
+        double newTime = System.nanoTime();
+        System.out.println(String.format("Kinect Update Rate: %f", 1000000000/(newTime-_lastUpdateTime)));
+        _lastUpdateTime = newTime;
+
         UserTrackerFrameRef frame   = tracker.readFrame();
         UserData userData           = null;
 

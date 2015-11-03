@@ -51,6 +51,7 @@ public class KinectDebugWindow extends Component{
     private UserTracker         _tracker;
     private BufferedImage       _bufferedImage;
     private int[]               _colors;
+    private double              _lastUpdateTime;
 
     public KinectDebugWindow(UserTracker tracker) {
         _tracker    = tracker;
@@ -92,6 +93,11 @@ public class KinectDebugWindow extends Component{
 
     @Override
     public void paint(Graphics g) {
+        //Rudimentary calculator for the FPS.
+        double newTime = System.nanoTime();
+        System.out.println(String.format("FPS: %f", 1000000000/(newTime-_lastUpdateTime)));
+        _lastUpdateTime = newTime;
+
         UserTrackerFrameRef lastFrame = _tracker.readFrame();
 
         VideoFrameRef depthFrame    = lastFrame.getDepthFrame();
