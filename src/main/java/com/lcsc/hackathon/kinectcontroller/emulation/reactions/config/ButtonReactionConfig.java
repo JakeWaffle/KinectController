@@ -36,7 +36,7 @@ public class ButtonReactionConfig extends ReactionConfig<String,Object> {
      * This loads buttons into the config map according to the
      * specifications of the ButtonReaction's needs.
      *
-     * @param btnId         ID of the button that's being utilized.
+     * @param btnId         ID of the button that's being utilized. This can be for the mouse or keyboard!
      * @param deviceType    The device that the key exists on (e.g. 'keyboard' or 'mouse'.)
      */
     public ButtonReactionConfig(String btnId, String deviceType) {

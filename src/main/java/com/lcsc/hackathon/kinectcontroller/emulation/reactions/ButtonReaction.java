@@ -24,6 +24,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package com.lcsc.hackathon.kinectcontroller.emulation.reactions;
 
+import com.lcsc.hackathon.kinectcontroller.Conversions;
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionConfig;
 
 import java.awt.Robot;
@@ -48,10 +49,10 @@ public class ButtonReaction implements Reaction {
             Robot rob = new Robot();
             switch ((String)_config.get("DeviceType")) {
                 case "keyboard":
-                    rob.keyPress((int)_config.get("ButtonId"));
+                    rob.keyPress(Conversions.getKeyId(_config.get("ButtonId")));
                     break;
                 case "mouse":
-                    rob.mousePress((int)_config.get("ButtonId"));
+                    //rob.mousePress(Conversions.getMouseButtonId(_config.get("ButtonId")));
                     break;
             }
         } catch (AWTException e) {
