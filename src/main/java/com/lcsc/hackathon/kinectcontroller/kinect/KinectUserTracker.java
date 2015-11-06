@@ -111,8 +111,8 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
     public void onNewFrame(UserTracker tracker) {
         //updateFrameRate();
 
-        UserTrackerFrameRef frame   = tracker.readFrame();
         UserData userData           = null;
+        UserTrackerFrameRef frame   = tracker.readFrame();
 
         //These conditions below make it so that there is always only 1 user being tracked and we won't do
         //anything if there isn't a user being tracked.
@@ -139,7 +139,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         }
         else {
             userData = frame.getUserById(_userId);
-            if (userData.isLost()) {
+            if (userData == null || userData.isLost()) {
                 _logger.info(String.format("Lost User: %d", _userId));
                 this.tracker.stopSkeletonTracking(_userId);
                 _userId = -1;

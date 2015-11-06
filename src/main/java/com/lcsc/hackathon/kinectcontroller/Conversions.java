@@ -34,7 +34,14 @@ public class Conversions {
 	
 	public Conversions() {
     }
-	
+
+	/**
+	 * This is to convert the keyIds that are defined in the .gdef config file into an integer that's compatible
+	 * with the Robot module.
+	 * @param key This string can be any field defined within the java.awt.event.KeyEvent class. Except, the 'VK_' prefix is
+	 *            assumed to not be included -- it is prepended onto the key string before we fetch the value.
+	 * @return An integer that conforms to the fields within java.awt.event.KeyEvent for the given key.
+	 */
 	public static int getKeyId(String key) {
 		String fieldName = String.format("VK_%s", key);
 		

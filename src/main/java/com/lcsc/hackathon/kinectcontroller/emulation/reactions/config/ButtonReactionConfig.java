@@ -36,10 +36,7 @@ public class ButtonReactionConfig extends ReactionConfig<String,Object> {
      * This loads buttons into the config map according to the
      * specifications of the ButtonReaction's needs.
      *
-     * //TODO Figure out and document the various button ids that are compatible with a ButtonReactionConfig!
-     * //FOr the most part, we just need to check out what the Robot module supports and go from there.
-     *
-     * @param btnId         ID of the button that's being utilized.
+     * @param btnId         ID of the button that's being utilized. This can be for the mouse or keyboard!
      * @param deviceType    The device that the key exists on (e.g. 'keyboard' or 'mouse'.)
      */
     public ButtonReactionConfig(String btnId, String deviceType) {

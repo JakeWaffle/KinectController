@@ -74,6 +74,8 @@ public class KinectDebugWindow extends Component {
         _totalFrameRates    = 0;
         //We reach 0 frames after we witness the initial frame.
         _frames             = -1;
+
+        _colors     = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
     }
 
     public synchronized void done() {
