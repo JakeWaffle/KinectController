@@ -115,6 +115,7 @@ public class Main {
         _frame.setVisible(true);
 
         while (!_done) {
+            _frame.repaint();
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {

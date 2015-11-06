@@ -50,9 +50,7 @@ public class Conversions {
 		return value;
 	}
 
-	//TODO This needs to be adapted to whatever KinectUserTracker SDK we switch to.
 	public static int getJointId(String jointName) {
-		int jointId = JointType.valueOf(jointName).toNative();
-		return jointId;
+		return JointType.valueOf(jointName).toNative();
 	}
 }

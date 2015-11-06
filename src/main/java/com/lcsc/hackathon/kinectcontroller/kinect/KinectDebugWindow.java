@@ -28,8 +28,13 @@ package com.lcsc.hackathon.kinectcontroller.kinect;
 import com.primesense.nite.*;
 import org.openni.VideoFrameRef;
 
+import java.lang.Double;
+import java.util.List;
+
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Component;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -42,7 +47,7 @@ import java.nio.ByteOrder;
  * Created by jake on 7/20/15.
  * This class' primary purpose is to just display the skeletons of the users visible to the Kinect.
  */
-public class KinectDebugWindow extends Component{
+public class KinectDebugWindow extends Component {
     private JFrame              _frame;
     private boolean             _done;
 
@@ -51,24 +56,46 @@ public class KinectDebugWindow extends Component{
     private UserTracker         _tracker;
     private BufferedImage       _bufferedImage;
     private int[]               _colors;
-    private double              _lastUpdateTime;
+
+    //These are for tracking the frame rate!
+    //We're adding up the frame rates and then averaging them to get
+    //a smoothed frame rate to display to the user.
+    private double              _lastTime;
+    private double              _totalFrameRates;
+    private short               _frames;
 
     public KinectDebugWindow(UserTracker tracker) {
         _tracker    = tracker;
 
         _colors = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF };
+
+        //Initial values for the variables that will keep track of the frame rate.
+        _lastTime           = 0;
+        _totalFrameRates    = 0;
+        //We reach 0 frames after we witness the initial frame.
+        _frames             = -1;
     }
 
     public synchronized void done() {
         _frame.dispose();
     }
 
+    private void updateFrameRate() {
+        if (_frames < 10) {
+            _totalFrameRates    += System.nanoTime() - _lastTime;
+            _frames             += 1;
+            _lastTime = System.nanoTime();
+        }
+        else {
+            System.out.println(String.format("FPS: %f", 1000000000/(_totalFrameRates / _frames)));
+            _totalFrameRates    = 0;
+            _frames             = -1;
+        }
+    }
+
     @Override
     public void paint(Graphics g) {
-        //Rudimentary calculator for the FPS.
-        double newTime = System.nanoTime();
-        System.out.println(String.format("FPS: %f", 1000000000/(newTime-_lastUpdateTime)));
-        _lastUpdateTime = newTime;
+        //updateFrameRate();
 
         UserTrackerFrameRef lastFrame = _tracker.readFrame();
 

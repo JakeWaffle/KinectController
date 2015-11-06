@@ -53,10 +53,22 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
 
     private        final ControllerStateMachine _csm;
     private              short                  _userId = -1;
+
+
     private              double                 _lastUpdateTime;
 
+    //These are for tracking the kinect's update rate per second.
+    //We're adding up the time in-between individual updates and going to later average those times.
+    private              double                 _lastTime;
+    private              double                 _totalUpdateRates;
+    private              short                  _updates;
+
     public KinectUserTracker(ControllerStateMachine csm) {
-        _csm = csm;
+        _csm                = csm;
+
+        _lastTime           = 0;
+        _totalUpdateRates   = 0;
+        _updates            = -1;
 
         _logger.info("Initializing OpenNi and Nite.");
         OpenNI.initialize();
@@ -76,16 +88,28 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         tracker.addNewFrameListener(this);
     }
 
+
+    private void updateFrameRate() {
+        if (_updates < 10) {
+            _totalUpdateRates   += System.nanoTime() - _lastTime;
+            _updates            += 1;
+            _lastTime           = System.nanoTime();
+        }
+        else {
+            System.out.println(String.format("Kinect Update Rate: %f", 1000000000/(_totalUpdateRates / _updates)));
+            _totalUpdateRates   = 0;
+            _updates            = -1;
+        }
+    }
+
+
     /**
      * This delegate method will be called by the tracker periodically.
      * @param tracker The tracker that called the method probably. Examples I've seen don't even utilize it because
      *                there is already a copy of it saved in the class' private scope.
      */
     public void onNewFrame(UserTracker tracker) {
-        //Rudimentary calculator for the rate at which the Kinect updates.
-        double newTime = System.nanoTime();
-        System.out.println(String.format("Kinect Update Rate: %f", 1000000000/(newTime-_lastUpdateTime)));
-        _lastUpdateTime = newTime;
+        //updateFrameRate();
 
         UserTrackerFrameRef frame   = tracker.readFrame();
         UserData userData           = null;
