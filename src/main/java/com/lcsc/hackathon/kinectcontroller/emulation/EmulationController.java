@@ -48,7 +48,6 @@ public class EmulationController extends Thread {
 	private 			 boolean         	_paused;
     private 			 Queue<Reaction> 	_reactions;
 
-    //TODO Add logging to EmulationController!
 	//TODO Do we need persisting reactions that can be interacted with over time?
 
     public EmulationController() {
@@ -93,6 +92,7 @@ public class EmulationController extends Thread {
 	 * @param reaction The reaction that is to be scheduled.
 	 */
 	public synchronized void scheduleReaction(Reaction reaction) {
+		_logger.debug("Reaction Scheduled!");
 		_reactions.add(reaction);
 	}
 }

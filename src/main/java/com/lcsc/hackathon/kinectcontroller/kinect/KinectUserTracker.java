@@ -167,6 +167,8 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
                         angRule.setAngle(angle);
 
+                        _logger.debug(String.format("Angle %d:%d:%d: %f", angRule.getEnd1(), angRule.getVertex(), angRule.getEnd2(), angle));
+
                         //Send that rule object over to Esper now for some event processing and pattern matching.
                         _csm.esperHandler.sendEvent(rule);
                         break;

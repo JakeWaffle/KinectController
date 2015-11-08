@@ -43,7 +43,7 @@ public class Conversions {
 	 * @return An integer that conforms to the fields within java.awt.event.KeyEvent for the given key.
 	 */
 	public static int getKeyId(String key) {
-		String fieldName = String.format("VK_%s", key);
+		String fieldName = String.format("VK_%s", key.toUpperCase());
 		
 		int value = -1;
 		try {
