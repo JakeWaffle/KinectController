@@ -275,7 +275,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
 
 
         state.addRule(new Angle(end1_id, vertex_id, end2_id, 0));
-        gesture.addRuleQuery(String.format("every ((%s or %s) -> %s)", patternChunk3, patternChunk2, patternChunk1));
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
   final public void parseKeyReaction(Gesture gesture, ReactionType reactionType) throws ParseException {

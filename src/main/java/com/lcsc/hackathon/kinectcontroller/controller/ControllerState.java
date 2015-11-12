@@ -41,6 +41,9 @@ public class ControllerState {
     public final ControllerStateMachine csm;
 
     //This will hold all of the java bean posturerules that will be updated by the KinectUserTracker and given to Esper.
+    //These Rule objects will correspond with the types of Rules that we're looking for in the Esper patterns for this
+    //ControllerState's gestures. So if an Esper pattern checks the angle property of an Angle rule with vertex=2, then
+    //this container should hold an Angle object with vertex=2.
     //It maps a SHA256 hash to a java bean that generated the hash.
     //The hash makes it so that there are no duplicate posturerules for separate gestures.
     private Map<String, Rule>     _rules;
@@ -57,6 +60,13 @@ public class ControllerState {
         _gestures       = new HashMap<>();
     }
 
+    /**
+     * This allows the config.jj file's generated code to add empty Rule objects into a container.
+     * This container will keep track of the Rules that we're interested in sending to Esper. Only Rules
+     * used in Esper patterns will be updated by the Kinect and sent to Esper!
+     * @param rule This is an empty Rule object that probably identifies the skeleton joints the Rule is concerned with
+     *             and some other information that will narrow down the information that needs to be pulled from the Kinect.
+     */
     public void addRule(Object rule) {
         String ruleId = ((Rule)rule).getId();
         _rules.put(ruleId, (Rule)rule);
@@ -71,10 +81,22 @@ public class ControllerState {
         return _rules.values();
     }
 
+    /**
+     * This allows the config.jj file's generated code to add a gesture to this ControllerState. This gesture will define
+     * some Esper pattern and will have some reaction that will be triggered when the pattern is matched.
+     * @param gestureId The id of the gesture. It's used in the Esper pattern and lets the EventListener know which gesture
+     *                  has been matched.
+     * @param gesture   This is the actual Gesture object that's associated with the gestureId.
+     */
     public void addGesture(String gestureId, Gesture gesture) {
         _gestures.put(gestureId, gesture);
     }
 
+    /**
+     * This just returns a Collection of gestures for this ControllerState. The ControllerStateMachine uses it
+     * during the loading of Esper patterns, because the gestures' reactions need loaded into the EventListener.
+     * @return
+     */
     public Collection<Gesture> getGestures() {
         return _gestures.values();
     }

@@ -10,6 +10,13 @@ state Menu
             end2       is   RIGHT_SHOULDER
             min_angle  is   150
             max_angle  is   180
+
+        rule Angle
+            end1       is   LEFT_HAND
+            vertex     is   LEFT_ELBOW
+            end2       is   LEFT_SHOULDER
+            min_angle  is   150
+            max_angle  is   180
             
         reaction KEY_DOWN_UP
             key        is   q

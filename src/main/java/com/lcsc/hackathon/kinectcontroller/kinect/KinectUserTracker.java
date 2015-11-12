@@ -88,8 +88,10 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
         tracker.addNewFrameListener(this);
     }
 
-
-    private void updateFrameRate() {
+    /**
+     * This is used to keep track of an averaged update rate of the Kinect.
+     */
+    private void updateKinectUpdateRate() {
         if (_updates < 10) {
             _totalUpdateRates   += System.nanoTime() - _lastTime;
             _updates            += 1;
@@ -105,11 +107,11 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
 
     /**
      * This delegate method will be called by the tracker periodically.
-     * @param tracker The tracker that called the method probably. Examples I've seen don't even utilize it because
-     *                there is already a copy of it saved in the class' private scope.
+     * @param tracker The tracker that called the method probably. This object gives us all the information we need
+     *                concerning the Kinect, OpenNI and Nite.
      */
     public void onNewFrame(UserTracker tracker) {
-        //updateFrameRate();
+        //updateKinectUpdateRate();
 
         UserData userData           = null;
         UserTrackerFrameRef frame   = tracker.readFrame();
@@ -166,8 +168,6 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
 
                         double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
                         angRule.setAngle(angle);
-
-                        _logger.debug(String.format("Angle %d:%d:%d: %f", angRule.getEnd1(), angRule.getVertex(), angRule.getEnd2(), angle));
 
                         //Send that rule object over to Esper now for some event processing and pattern matching.
                         _csm.esperHandler.sendEvent(rule);

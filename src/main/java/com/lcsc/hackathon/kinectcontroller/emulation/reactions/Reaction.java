@@ -34,6 +34,15 @@ import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionCo
  * that has been triggered.
  */
 public interface Reaction {
+    /**
+     * @return A Map class with a special constructor that standardizes the data requirements for their
+     * respective Reaction classes. Each Reaction's config Map will have the same keys no matter what!
+     */
 	ReactionConfig getConfig();
+
+    /**
+     * This is called to actually trigger the reaction. It doesn't matter what the Reaction does. The EmulationController
+     * is only concerned with triggering the reaction.
+     */
     void trigger();
 }

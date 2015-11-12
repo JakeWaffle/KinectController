@@ -87,7 +87,8 @@ public class EmulationController extends Thread {
 	}
 	
 	/**
-	 * Adds a reaction to the queue of reactions that are to be executed.
+	 * Adds a reaction to the queue of reactions that are to be executed. The EventListener uses this to add reactions
+	 * of the matched gestures to the reaction queue.
 	 *
 	 * @param reaction The reaction that is to be scheduled.
 	 */

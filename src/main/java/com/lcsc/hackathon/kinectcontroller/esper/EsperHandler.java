@@ -45,7 +45,10 @@ public class EsperHandler {
         _patterns = new HashMap<String, EPStatement>();
         config();
     }
-    
+
+    /**
+     * This will just configure Esper with the posturerules event beans that this program deals supports.
+     */
     private void config() {
         Configuration config = new Configuration();
         config.getEngineDefaults().getExecution().setPrioritized(true);
@@ -63,17 +66,35 @@ public class EsperHandler {
         _engine = EPServiceProviderManager.getDefaultProvider(config);
         _engine.initialize();
     }
-    
+
+    /**
+     * This will assign an Esper pattern to some patternId.
+     * @param patternId The id for the given pattern.
+     * @param pattern   Some Esper pattern that this program is interested in matching.
+     */
     public void setPattern(String patternId, String pattern) {
         EPStatement statement = _engine.getEPAdministrator().createEPL(pattern);
 
         _patterns.put(patternId, statement);
     }
-    
+
+    /**
+     * This will add an UpdateListener class to an Esper pattern. Multiple UpdateListeners can be assigned to a single
+     * pattern. An UpdateListener is only added to existing Esper patterns!
+     * @param patternId The id of the pattern that we're adding this UpdateListener to (this pattern should already exist!)
+     * @param listener  The UpdateListener that will be called when the pattern has been matched.
+     */
     public void addListener(String patternId, UpdateListener listener) {
-        _patterns.get(patternId).addListener(listener);
+        if (_patterns.containsKey(patternId)) {
+            _patterns.get(patternId).addListener(listener);
+        }
     }
-    
+
+    /**
+     * This is used to send event beans to Esper for processing. These events are going to be used to match the
+     * patterns that have been registered with Esper.
+     * @param event This can be any of the event beans registered in the config().
+     */
     public void sendEvent(Object event) {
         _engine.getEPRuntime().sendEvent(event);
     }

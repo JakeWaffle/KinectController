@@ -57,6 +57,16 @@ public class Conversions {
 		return value;
 	}
 
+	/**
+	 * This allows the user's config file to use words instead of numbered joint ids. The config.jj generated code uses this
+	 * to lookup the numbered id of a joint that was defined in the user's config file. The config.jj code then stores
+	 * the numbered id instead of a string joint name.
+	 *
+	 * Note: Nite's JointType enumeration defines the compatible joint names for this method!
+	 *
+	 * @param jointName The name of the joint that we need the numbered id of.
+	 * @return A numbered id of a joint as defined by Nite's JointType enumeration.
+	 */
 	public static int getJointId(String jointName) {
 		return JointType.valueOf(jointName).toNative();
 	}

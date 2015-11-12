@@ -48,10 +48,31 @@ public class EventListener implements UpdateListener {
         _reactions				= new HashMap<String, List<Reaction>>();
     }
 
+    /**
+     * This is used to reset the reactions that are loaded into the EventListener. This will happen every time
+     * the ControllerState has been changed in the ControllerStateMachine.
+     */
+    public void clearReactions() {
+        _reactions.clear();
+    }
+
+    /**
+     * This is for loading the valid reactions for the current ControllerState's gestures. This will happen every time
+     * the ControllerState has been changed in the ControllerStateMachine.
+     * @param gestureId The given reactions belong to the gesture identified by this id.
+     * @param reactions These are the reactions that belong to some gesture. When the gesture is matched by
+     *                  Esper, then these reactions will be looked up and triggered.
+     */
     public void loadReactions(String gestureId, List<Reaction> reactions){
         _reactions.put(gestureId, reactions);
     }
 
+    /**
+     * Esper uses this method to inform the EventListener when a gesture has been matched.
+     *
+     * @param newEvents When a gesture's pattern is matched, Esper sends this method a newEvent.
+     * @param oldEvents The previous newEvents that have already been processed.
+     */
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
 			String gestureId = (String)event.get("gestureId");

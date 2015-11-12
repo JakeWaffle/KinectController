@@ -95,12 +95,15 @@ public class ControllerStateMachine {
     }
 
     /**
-     * This will load gestures into Esper using the current state's Gestures.
+     * This will load gestures into Esper using the current state's Gestures. These gestures belong to the current
+     * ControllerState. Loading only the gestures for the current ControllerState will improve the lookup times for the
+     * EventListener
      */
     private void loadGestures() {
+        _eventListener.clearReactions();
         Collection<Gesture> gestures = _curState.getGestures();
         for (Gesture gesture : gestures) {
-            esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
+            esperHandler.setPattern(gesture.gestureId, gesture.getEsperPattern());
             _eventListener.loadReactions(gesture.gestureId, gesture.getReactions());
             esperHandler.addListener(gesture.gestureId, _eventListener);
         }

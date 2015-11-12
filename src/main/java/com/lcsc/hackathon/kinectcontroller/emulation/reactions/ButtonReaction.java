@@ -49,7 +49,14 @@ public class ButtonReaction implements Reaction {
             Robot rob = new Robot();
             switch ((String)_config.get("DeviceType")) {
                 case "keyboard":
-                    rob.keyPress(Conversions.getKeyId((String)_config.get("ButtonId")));
+                    int keyId = Conversions.getKeyId((String) _config.get("ButtonId"));
+                    rob.keyPress(keyId);
+                    try {
+                        Thread.sleep(75);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    rob.keyRelease(keyId);
                     break;
                 case "mouse":
                     //rob.mousePress(Conversions.getMouseButtonId((String)_config.get("ButtonId")));
