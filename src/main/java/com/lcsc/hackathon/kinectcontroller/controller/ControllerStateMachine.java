@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -33,10 +25,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.controller;
 
-import com.espertech.esper.client.UpdateListener;
-import com.lcsc.hackathon.kinectcontroller.EsperHandler;
+import com.lcsc.hackathon.kinectcontroller.esper.EsperHandler;
 import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
-import com.lcsc.hackathon.kinectcontroller.esperlisteners.EventListener;
+import com.lcsc.hackathon.kinectcontroller.esper.EventListener;
+import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -46,14 +38,20 @@ import java.util.Map;
  * Created by Jake on 5/17/2015.
  * This will keep track of the different states of the controller. Each state should represent a different
  * area within the game where the controls possibly change.
+ *
+ * Assumptions:
+ *  - After the config file is parsed, _curState should be populated with some valid ControllerState.
+ *  -
  */
 public class ControllerStateMachine {
+    public final    EsperHandler                    esperHandler 	= new EsperHandler();
+
     //This maps a state id to a Controller state. This mapping is defined in the config file.
-    private Map<String, ControllerState>    _states;
-    private ControllerState                 _curState 		= null;
-    private EsperHandler                    _esperHandler 	= new EsperHandler();
-	private EventListener					_eventListener;
-	private EmulationController				_emulationController;
+    private         Map<String, ControllerState>    _states;
+    private         ControllerState                 _curState 		= null;
+
+	private         EventListener					_eventListener;
+	private         EmulationController				_emulationController;
 
     public ControllerStateMachine() {
         _states 				= new HashMap<String, ControllerState>();
@@ -88,14 +86,26 @@ public class ControllerStateMachine {
     }
 
     /**
-     * This will load gestures into Esper using the current state's Gestures.
+     * The csm needs to be a mediator between the current state and the KinectUserTracker. That way there are no problems
+     * when the state changes.
+     * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
+     */
+    public Collection<Rule> getCurrentRules() {
+        return _curState.getRules();
+    }
+
+    /**
+     * This will load gestures into Esper using the current state's Gestures. These gestures belong to the current
+     * ControllerState. Loading only the gestures for the current ControllerState will improve the lookup times for the
+     * EventListener
      */
     private void loadGestures() {
+        _eventListener.clearReactions();
         Collection<Gesture> gestures = _curState.getGestures();
         for (Gesture gesture : gestures) {
-            _esperHandler.setPattern(gesture.gestureId, gesture.getEsperQuery());
+            esperHandler.setPattern(gesture.gestureId, gesture.getEsperPattern());
             _eventListener.loadReactions(gesture.gestureId, gesture.getReactions());
-            _esperHandler.addListener(gesture.gestureId, _eventListener);
+            esperHandler.addListener(gesture.gestureId, _eventListener);
         }
     }
 

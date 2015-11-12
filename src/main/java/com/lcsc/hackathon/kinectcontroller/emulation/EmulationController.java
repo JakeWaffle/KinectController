@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -56,7 +48,6 @@ public class EmulationController extends Thread {
 	private 			 boolean         	_paused;
     private 			 Queue<Reaction> 	_reactions;
 
-    //TODO Add logging to EmulationController!
 	//TODO Do we need persisting reactions that can be interacted with over time?
 
     public EmulationController() {
@@ -96,11 +87,13 @@ public class EmulationController extends Thread {
 	}
 	
 	/**
-	 * Adds a reaction to the queue of reactions that are to be executed.
+	 * Adds a reaction to the queue of reactions that are to be executed. The EventListener uses this to add reactions
+	 * of the matched gestures to the reaction queue.
 	 *
 	 * @param reaction The reaction that is to be scheduled.
 	 */
 	public synchronized void scheduleReaction(Reaction reaction) {
+		_logger.debug("Reaction Scheduled!");
 		_reactions.add(reaction);
 	}
 }

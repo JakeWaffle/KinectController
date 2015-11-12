@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -42,6 +34,15 @@ import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionCo
  * that has been triggered.
  */
 public interface Reaction {
+    /**
+     * @return A Map class with a special constructor that standardizes the data requirements for their
+     * respective Reaction classes. Each Reaction's config Map will have the same keys no matter what!
+     */
 	ReactionConfig getConfig();
+
+    /**
+     * This is called to actually trigger the reaction. It doesn't matter what the Reaction does. The EmulationController
+     * is only concerned with triggering the reaction.
+     */
     void trigger();
 }

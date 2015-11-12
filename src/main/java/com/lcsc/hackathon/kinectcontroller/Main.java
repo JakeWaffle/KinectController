@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -36,10 +28,16 @@ package com.lcsc.hackathon.kinectcontroller;
 import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
 import com.lcsc.hackathon.kinectcontroller.config.ParseException;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
+import com.lcsc.hackathon.kinectcontroller.kinect.KinectUserTracker;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 
 
@@ -48,6 +46,9 @@ public class Main {
 
     private CommandLine             _arguments;
     private ControllerStateMachine  _csm;
+    private JFrame                  _frame;
+    private boolean                 _done;
+	private JTextArea				_eventWindow;
     
     public static void main(String[] args) {
         Main main = new Main(args);
@@ -56,7 +57,7 @@ public class Main {
     
     public Main(String[] args) {
         _arguments  = new Cli(args).parse();
-        //_csm        = parseConfig(_arguments.getOptionValue("f"));
+        _csm        = parseConfig(_arguments.getOptionValue("f"));
     }
 
     private ControllerStateMachine parseConfig(String configFilename) {
@@ -75,19 +76,51 @@ public class Main {
     }
     
     public void run() {
-        KinectHandler kinectHandler = new KinectHandler(_arguments.hasOption('d'));
-        
-		Console console = System.console();
-        boolean done    = false;
-        while (!done) {
-            String input = console.readLine("Enter quit: ");
-            if (input.equals("quit")) {
-                done = true;
-                if (kinectHandler.kinectWindow != null) {
-                    kinectHandler.kinectWindow.done();
+        KinectUserTracker kinectUserTracker = new KinectUserTracker(_csm);
+
+        _done   = false;
+        _frame  = new JFrame("Kinect Controller");
+
+        // register to key events
+        _frame.addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent arg) {
+            }
+
+            public void keyReleased(KeyEvent arg) {
+            }
+
+            public void keyPressed(KeyEvent arg) {
+                if (arg.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    _done = true;
                 }
             }
+        });
+
+        // register to closing event
+        _frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                _done = true;
+            }
+        });
+
+        kinectUserTracker.kinectWindow.setSize(800, 600);
+		
+        _frame.add("Center", kinectUserTracker.kinectWindow);
+		
+		_eventWindow = new JTextArea();
+		_eventWindow.setVisible(!_arguments.hasOption('d'));
+		_frame.add(new JScrollPane(_eventWindow));
+		
+        _frame.setSize(kinectUserTracker.kinectWindow.getWidth(), kinectUserTracker.kinectWindow.getHeight());
+        _frame.setVisible(true);
+
+        while (!_done) {
+            _frame.repaint();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("Goodbye");
     }
 }

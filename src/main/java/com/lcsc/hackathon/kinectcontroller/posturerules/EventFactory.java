@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -43,7 +35,7 @@ public class EventFactory {
     private static final Logger _logger      = LoggerFactory.getLogger(EventFactory.class);
     
     //These lists of posturerules are instantiated based off of the config file.
-    //They are meant to be updated periodically by the KinectHandler and then
+    //They are meant to be updated periodically by the KinectUserTracker and then
     //passed to Esper to be processed.
     List<Angle> angleRules = new ArrayList<Angle>();
     List<Distance> distRules = new ArrayList<Distance>();
@@ -95,7 +87,7 @@ public class EventFactory {
     }
 
     /*
-    //TODO Modify this to work with the new KinectHandler SDK
+    //TODO Modify this to work with the new KinectUserTracker SDK
     public void getEventData(Skeleton skele, EsperHandler eHandler) {
         //loop through all of the angle/distRules and 
         for (AngleRule rule : this.angleRules) {

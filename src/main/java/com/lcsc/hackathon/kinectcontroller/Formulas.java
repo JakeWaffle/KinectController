@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -32,6 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 package com.lcsc.hackathon.kinectcontroller;
+
+import com.primesense.nite.Point3D;
 
 public class Formulas {
     //If joint A is greater that joint B on the chosen axis, returns true otherwise false.
@@ -60,12 +54,12 @@ public class Formulas {
 	}
 	
 	// Get the distance between two joints.
-	public static double getDistance(double[] jointA, double[] jointB) {
-		return Math.sqrt(Math.pow(jointB[0]-jointA[0], 2) + Math.pow(jointB[1]-jointA[1], 2) + Math.pow(jointB[2]-jointA[2], 2));
+	public static double getDistance(Point3D<Float> jointA, Point3D<Float> jointB) {
+		return Math.sqrt(Math.pow(jointB.getX()-jointA.getX(), 2) + Math.pow(jointB.getY()-jointA.getY(), 2) + Math.pow(jointB.getZ()-jointA.getZ(), 2));
 	}
 	
 	// Get the angle at a vertex given three joints.
-	public static double getAngle(double[] jointA, double[] vertex, double[] jointB) { 
+	public static double getAngle(Point3D<Float> jointA, Point3D<Float> vertex, Point3D<Float> jointB) {
 		double distA = getDistance(vertex, jointA);
 		double distB = getDistance(vertex, jointB);
 		double distC = getDistance(jointA, jointB);
