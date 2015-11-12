@@ -28,6 +28,7 @@ package com.lcsc.hackathon.kinectcontroller.kinect;
 import com.lcsc.hackathon.kinectcontroller.Formulas;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Angle;
+import com.lcsc.hackathon.kinectcontroller.posturerules.Distance;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 import com.primesense.nite.*;
 import org.openni.Device;
@@ -170,6 +171,16 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         angRule.setAngle(angle);
 
                         //Send that rule object over to Esper now for some event processing and pattern matching.
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case DISTANCE:
+                        Distance distRule       = (Distance) rule;
+                        SkeletonJoint joint1    = skeleton.getJoint(JointType.fromNative(distRule.getJoint1()));
+                        SkeletonJoint joint2    = skeleton.getJoint(JointType.fromNative(distRule.getJoint2()));
+
+                        double distance = Formulas.getDistance(joint1.getPosition(), joint2.getPosition());
+                        distRule.setDistance(distance);
+
                         _csm.esperHandler.sendEvent(rule);
                         break;
                 }

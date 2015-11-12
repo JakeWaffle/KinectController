@@ -29,7 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Angle implements Rule{
+public class Angle implements Rule {
 	private String id = "";
 	private int end1;
 	private int vertex;
@@ -49,7 +49,7 @@ public class Angle implements Rule{
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%s:%d:%d:%d:%f", id, end1, vertex, end2, angle);
+			String text = String.format("%d:%d:%d", end1, vertex, end2);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());

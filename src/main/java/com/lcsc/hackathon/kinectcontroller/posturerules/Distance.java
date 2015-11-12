@@ -25,22 +25,48 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
-public class Distance {
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class Distance implements Rule {
 	private String id = "";
 	private int joint1;
 	private int joint2;
     private double distance;
     
 	
-	public Distance(String id, int joint1, int joint2, double distance) {
-		this.id = id;
+	public Distance(int joint1, int joint2, double distance) {
         this.joint1 = joint1;
         this.joint2 = joint2;
         this.distance = distance;
+		this.id = getHash();
     }
+
+	private String getHash() {
+		String hash = null;
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String text = String.format("%d:%d", joint1, joint2);
+
+			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+			hash = new String(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return hash;
+	}
 	
 	public String getId() {
 		return this.id;
+	}
+
+	public RuleType getType() {
+		return RuleType.DISTANCE;
 	}
 	
 	public void setId(String id) {
