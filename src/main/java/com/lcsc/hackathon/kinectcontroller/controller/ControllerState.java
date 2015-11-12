@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -35,6 +27,7 @@ package com.lcsc.hackathon.kinectcontroller.controller;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
 
@@ -47,10 +40,13 @@ public class ControllerState {
     public final String                 stateId;
     public final ControllerStateMachine csm;
 
-    //This will hold all of the java bean posturerules that will be updated by the KinectHandler and given to Esper.
+    //This will hold all of the java bean posturerules that will be updated by the KinectUserTracker and given to Esper.
+    //These Rule objects will correspond with the types of Rules that we're looking for in the Esper patterns for this
+    //ControllerState's gestures. So if an Esper pattern checks the angle property of an Angle rule with vertex=2, then
+    //this container should hold an Angle object with vertex=2.
     //It maps a SHA256 hash to a java bean that generated the hash.
     //The hash makes it so that there are no duplicate posturerules for separate gestures.
-    private Map<String, Object>     _rules;
+    private Map<String, Rule>     _rules;
 
     //This will hold the gestures that the above posturerules are meant for.
     //It maps a gestureId (user defined) to a Gesture object.
@@ -64,15 +60,43 @@ public class ControllerState {
         _gestures       = new HashMap<>();
     }
 
+    /**
+     * This allows the config.jj file's generated code to add empty Rule objects into a container.
+     * This container will keep track of the Rules that we're interested in sending to Esper. Only Rules
+     * used in Esper patterns will be updated by the Kinect and sent to Esper!
+     * @param rule This is an empty Rule object that probably identifies the skeleton joints the Rule is concerned with
+     *             and some other information that will narrow down the information that needs to be pulled from the Kinect.
+     */
     public void addRule(Object rule) {
         String ruleId = ((Rule)rule).getId();
-        _rules.put(ruleId, rule);
+        _rules.put(ruleId, (Rule)rule);
     }
 
+    /**
+     * This is for getting the posturerule event beans for the ControllerState so that they can be updated with Kinect data
+     * and given to Esper.
+     * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
+     */
+    public Collection<Rule> getRules() {
+        return _rules.values();
+    }
+
+    /**
+     * This allows the config.jj file's generated code to add a gesture to this ControllerState. This gesture will define
+     * some Esper pattern and will have some reaction that will be triggered when the pattern is matched.
+     * @param gestureId The id of the gesture. It's used in the Esper pattern and lets the EventListener know which gesture
+     *                  has been matched.
+     * @param gesture   This is the actual Gesture object that's associated with the gestureId.
+     */
     public void addGesture(String gestureId, Gesture gesture) {
         _gestures.put(gestureId, gesture);
     }
 
+    /**
+     * This just returns a Collection of gestures for this ControllerState. The ControllerStateMachine uses it
+     * during the loading of Esper patterns, because the gestures' reactions need loaded into the EventListener.
+     * @return
+     */
     public Collection<Gesture> getGestures() {
         return _gestures.values();
     }

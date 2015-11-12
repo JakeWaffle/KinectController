@@ -3,14 +3,6 @@ This program is called "Kinect Controller". It is meant to detect gestures with 
 and then simulate keyboard and/or mouse input. The configuration files used by this program are
 not intended to be under the following license.
 
-The Kinect Controller makes use of the J4K library and Esper and we have done
-nothing to change their source.
-
-By using J4K we are required to site their research article:
-A. Barmpoutis. 'Tensor Body: Real-time Reconstruction of the Human Body and Avatar Synthesis from RGB-D',
-IEEE Transactions on Cybernetics, Special issue on Computer Vision for RGB-D Sensors: Kinect and Its
-Applications, October 2013, Vol. 43(5), Pages: 1347-1356.
-
 By using Esper without their commercial license we are also required to release our software under
 a GPL license.
 
@@ -33,14 +25,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.controller;
 
-import com.espertech.esper.client.UpdateListener;
-import com.lcsc.hackathon.kinectcontroller.emulation.ReactionType;
 import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jake on 6/2/2015.
@@ -49,28 +39,43 @@ import java.util.Map;
  * joint is being tracked for the mouse and stuff like that.
  */
 public class Gesture {
-    public final String             gestureId;
-    public final ControllerState    state;
+    private static final Logger             _logger      = LoggerFactory.getLogger(Gesture.class);
+    public         final String             gestureId;
+    public         final ControllerState    state;
 
     //These are a bunch of pieces of the overall gesture query. Each piece is specifically for
     //a rule that makes up the gesture. These will be able to be assembled into a complete gesture query for esper
     //when needed.
-    private 	 List<String>		_ruleQueries;
+    private 	 List<String>       _ruleConditions;
+    private 	 List<String>       _negatedRuleConditions;
     private 	 List<Reaction> 	_reactions;
 
     //TODO Some identifier for the mouse needs to go hear. Left_Arm and Right_Arm?
 
     public Gesture(String gestureId, ControllerState state) {
-        this.gestureId  = gestureId;
-        this.state      = state;
-        _ruleQueries    = new ArrayList<String>();
-        _reactions      = new ArrayList<Reaction>();
+        this.gestureId          = gestureId;
+        this.state              = state;
+        _ruleConditions         = new ArrayList<String>();
+        _negatedRuleConditions  = new ArrayList<String>();
+        _reactions              = new ArrayList<Reaction>();
     }
 
-    public void addRuleQuery(String esperQuery) {
-        _ruleQueries.add(esperQuery);
+    /**
+     * This will add a Rule to the Esper pattern for this gesture.
+     * The Rule is made up of a positive and negative part.
+     * @param ruleCondition         This denotes the rule's matched condition. When this condition is true, the rule is true.
+     * @param negatedRuleCondition  This condition is true, when the rule is false.
+     */
+    public void addRuleToEsperPattern(String ruleCondition, String negatedRuleCondition) {
+        _ruleConditions.add(ruleCondition);
+        _negatedRuleConditions.add(negatedRuleCondition);
     }
 
+    /**
+     * This adds a reaction to the gesture. When the gesture's Esper pattern is matched, this reaction will be triggered
+     * by the EmulationController.
+     * @param reaction
+     */
 	public void addReaction(Reaction reaction) {
 		_reactions.add(reaction);
 	}
@@ -80,22 +85,41 @@ public class Gesture {
      * @return Some sort of sql query for Esper that has the gestureId of this Gesture
      *         so the Listener can look up this Gesture's emulation.
      */
-    public String getEsperQuery() {
-        String query = String.format("%s as gestureId from pattern[", gestureId);
+    public String getEsperPattern() {
+        String pattern = null;
+        if (_ruleConditions.size() > 0 && _negatedRuleConditions.size() > 0) {
+            pattern = String.format("select '%s' as gestureId from pattern[every ((", gestureId);
 
-        for (int i=0; i<_ruleQueries.size(); i++) {
-            query += _ruleQueries.get(i);
-            if (i != _ruleQueries.size()-1) {
-                query += " and ";
+            for (int i = 0; i < _negatedRuleConditions.size(); i++) {
+                pattern += _negatedRuleConditions.get(i);
+                if (i != _negatedRuleConditions.size() - 1) {
+                    pattern += " or ";
+                } else {
+                    pattern += ") -> (";
+                }
             }
-            else {
-                query += "]";
+
+            for (int i = 0; i < _ruleConditions.size(); i++) {
+                pattern += _ruleConditions.get(i);
+                if (i != _ruleConditions.size() - 1) {
+                    pattern += " and ";
+                } else {
+                    pattern += ")) where timer:within(1 sec)]";
+                }
             }
         }
+        else {
+            _logger.warn(String.format("No Rule Queries were loaded into Gesture: %s", gestureId));
+        }
+        _logger.debug("EsperQuery: "+pattern);
 
-        return query;
+        return pattern;
     }
 
+    /**
+     * This allows the ControllerStateMachine to load this Gesture's reactions up into the EventListener.
+     * @return A list of reactions that should be triggered when this gesture's Esper pattern has been matched.
+     */
 	public List<Reaction> getReactions() {
 		return _reactions;
 	}
