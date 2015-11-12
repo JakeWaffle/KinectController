@@ -49,7 +49,7 @@ public class Angle implements Rule {
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%d:%d:%d", end1, vertex, end2);
+			String text = String.format("%s:%d:%d:%d", getType().alias, end1, vertex, end2);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());

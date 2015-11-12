@@ -39,18 +39,18 @@ public class Formulas {
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceX(double jointA, double jointB) {
-		return jointA-jointB;
+	public static double getDistanceX(Point3D<Float> jointA, Point3D<Float> jointB) {
+		return jointA.getX()-jointB.getX();
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceY(double jointA, double jointB) {
-		return jointA-jointB;
+	public static double getDistanceY(Point3D<Float> jointA, Point3D<Float> jointB) {
+		return jointA.getY()-jointB.getY();
 	}
 	
 	// Get distance between two joints (can be negative)
-	public static double getDistanceZ(double jointA, double jointB) {
-		return jointA-jointB;
+	public static double getDistanceZ(Point3D<Float> jointA, Point3D<Float> jointB) {
+		return jointA.getZ()-jointB.getZ();
 	}
 	
 	// Get the distance between two joints.

@@ -27,9 +27,7 @@ package com.lcsc.hackathon.kinectcontroller.kinect;
 
 import com.lcsc.hackathon.kinectcontroller.Formulas;
 import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.posturerules.Angle;
-import com.lcsc.hackathon.kinectcontroller.posturerules.Distance;
-import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
+import com.lcsc.hackathon.kinectcontroller.posturerules.*;
 import com.primesense.nite.*;
 import org.openni.Device;
 import org.openni.DeviceInfo;
@@ -160,26 +158,66 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
             //We'll then update them with data from the user that's being tracked and we'll pass
             //those objects over to Esper for processing.
             for (Rule rule : _csm.getCurrentRules()) {
+                SkeletonJoint end1      = null;
+                SkeletonJoint vertex    = null;
+                SkeletonJoint end2      = null;
+                double angle            = 0;
+
+
+                SkeletonJoint joint1    = null;
+                SkeletonJoint joint2    = null;
+                double distance         = 0;
+
                 switch (rule.getType()) {
                     case ANGLE:
-                        Angle angRule           = (Angle) rule;
-                        SkeletonJoint end1      = skeleton.getJoint(JointType.fromNative(angRule.getEnd1()));
-                        SkeletonJoint vertex    = skeleton.getJoint(JointType.fromNative(angRule.getVertex()));
-                        SkeletonJoint end2      = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
+                        Angle angRule   = (Angle) rule;
+                        end1            = skeleton.getJoint(JointType.fromNative(angRule.getEnd1()));
+                        vertex          = skeleton.getJoint(JointType.fromNative(angRule.getVertex()));
+                        end2            = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
 
-                        double angle = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
+                        angle           = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
                         angRule.setAngle(angle);
 
                         //Send that rule object over to Esper now for some event processing and pattern matching.
                         _csm.esperHandler.sendEvent(rule);
                         break;
                     case DISTANCE:
-                        Distance distRule       = (Distance) rule;
-                        SkeletonJoint joint1    = skeleton.getJoint(JointType.fromNative(distRule.getJoint1()));
-                        SkeletonJoint joint2    = skeleton.getJoint(JointType.fromNative(distRule.getJoint2()));
+                        Distance distRule   = (Distance) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(distRule.getJoint1()));
+                        joint2              = skeleton.getJoint(JointType.fromNative(distRule.getJoint2()));
 
-                        double distance = Formulas.getDistance(joint1.getPosition(), joint2.getPosition());
+                        distance            = Formulas.getDistance(joint1.getPosition(), joint2.getPosition());
                         distRule.setDistance(distance);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case DISTANCEX:
+                        DistanceX distXRule = (DistanceX) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(distXRule.getJoint1()));
+                        joint2              = skeleton.getJoint(JointType.fromNative(distXRule.getJoint2()));
+
+                        distance            = Formulas.getDistanceX(joint1.getPosition(), joint2.getPosition());
+                        distXRule.setDistance(distance);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case DISTANCEY:
+                        DistanceY distYRule = (DistanceY) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(distYRule.getJoint1()));
+                        joint2              = skeleton.getJoint(JointType.fromNative(distYRule.getJoint2()));
+
+                        distance            = Formulas.getDistanceY(joint1.getPosition(), joint2.getPosition());
+                        distYRule.setDistance(distance);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case DISTANCEZ:
+                        DistanceZ distZRule = (DistanceZ) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(distZRule.getJoint1()));
+                        joint2              = skeleton.getJoint(JointType.fromNative(distZRule.getJoint2()));
+
+                        distance            = Formulas.getDistanceZ(joint1.getPosition(), joint2.getPosition());
+                        distZRule.setDistance(distance);
 
                         _csm.esperHandler.sendEvent(rule);
                         break;

@@ -25,7 +25,11 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
-public class DistanceZ {
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class DistanceZ  implements Rule {
 	private String id = "";
 	private int joint1;
 	private int joint2;
@@ -36,11 +40,29 @@ public class DistanceZ {
 					 int joint1,
 					 int joint2,
 					 double distance) {
-		this.id = id;
-        this.joint1 = joint1;
-        this.joint2 = joint2;
-        this.distance = distance;
-    }
+		this.joint1 	= joint1;
+		this.joint2 	= joint2;
+		this.distance 	= distance;
+		this.id 		= getHash();
+	}
+
+	private String getHash() {
+		String hash = null;
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String text = String.format("%s:%d:%d", getType().alias, joint1, joint2);
+
+			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+			hash = new String(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return hash;
+	}
 	
 	public String getId() {
 		return this.id;
@@ -48,6 +70,10 @@ public class DistanceZ {
 	
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public RuleType getType() {
+		return RuleType.DISTANCEZ;
 	}
     
 	public int getJoint1() {

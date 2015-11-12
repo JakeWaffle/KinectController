@@ -30,10 +30,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Distance implements Rule {
-	private String id = "";
-	private int joint1;
-	private int joint2;
-    private double distance;
+	private String 		id = "";
+	private int 		joint1;
+	private int 		joint2;
+    private double 		distance;
     
 	
 	public Distance(int joint1, int joint2, double distance) {
@@ -48,7 +48,7 @@ public class Distance implements Rule {
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%d:%d", joint1, joint2);
+			String text = String.format("%s:%d:%d", getType().alias, joint1, joint2);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());
