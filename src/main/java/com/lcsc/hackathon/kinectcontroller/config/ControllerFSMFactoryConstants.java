@@ -29,21 +29,29 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int END2 = 9;
   /** RegularExpression Id. */
-  int VERTEX = 10;
+  int JOINT1 = 10;
   /** RegularExpression Id. */
-  int MIN_ANGLE = 11;
+  int JOINT2 = 11;
   /** RegularExpression Id. */
-  int MAX_ANGLE = 12;
+  int VERTEX = 12;
   /** RegularExpression Id. */
-  int REACTION = 13;
+  int MIN_ANGLE = 13;
   /** RegularExpression Id. */
-  int KEY = 14;
+  int MAX_ANGLE = 14;
   /** RegularExpression Id. */
-  int NUMBER = 15;
+  int MIN_DISTANCE = 15;
   /** RegularExpression Id. */
-  int TEST_NUMBER = 16;
+  int MAX_DISTANCE = 16;
   /** RegularExpression Id. */
-  int IDENTIFIER = 17;
+  int REACTION = 17;
+  /** RegularExpression Id. */
+  int KEY = 18;
+  /** RegularExpression Id. */
+  int NUMBER = 19;
+  /** RegularExpression Id. */
+  int TEST_NUMBER = 20;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 21;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -60,9 +68,13 @@ public interface ControllerFSMFactoryConstants {
     "\"rule\"",
     "\"end1\"",
     "\"end2\"",
+    "\"joint1\"",
+    "\"joint2\"",
     "\"vertex\"",
     "\"min_angle\"",
     "\"max_angle\"",
+    "\"min_distance\"",
+    "\"max_distance\"",
     "\"reaction\"",
     "\"key\"",
     "<NUMBER>",
@@ -72,7 +84,7 @@ public interface ControllerFSMFactoryConstants {
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
-    "<token of kind 22>",
+    "<token of kind 26>",
   };
 
 }

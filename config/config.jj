@@ -58,6 +58,8 @@ TOKEN: {
     < VERTEX : "vertex" > |
     < MIN_ANGLE : "min_angle" > |
     < MAX_ANGLE : "max_angle" > |
+    < MIN_DISTANCE : "min_distance" > |
+    < MAX_DISTANCE : "max_distance" > |
     < REACTION : "reaction" > |
     < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
@@ -295,8 +297,8 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
     Token   t;
     String  joint1      = null;
     String  joint2      = null;
-    double  mindistance = null;
-    double  maxDistance = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
 
     String  patternChunk1;
     String  patternChunk2;
@@ -329,8 +331,8 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
         )
     )*
     {
-        System.out.printf("MAX_DISTANCE: %f\n", maxDistance);
-        System.out.printf("MIN_DISTANCE: %f\n", minDistance);
+        System.out.printf("MAX_DISTANCE: %f\n", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\n", minDistance.doubleValue());
         System.out.printf("JOINT1: %s\n", joint1);
         System.out.printf("JOINT2: %s\n", joint2);
 
@@ -341,16 +343,16 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
 
         patternChunk1 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1Id,
                                                                                                       joint2Id,
-                                                                                                      minDistance,
-                                                                                                      maxDistance);
+                                                                                                      minDistance.doubleValue(),
+                                                                                                      maxDistance.doubleValue());
 
         patternChunk2 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance < %f)", joint1Id,
                                                                                        joint2Id,
-                                                                                       minDistance.intValue());
+                                                                                       minDistance.doubleValue());
 
         patternChunk3 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f)", joint1Id,
                                                                                        joint2Id,
-                                                                                       maxDistance.intValue());
+                                                                                       maxDistance.doubleValue());
         switch(ruleType) {
             case DISTANCE:
                 state.addRule(new Distance(joint1Id, joint2Id, 0));

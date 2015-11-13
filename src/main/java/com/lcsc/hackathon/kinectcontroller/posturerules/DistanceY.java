@@ -36,8 +36,7 @@ public class DistanceY  implements Rule {
     private double distance;
     
 	
-	public DistanceY(String id,
-					 int joint1,
+	public DistanceY(int joint1,
 					 int joint2,
 					 double distance) {
 		this.joint1 	= joint1;

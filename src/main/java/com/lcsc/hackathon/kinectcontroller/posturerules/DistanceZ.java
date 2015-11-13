@@ -36,8 +36,7 @@ public class DistanceZ  implements Rule {
     private double distance;
     
 	
-	public DistanceZ(String id,
-					 int joint1,
+	public DistanceZ(int joint1,
 					 int joint2,
 					 double distance) {
 		this.joint1 	= joint1;

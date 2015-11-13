@@ -189,6 +189,8 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         distance            = Formulas.getDistance(joint1.getPosition(), joint2.getPosition());
                         distRule.setDistance(distance);
 
+                        _logger.debug(String.format("Distance: %f", distance));
+
                         _csm.esperHandler.sendEvent(rule);
                         break;
                     case DISTANCEX:
