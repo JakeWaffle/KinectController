@@ -42,10 +42,10 @@ public class EventFactory {
     List<DistanceX> distXRules = new ArrayList<DistanceX>();
     List<DistanceY> distYRules = new ArrayList<DistanceY>();
     List<DistanceZ> distZRules = new ArrayList<DistanceZ>();
-    List<AbsoluteDistance> absDistRules = new ArrayList<AbsoluteDistance>();
-    List<AbsoluteDistX> absDistXRules = new ArrayList<AbsoluteDistX>();
-    List<AbsoluteDistY> absDistYRules = new ArrayList<AbsoluteDistY>();
-    List<AbsoluteDistZ> absDistZRules = new ArrayList<AbsoluteDistZ>();
+    List<DistanceFromPoint> absDistRules = new ArrayList<DistanceFromPoint>();
+    List<PositionX> absDistXRules = new ArrayList<PositionX>();
+    List<PositionY> absDistYRules = new ArrayList<PositionY>();
+    List<PositionZ> absDistZRules = new ArrayList<PositionZ>();
     
     public EventFactory() {
     }
@@ -70,19 +70,19 @@ public class EventFactory {
         distZRules.add(rule);
     }
     
-    public void addAbsDistRules(AbsoluteDistance rule) {
+    public void addAbsDistRules(DistanceFromPoint rule) {
         absDistRules.add(rule);
     }
     
-    public void addAbsDistXRules(AbsoluteDistX rule) {
+    public void addAbsDistXRules(PositionX rule) {
         absDistXRules.add(rule);
     }
     
-    public void addAbsDistYRules(AbsoluteDistY rule) {
+    public void addAbsDistYRules(PositionY rule) {
         absDistYRules.add(rule);
     }
     
-    public void addAbsDistZRules(AbsoluteDistZ rule) {
+    public void addAbsDistZRules(PositionZ rule) {
         absDistZRules.add(rule);
     }
 
@@ -109,10 +109,10 @@ public class EventFactory {
             double[] joint1 = skele.get3DJoint(rule.getJoint1());
             double[] joint2 = skele.get3DJoint(rule.getJoint2());
             
-            double distance = Formulas.getDistance(joint1, joint2);
+            double distance = Formulas.get_distance(joint1, joint2);
             //log.info(String.format("Distance: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -125,8 +125,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceX(joint1, joint2);
             //log.info(String.format("DistanceX: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -139,8 +139,8 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceY(joint1, joint2);
             //log.info(String.format("DistanceY: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
@@ -153,64 +153,64 @@ public class EventFactory {
             
             double distance = Formulas.getDistanceZ(joint1, joint2);
             //log.info(String.format("DistanceZ: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistance rule : this.absDistRules) {
+        for (DistanceFromPoint rule : this.absDistRules) {
             //update them with information from the current skeleton.
             double[] point = rule.getAbsPoint();
-            double[] joint = skele.get3DJoint(rule.getJointId());
+            double[] joint = skele.get3DJoint(rule.get_jointId());
             
-            double distance = Formulas.getDistance(point, joint);
+            double distance = Formulas.get_distance(point, joint);
             //log.info(String.format("AbsDistance: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistX rule : this.absDistXRules) {
+        for (PositionX rule : this.absDistXRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointX();
-            double joint = skele.get3DJoint(rule.getJointId())[0];
+            double joint = skele.get3DJoint(rule.get_jointId())[0];
             
             double distance = Formulas.getDistanceX(point, joint);
             //log.info(String.format("AbsDistanceX: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistY rule : this.absDistYRules) {
+        for (PositionY rule : this.absDistYRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointY();
-            double joint = skele.get3DJoint(rule.getJointId())[1];
+            double joint = skele.get3DJoint(rule.get_jointId())[1];
             
             double distance = Formulas.getDistanceY(point, joint);
             //log.info(String.format("AbsDistanceY: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);
         }
         
-        for (AbsoluteDistZ rule : this.absDistZRules) {
+        for (PositionZ rule : this.absDistZRules) {
             //update them with information from the current skeleton.
             double point = rule.getAbsPointZ();
-            double joint = skele.get3DJoint(rule.getJointId())[2];
+            double joint = skele.get3DJoint(rule.get_jointId())[2];
             
             double distance = Formulas.getDistanceZ(point, joint);
             //log.info(String.format("AbsDistanceZ: %f", distance));
-            double oldDist = rule.getDistance();
-            rule.setDistance(distance*0.5 + oldDist*.5);
+            double oldDist = rule.get_distance();
+            rule.set_distance(distance*0.5 + oldDist*.5);
             
             //Then pass all of the posturerules to eHandler using sendEvent().
             eHandler.sendEvent(rule);

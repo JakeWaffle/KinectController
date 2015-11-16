@@ -55,11 +55,14 @@ TOKEN: {
     < END2 : "end2" > |
     < JOINT1 : "joint1" > |
     < JOINT2 : "joint2" > |
+    < JOINT : "joint" > |
     < VERTEX : "vertex" > |
     < MIN_ANGLE : "min_angle" > |
     < MAX_ANGLE : "max_angle" > |
     < MIN_DISTANCE : "min_distance" > |
     < MAX_DISTANCE : "max_distance" > |
+    < MIN_POSITION : "min_position" > |
+    < MAX_POSITION : "max_position" > |
     < REACTION : "reaction" > |
     < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
@@ -163,13 +166,13 @@ void parseGesture(String gestureId, ControllerState state) :
             ruleType = <IDENTIFIER>.image
             {
                 switch(RuleType.fromString(ruleType)) {
-                    case ABS_DISTANCE:
+                    case DISTANCE_FROM_POINT:
                         break;
-                    case ABS_DISTANCEX:
+                    case DISTANCEX:
                         break;
-                    case ABS_DISTANCEY:
+                    case DISTANCEY:
                         break;
-                    case ABS_DISTANCEZ:
+                    case DISTANCEZ:
                         break;
                     case ANGLE:
                         parseAngleRule(state, gesture);
@@ -365,6 +368,70 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
                 break;
             case DISTANCEZ:
                 state.addRule(new DistanceZ(joint1Id, joint2Id, 0));
+                break;
+        }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
+}
+
+void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType) :
+{
+    Token   t;
+    String  joint   = null;
+    Double  minPos  = null;
+    Double  maxPos  = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+}
+{
+    (
+        (
+            <JOINT>
+            <IS>
+            joint1 = <IDENTIFIER>.image
+        )
+        |
+        (
+            <MIN_POSITION> <IS>
+            t = <NUMBER>
+            {minPos = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MAX_POSITION> <IS>
+            t = <NUMBER>
+            {maxPos = Double.parseDouble(t.image);}
+        )
+    )*
+    {
+        System.out.printf("MAX_POSITION: %f\n", maxPos.doubleValue());
+        System.out.printf("MIN_POSITION: %f\n", minPos.doubleValue());
+        System.out.printf("JOINT: %s\n", joint);
+
+        int jointId     = Conversions.getJointId(joint);
+
+        //ruleType.className is going to be either PositionX, PositionY or PositionZ.
+
+        patternChunk1 = String.format(ruleType.className+"(joint=%d, pos > %f, pos < %f)", jointId,
+                                                                                           minPosition.doubleValue(),
+                                                                                           maxPosition.doubleValue());
+
+        patternChunk2 = String.format(ruleType.className+"(joint1=%d, pos < %f)", jointId,
+                                                                                  minPosition.doubleValue());
+
+        patternChunk3 = String.format(ruleType.className+"(joint1=%d, pos > %f)", jointId,
+                                                                                  maxPosition.doubleValue());
+        switch(ruleType) {
+            case POSITIONX:
+                state.addRule(new PositionX(jointId, 0));
+                break;
+            case POSITIONY:
+                state.addRule(new PositionY(jointId, 0));
+                break;
+            case POSITIONZ:
+                state.addRule(new PositionZ(jointId, 0));
                 break;
         }
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));

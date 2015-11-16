@@ -154,19 +154,22 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
             //the following will throw a null pointer exception! We will prevent this by making sure there is
             //a current state when the config file is loaded.
 
+            //Reusable variables for the below switch case.
+            SkeletonJoint end1      = null;
+            SkeletonJoint vertex    = null;
+            SkeletonJoint end2      = null;
+            double angle            = 0;
+
+
+            SkeletonJoint joint1    = null;
+            SkeletonJoint joint2    = null;
+            double distance         = 0;
+            double position         = 0;
+
             //Here we will get the posturerule event beans from the current ControllerState.
             //We'll then update them with data from the user that's being tracked and we'll pass
             //those objects over to Esper for processing.
             for (Rule rule : _csm.getCurrentRules()) {
-                SkeletonJoint end1      = null;
-                SkeletonJoint vertex    = null;
-                SkeletonJoint end2      = null;
-                double angle            = 0;
-
-
-                SkeletonJoint joint1    = null;
-                SkeletonJoint joint2    = null;
-                double distance         = 0;
 
                 switch (rule.getType()) {
                     case ANGLE:
@@ -186,7 +189,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         joint1              = skeleton.getJoint(JointType.fromNative(distRule.getJoint1()));
                         joint2              = skeleton.getJoint(JointType.fromNative(distRule.getJoint2()));
 
-                        distance            = Formulas.getDistance(joint1.getPosition(), joint2.getPosition());
+                        distance            = Formulas.getDistance(joint2.getPosition(), joint1.getPosition());
                         distRule.setDistance(distance);
 
                         _logger.debug(String.format("Distance: %f", distance));
@@ -198,7 +201,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         joint1              = skeleton.getJoint(JointType.fromNative(distXRule.getJoint1()));
                         joint2              = skeleton.getJoint(JointType.fromNative(distXRule.getJoint2()));
 
-                        distance            = Formulas.getDistanceX(joint1.getPosition(), joint2.getPosition());
+                        distance            = Formulas.getDistanceX(joint2.getPosition().getX(), joint1.getPosition().getX());
                         distXRule.setDistance(distance);
 
                         _csm.esperHandler.sendEvent(rule);
@@ -208,7 +211,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         joint1              = skeleton.getJoint(JointType.fromNative(distYRule.getJoint1()));
                         joint2              = skeleton.getJoint(JointType.fromNative(distYRule.getJoint2()));
 
-                        distance            = Formulas.getDistanceY(joint1.getPosition(), joint2.getPosition());
+                        distance            = Formulas.getDistanceY(joint2.getPosition().getY(), joint1.getPosition().getY());
                         distYRule.setDistance(distance);
 
                         _csm.esperHandler.sendEvent(rule);
@@ -218,8 +221,35 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         joint1              = skeleton.getJoint(JointType.fromNative(distZRule.getJoint1()));
                         joint2              = skeleton.getJoint(JointType.fromNative(distZRule.getJoint2()));
 
-                        distance            = Formulas.getDistanceZ(joint1.getPosition(), joint2.getPosition());
+                        distance            = Formulas.getDistanceZ(joint2.getPosition().getZ(), joint1.getPosition().getZ());
                         distZRule.setDistance(distance);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case POSITIONX:
+                        PositionX posXRule  = (PositionX) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(posXRule.getJointId()));
+
+                        position            = Formulas.getDistanceX(joint1.getPosition().getX(), new Float(0.0));
+                        posXRule.setPos((float)position);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case POSITIONY:
+                        PositionY posYRule  = (PositionY) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(posYRule.getJointId()));
+
+                        position            = Formulas.getDistanceY(joint1.getPosition().getY(), new Float(0.0));
+                        posYRule.setPos((float)position);
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
+                    case POSITIONZ:
+                        PositionZ posZRule  = (PositionZ) rule;
+                        joint1              = skeleton.getJoint(JointType.fromNative(posZRule.getJointId()));
+
+                        position            = Formulas.getDistanceZ(joint1.getPosition().getZ(), new Float(1500.0));
+                        posZRule.setPos((float)position);
 
                         _csm.esperHandler.sendEvent(rule);
                         break;

@@ -25,52 +25,67 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
-public class AbsoluteDistY {
-	private String id = "";
-	private double absPointY;
-	private int jointId;
-    private double distance;
-    
-	
-	public AbsoluteDistY(	String id,
-							double absPointY,
-							int jointId,
-							double distance) {
-		this.id = id;
-        this.absPointY = absPointY;
-        this.jointId = jointId;
-        this.distance = distance;
-    }
-	
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class PositionY {
+	private String 	id = "";
+	private float 	pos;
+	private int 	jointId;
+
+
+	public PositionY(int jointId,
+					 float pos) {
+		this.jointId 	= jointId;
+		this.pos 		= pos;
+		this.id 		= getHash();
+	}
+
+
+	private String getHash() {
+		String hash = null;
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String text = String.format("%s:%d", getType().alias, this.jointId);
+
+			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+			hash = new String(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return hash;
+	}
+
 	public String getId() {
 		return this.id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-    
-	public double getAbsPointY() {
-		return this.absPointY;
+
+	public RuleType getType() {
+		return RuleType.POSITIONX;
 	}
-	
-	public void setAbsPointY(double absPointY) {
-		this.absPointY = absPointY;
+
+	public double getPos() {
+		return this.pos;
 	}
-	
+
+	public void setPos(float pos) {
+		this.pos = pos;
+	}
+
 	public int getJointId() {
 		return this.jointId;
 	}
-	
+
 	public void setJointId(int jnt) {
 		this.jointId = jnt;
-	}
-    
-    public double getDistance() {
-		return this.distance;
-	}
-	
-	public void setDistance(double distance) {
-		this.distance = distance;
 	}
 }

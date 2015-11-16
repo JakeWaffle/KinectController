@@ -22,7 +22,17 @@ state Menu
             key        is   q
 
     gesture dunno
-        rule DistanceXYZ
+        rule Distance
+            joint1          is   LEFT_HAND
+            joint2          is   RIGHT_HAND
+            min_distance    is   0
+            max_distance    is   150
+
+        reaction KEY_DOWN_UP
+            key        is   p
+
+    gesture mhm
+        rule PositionX
             joint1          is   LEFT_HAND
             joint2          is   RIGHT_HAND
             min_distance    is   0

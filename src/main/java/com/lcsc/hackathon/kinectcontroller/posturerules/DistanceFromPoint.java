@@ -25,37 +25,64 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
-public class AbsoluteDistZ {
-	private String id = "";
-	private double absPointZ;
-	private int jointId;
-    private double distance;
+import com.primesense.nite.Point3D;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class DistanceFromPoint implements Rule {
+	private String 			id = "";
+	private Point3D<Float> 	point;
+	private int 			jointId;
+    private double 			distance;
     
 	
-	public AbsoluteDistZ(	String id,
-							double absPointZ,
-							int jointId,
-							double distance) {
-		this.id = id;
-        this.absPointZ = absPointZ;
-        this.jointId = jointId;
-        this.distance = distance;
-    }
+	public DistanceFromPoint(Point3D<Float> point,
+							 int jointId,
+							 double distance) {
+        this.point 		= point;
+		this.jointId 	= jointId;
+		this.distance 	= distance;
+		this.id 		= getHash();
+	}
+
+	private String getHash() {
+		String hash = null;
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String text = String.format("%s:%f:%f:%f:%d", getType().alias, point.getX(), point.getY(), point.getZ(), jointId);
+
+			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+			hash = new String(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return hash;
+	}
 	
 	public String getId() {
 		return this.id;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
+	public RuleType getType() {
+		return RuleType.DISTANCE_FROM_POINT;
+	}
     
-	public double getAbsPointZ() {
-		return this.absPointZ;
+	public Point3D<Float> getPoint() {
+		return this.point;
 	}
 	
-	public void setAbsPointZ(double absPointZ) {
-		this.absPointZ = absPointZ;
+	public void setPoint(Point3D<Float> point) {
+		this.point = point;
 	}
 	
 	public int getJointId() {
@@ -70,7 +97,7 @@ public class AbsoluteDistZ {
 		return this.distance;
 	}
 	
-	public void setDistance(double distance) {
-		this.distance = distance;
+	public void setDistance(double _distance) {
+		this.distance = _distance;
 	}
 }
