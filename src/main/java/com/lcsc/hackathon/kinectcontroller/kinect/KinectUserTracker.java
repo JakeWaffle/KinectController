@@ -184,6 +184,17 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         //Send that rule object over to Esper now for some event processing and pattern matching.
                         _csm.esperHandler.sendEvent(rule);
                         break;
+                    case DISTANCE_FROM_POINT:
+                        DistanceFromPoint distFrmPointRule  = (DistanceFromPoint) rule;
+                        joint1                              = skeleton.getJoint(JointType.fromNative(distFrmPointRule.getJoint()));
+
+                        distance            = Formulas.getDistance(distFrmPointRule.getPoint(), joint1.getPosition());
+                        distFrmPointRule.setDistance(distance);
+
+                        _logger.debug(String.format("DistanceFromPoint: %f meters", distance));
+
+                        _csm.esperHandler.sendEvent(rule);
+                        break;
                     case DISTANCE:
                         Distance distRule   = (Distance) rule;
                         joint1              = skeleton.getJoint(JointType.fromNative(distRule.getJoint1()));
@@ -192,7 +203,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         distance            = Formulas.getDistance(joint2.getPosition(), joint1.getPosition());
                         distRule.setDistance(distance);
 
-                        _logger.debug(String.format("Distance: %f", distance));
+                        //_logger.debug(String.format("Distance: %f meters", distance));
 
                         _csm.esperHandler.sendEvent(rule);
                         break;
@@ -228,7 +239,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         break;
                     case POSITIONX:
                         PositionX posXRule  = (PositionX) rule;
-                        joint1              = skeleton.getJoint(JointType.fromNative(posXRule.getJointId()));
+                        joint1              = skeleton.getJoint(JointType.fromNative(posXRule.getJoint()));
 
                         position            = Formulas.getDistanceX(joint1.getPosition().getX(), new Float(0.0));
                         posXRule.setPos((float)position);
@@ -237,7 +248,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         break;
                     case POSITIONY:
                         PositionY posYRule  = (PositionY) rule;
-                        joint1              = skeleton.getJoint(JointType.fromNative(posYRule.getJointId()));
+                        joint1              = skeleton.getJoint(JointType.fromNative(posYRule.getJoint()));
 
                         position            = Formulas.getDistanceY(joint1.getPosition().getY(), new Float(0.0));
                         posYRule.setPos((float)position);
@@ -246,7 +257,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                         break;
                     case POSITIONZ:
                         PositionZ posZRule  = (PositionZ) rule;
-                        joint1              = skeleton.getJoint(JointType.fromNative(posZRule.getJointId()));
+                        joint1              = skeleton.getJoint(JointType.fromNative(posZRule.getJoint()));
 
                         position            = Formulas.getDistanceZ(joint1.getPosition().getZ(), new Float(1500.0));
                         posZRule.setPos((float)position);

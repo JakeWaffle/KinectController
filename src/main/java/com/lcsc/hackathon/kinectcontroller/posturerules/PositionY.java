@@ -29,17 +29,17 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class PositionY {
+public class PositionY implements Rule {
 	private String 	id = "";
 	private float 	pos;
-	private int 	jointId;
+	private int 	joint;
 
 
-	public PositionY(int jointId,
+	public PositionY(int joint,
 					 float pos) {
-		this.jointId 	= jointId;
-		this.pos 		= pos;
-		this.id 		= getHash();
+		this.joint 	= joint;
+		this.pos 	= pos;
+		this.id 	= getHash();
 	}
 
 
@@ -48,7 +48,7 @@ public class PositionY {
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%s:%d", getType().alias, this.jointId);
+			String text = String.format("%s:%d", getType().alias, this.joint);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());
@@ -81,11 +81,11 @@ public class PositionY {
 		this.pos = pos;
 	}
 
-	public int getJointId() {
-		return this.jointId;
+	public int getJoint() {
+		return this.joint;
 	}
 
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
+	public void setJoint(int jnt) {
+		this.joint = jnt;
 	}
 }

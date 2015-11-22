@@ -63,11 +63,13 @@ TOKEN: {
     < MAX_DISTANCE : "max_distance" > |
     < MIN_POSITION : "min_position" > |
     < MAX_POSITION : "max_position" > |
+    < POINT : "point"> |
     < REACTION : "reaction" > |
     < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
     < TEST_NUMBER : (["0"-"9"])+ > |
-    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
+    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ > |
+    < COMMA : (",") ("\\s")*>
 }
 
 SKIP: {
@@ -167,12 +169,12 @@ void parseGesture(String gestureId, ControllerState state) :
             {
                 switch(RuleType.fromString(ruleType)) {
                     case DISTANCE_FROM_POINT:
+                        parseDistanceFromPointRule(state, gesture);
                         break;
-                    case DISTANCEX:
-                        break;
-                    case DISTANCEY:
-                        break;
-                    case DISTANCEZ:
+                    case POSITIONX:
+                    case POSITIONY:
+                    case POSITIONZ:
+                        parsePositionRule(state, gesture, RuleType.fromString(ruleType));
                         break;
                     case ANGLE:
                         parseAngleRule(state, gesture);
@@ -390,7 +392,7 @@ void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType
         (
             <JOINT>
             <IS>
-            joint1 = <IDENTIFIER>.image
+            joint = <IDENTIFIER>.image
         )
         |
         (
@@ -415,14 +417,14 @@ void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType
         //ruleType.className is going to be either PositionX, PositionY or PositionZ.
 
         patternChunk1 = String.format(ruleType.className+"(joint=%d, pos > %f, pos < %f)", jointId,
-                                                                                           minPosition.doubleValue(),
-                                                                                           maxPosition.doubleValue());
+                                                                                           minPos.doubleValue(),
+                                                                                           maxPos.doubleValue());
 
-        patternChunk2 = String.format(ruleType.className+"(joint1=%d, pos < %f)", jointId,
-                                                                                  minPosition.doubleValue());
+        patternChunk2 = String.format(ruleType.className+"(joint=%d, pos < %f)", jointId,
+                                                                                  minPos.doubleValue());
 
-        patternChunk3 = String.format(ruleType.className+"(joint1=%d, pos > %f)", jointId,
-                                                                                  maxPosition.doubleValue());
+        patternChunk3 = String.format(ruleType.className+"(joint=%d, pos > %f)", jointId,
+                                                                                  maxPos.doubleValue());
         switch(ruleType) {
             case POSITIONX:
                 state.addRule(new PositionX(jointId, 0));
@@ -434,6 +436,88 @@ void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType
                 state.addRule(new PositionZ(jointId, 0));
                 break;
         }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
+}
+
+void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
+{
+    Token   t;
+    String  joint       = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
+    Double  pointX      = new Double(0);
+    Double  pointY      = new Double(0);
+    Double  pointZ      = new Double(1500);
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+}
+{
+    (
+        (
+            <JOINT> <IS>
+            joint = <IDENTIFIER>.image
+        )
+        |
+        (
+            <POINT> <IS>
+            t = <NUMBER>
+            {pointX = Double.parseDouble(t.image);}
+            <COMMA>
+            t = <NUMBER>
+            {pointY = Double.parseDouble(t.image);}
+            <COMMA>
+            t = <NUMBER>
+            {pointZ = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MIN_DISTANCE> <IS>
+            t = <NUMBER>
+            {minDistance = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MAX_DISTANCE> <IS>
+            t = <NUMBER>
+            {maxDistance = Double.parseDouble(t.image);}
+        )
+    )*
+    {
+        System.out.printf("MAX_DISTANCE: %f\n", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\n", minDistance.doubleValue());
+        System.out.printf("JOINT: %s\n", joint);
+
+        int jointId = Conversions.getJointId(joint);
+        double[] point = new double[] {pointX.doubleValue(), pointY.doubleValue(), pointZ.doubleValue()};
+        state.addRule(new DistanceFromPoint(point, jointId));
+
+        //TODO What can we do to optimize this? Use a hash for the Esper point identification?
+
+        patternChunk1 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue(),
+                                                                                        maxDistance.doubleValue());
+
+        patternChunk2 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue());
+
+        patternChunk3 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        maxDistance.doubleValue());
+
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
     }
 }

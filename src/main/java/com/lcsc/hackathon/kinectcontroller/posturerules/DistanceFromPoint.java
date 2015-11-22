@@ -33,17 +33,25 @@ import java.security.NoSuchAlgorithmException;
 
 public class DistanceFromPoint implements Rule {
 	private String 			id = "";
-	private Point3D<Float> 	point;
-	private int 			jointId;
+	//An array of the point's position: x, y and z.
+	private double[] 		point;
+	private int 			joint;
     private double 			distance;
-    
-	
-	public DistanceFromPoint(Point3D<Float> point,
-							 int jointId,
-							 double distance) {
+
+
+	/**
+	 * The constructor for the DistanceFromPoint requires a fixed point's location and the joint we're
+	 * going to be tracking with this rule. This rule is concerned with the distance between the fixed point and the joint.
+	 * @param point An array holding the x, y and z values of the fixed point's location in the Kinect's viewing area.
+	 * @param joint A joint id that is compatible with Nite's skeleton system. Our program is more efficient if we don't
+	 *              need to make conversions all the time. That's why we're integrating Nite's skeleton system
+	 *              into this program's event processor and keyboard/mouse emulator.
+	 */
+	public DistanceFromPoint(double[] point,
+							 int joint) {
         this.point 		= point;
-		this.jointId 	= jointId;
-		this.distance 	= distance;
+		this.joint 		= joint;
+		this.distance 	= 0;
 		this.id 		= getHash();
 	}
 
@@ -52,7 +60,7 @@ public class DistanceFromPoint implements Rule {
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%s:%f:%f:%f:%d", getType().alias, point.getX(), point.getY(), point.getZ(), jointId);
+			String text = String.format("%s:%f:%f:%f:%d", getType().alias, point[0], point[1], point[2], joint);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());
@@ -77,20 +85,20 @@ public class DistanceFromPoint implements Rule {
 		return RuleType.DISTANCE_FROM_POINT;
 	}
     
-	public Point3D<Float> getPoint() {
+	public double[] getPoint() {
 		return this.point;
 	}
 	
-	public void setPoint(Point3D<Float> point) {
+	public void setPoint(double[] point) {
 		this.point = point;
 	}
 	
-	public int getJointId() {
-		return this.jointId;
+	public int getJoint() {
+		return this.joint;
 	}
 	
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
+	public void setJoint(int jnt) {
+		this.joint = jnt;
 	}
     
     public double getDistance() {

@@ -57,6 +57,11 @@ public class Formulas {
 	public static double getDistance(Point3D<Float> jointA, Point3D<Float> jointB) {
 		return Math.sqrt(Math.pow(jointB.getX()-jointA.getX(), 2) + Math.pow(jointB.getY()-jointA.getY(), 2) + Math.pow(jointB.getZ()-jointA.getZ(), 2));
 	}
+
+	// Get the distance between a point and a joint.
+	public static double getDistance(double[] point, Point3D<Float> joint) {
+		return Math.sqrt(Math.pow(joint.getX()-point[0], 2) + Math.pow(joint.getY()-point[1], 2) + Math.pow(joint.getZ()-point[2], 2));
+	}
 	
 	// Get the angle at a vertex given three joints.
 	public static double getAngle(Point3D<Float> jointA, Point3D<Float> vertex, Point3D<Float> jointB) {

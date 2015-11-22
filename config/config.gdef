@@ -17,7 +17,7 @@ state Menu
             end2       is   LEFT_SHOULDER
             min_angle  is   150
             max_angle  is   180
-            
+
         reaction KEY_DOWN_UP
             key        is   q
 
@@ -33,10 +33,19 @@ state Menu
 
     gesture mhm
         rule PositionX
-            joint1          is   LEFT_HAND
-            joint2          is   RIGHT_HAND
-            min_distance    is   0
-            max_distance    is   150
+            joint           is   LEFT_HAND
+            min_position    is   0
+            max_position    is   150
 
         reaction KEY_DOWN_UP
-            key        is   p
+            key        is   r
+
+    gesture position
+            rule Distance_From_Point
+                point           is   0, 0, 1500
+                joint           is   LEFT_HAND
+                min_distance    is   0
+                max_distance    is   100
+
+            reaction KEY_DOWN_UP
+                key        is   m

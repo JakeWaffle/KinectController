@@ -33,25 +33,35 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int JOINT2 = 11;
   /** RegularExpression Id. */
-  int VERTEX = 12;
+  int JOINT = 12;
   /** RegularExpression Id. */
-  int MIN_ANGLE = 13;
+  int VERTEX = 13;
   /** RegularExpression Id. */
-  int MAX_ANGLE = 14;
+  int MIN_ANGLE = 14;
   /** RegularExpression Id. */
-  int MIN_DISTANCE = 15;
+  int MAX_ANGLE = 15;
   /** RegularExpression Id. */
-  int MAX_DISTANCE = 16;
+  int MIN_DISTANCE = 16;
   /** RegularExpression Id. */
-  int REACTION = 17;
+  int MAX_DISTANCE = 17;
   /** RegularExpression Id. */
-  int KEY = 18;
+  int MIN_POSITION = 18;
   /** RegularExpression Id. */
-  int NUMBER = 19;
+  int MAX_POSITION = 19;
   /** RegularExpression Id. */
-  int TEST_NUMBER = 20;
+  int POINT = 20;
   /** RegularExpression Id. */
-  int IDENTIFIER = 21;
+  int REACTION = 21;
+  /** RegularExpression Id. */
+  int KEY = 22;
+  /** RegularExpression Id. */
+  int NUMBER = 23;
+  /** RegularExpression Id. */
+  int TEST_NUMBER = 24;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 25;
+  /** RegularExpression Id. */
+  int COMMA = 26;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -70,21 +80,26 @@ public interface ControllerFSMFactoryConstants {
     "\"end2\"",
     "\"joint1\"",
     "\"joint2\"",
+    "\"joint\"",
     "\"vertex\"",
     "\"min_angle\"",
     "\"max_angle\"",
     "\"min_distance\"",
     "\"max_distance\"",
+    "\"min_position\"",
+    "\"max_position\"",
+    "\"point\"",
     "\"reaction\"",
     "\"key\"",
     "<NUMBER>",
     "<TEST_NUMBER>",
     "<IDENTIFIER>",
+    "<COMMA>",
     "\" \"",
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
-    "<token of kind 26>",
+    "<token of kind 31>",
   };
 
 }
