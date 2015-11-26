@@ -44,7 +44,7 @@ import java.util.List;
  * This class will be tasked with keeping track of the libraries that are needed to talk to the Kinect. So this class will
  * be handing off the positions of joints to Esper and Esper will then use that data to detect gestures.
  */
-public class KinectUserTracker implements UserTracker.NewFrameListener{
+public class KinectUserTracker implements UserTracker.NewFrameListener {
     private static final Logger                 _logger = LoggerFactory.getLogger(KinectUserTracker.class);
 
     public         final KinectDebugWindow      kinectWindow;
@@ -52,7 +52,6 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
 
     private        final ControllerStateMachine _csm;
     private              short                  _userId = -1;
-
 
     private              double                 _lastUpdateTime;
 
@@ -125,7 +124,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
             else {
                 boolean userFound = false;
                 for (UserData user : users) {
-                    if (user.isNew()) {
+                    if (!user.isLost()) {
                         _userId     = user.getId();
                         this.tracker.startSkeletonTracking(_userId);
                         userData    = user;
@@ -134,6 +133,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                     }
                 }
                 if (!userFound) {
+                    kinectWindow.repaint();
                     return;
                 }
             }
@@ -144,6 +144,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener{
                 _logger.info(String.format("Lost User: %d", _userId));
                 this.tracker.stopSkeletonTracking(_userId);
                 _userId = -1;
+                kinectWindow.repaint();
                 return;
             }
         }

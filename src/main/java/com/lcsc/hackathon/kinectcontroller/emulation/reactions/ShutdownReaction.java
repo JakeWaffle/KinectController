@@ -23,33 +23,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.kinectcontroller.emulation;
+package com.lcsc.hackathon.kinectcontroller.emulation.reactions;
+
+import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionConfig;
 
 /**
- * Created by Jake on 6/2/2015.
+ * Created by jake on 11/25/2015.
+ * This reactions just allows the KinectController to be shut down.
  */
-public enum ReactionType {
-    KEY_DOWN_UP("Key_Down_Up"),
-    KEY_DOWN("Key_Down"),
-    KEY_UP("Key_Up"),
-    SHUTDOWN("SHUTDOWN");
-
-
-    //This is the alias that is used in the config file by the users.
-    public final String alias;
-
-    ReactionType(String alias) {
-        this.alias      = alias;
+public class ShutdownReaction implements Reaction {
+    public ShutdownReaction() {
     }
 
-    public static ReactionType fromString(String alias) {
-        if (alias != null) {
-            for (ReactionType r : ReactionType.values()) {
-                if (alias.equalsIgnoreCase(r.alias)) {
-                    return r;
-                }
-            }
-        }
+    @Override
+    public ReactionConfig getConfig() {
         return null;
+    }
+
+    @Override
+    public void trigger() {
+        System.exit(0);
     }
 }

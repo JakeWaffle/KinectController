@@ -173,6 +173,9 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                     case KEY_UP:
                         parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
+                    case SHUTDOWN:
+                        gesture.addReaction(new ShutdownReaction());
+                        break;
                 }
         break;
       default:

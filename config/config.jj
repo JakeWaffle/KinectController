@@ -199,6 +199,9 @@ void parseGesture(String gestureId, ControllerState state) :
                     case KEY_UP:
                         parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
+                    case SHUTDOWN:
+                        gesture.addReaction(new ShutdownReaction());
+                        break;
                 }
             }
         )
