@@ -80,6 +80,6 @@ public class EventListener implements UpdateListener {
             for (Reaction reaction : _reactions.get(gestureId)) {
                 _emulationController.scheduleReaction(reaction);
             }
-        }
+        }                           
     }
 }

@@ -46,6 +46,7 @@ public class ControllerState {
     //this container should hold an Angle object with vertex=2.
     //It maps a SHA256 hash to a java bean that generated the hash.
     //The hash makes it so that there are no duplicate posturerules for separate gestures.
+    //That was done to make this a little more efficient, because Esper doesn't care if gestures share posturerules.
     private Map<String, Rule>     _rules;
 
     //This will hold the gestures that the above posturerules are meant for.
@@ -95,7 +96,7 @@ public class ControllerState {
     /**
      * This just returns a Collection of gestures for this ControllerState. The ControllerStateMachine uses it
      * during the loading of Esper patterns, because the gestures' reactions need loaded into the EventListener.
-     * @return
+     * @return A collection of gestures that belong to this ControllerState.
      */
     public Collection<Gesture> getGestures() {
         return _gestures.values();
