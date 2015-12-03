@@ -1,0 +1,34 @@
+version 1
+
+starting_state is Menu
+
+state Menu
+    gesture select_option
+        rule Distance
+            joint1          is   LEFT_HAND
+            joint2          is   RIGHT_HAND
+            min_distance    is   0
+            max_distance    is   200
+
+        reaction KEY_DOWN_UP
+            key        is   ENTER
+
+    gesture up_option
+        rule Distance
+            joint1          is   RIGHT_HAND
+            joint2          is   LEFT_SHOULDER
+            min_distance    is   0
+            max_distance    is   200
+
+        reaction KEY_DOWN_UP
+            key        is   UP
+
+    gesture down_option
+        rule Distance
+            joint1          is   LEFT_HAND
+            joint2          is   RIGHT_SHOULDER
+            min_distance    is   0
+            max_distance    is   200
+
+        reaction KEY_DOWN_UP
+            key        is   DOWN
