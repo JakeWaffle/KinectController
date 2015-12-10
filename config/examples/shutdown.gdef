@@ -1,0 +1,21 @@
+version 1
+
+starting_state is Menu
+
+state Menu
+    gesture shutdown_game
+        rule Angle
+            end1        is RIGHT_HAND
+            vertex      is RIGHT_SHOULDER
+            end2        is RIGHT_HIP
+            min_angle   is 160
+            max_angle   is 180
+
+        rule Angle
+            end1        is LEFT_HAND
+            vertex      is LEFT_SHOULDER
+            end2        is LEFT_HIP
+            min_angle   is 150
+            max_angle   is 180
+
+        reaction SHUTDOWN
