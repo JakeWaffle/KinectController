@@ -268,7 +268,5 @@ public class KinectUserTracker implements UserTracker.NewFrameListener {
                 }
             }
         }
-
-        kinectWindow.repaint();
     }
 }

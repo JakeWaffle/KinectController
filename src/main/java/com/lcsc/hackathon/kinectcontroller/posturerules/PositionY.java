@@ -70,7 +70,7 @@ public class PositionY implements Rule {
 	}
 
 	public RuleType getType() {
-		return RuleType.POSITIONX;
+		return RuleType.POSITIONY;
 	}
 
 	public double getPos() {

@@ -35,3 +35,44 @@
 2015-11-29_14:25:04.955 [Thread-958] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: up_option
 2015-11-29_14:25:05.023 [Thread-959] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: shutdown_game
 2015-11-29_14:25:05.092 [Thread-960] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-12-09_18:19:26.889 [main] INFO  c.l.hackathon.kinectcontroller.Cli - Using cli argument -f=../config/examples/position.gdef
+2015-12-09_18:19:27.568 [main] ERROR c.l.hackathon.kinectcontroller.Main - Problem parsing config file: ../config/examples/position.gdef
+com.lcsc.hackathon.kinectcontroller.config.ParseException: Encountered " <IDENTIFIER> "-5000 "" at line 9, column 34.
+Was expecting:
+    <NUMBER> ...
+    
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.generateParseException(ControllerFSMFactory.java:709) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.jj_consume_token(ControllerFSMFactory.java:647) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.parsePositionRule(ControllerFSMFactory.java:410) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.parseGesture(ControllerFSMFactory.java:154) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.parseState(ControllerFSMFactory.java:111) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.parseVersion1(ControllerFSMFactory.java:80) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory.create(ControllerFSMFactory.java:48) ~[KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.Main.parseConfig(Main.java:68) [KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.Main.<init>(Main.java:60) [KinectController.jar:na]
+	at com.lcsc.hackathon.kinectcontroller.Main.main(Main.java:54) [KinectController.jar:na]
+2015-12-09_18:19:27.619 [main] INFO  c.l.h.k.kinect.KinectUserTracker - Initializing OpenNi and Nite.
+2015-12-09_18:19:39.282 [Thread-172] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 1
+2015-12-09_18:21:14.952 [main] INFO  c.l.hackathon.kinectcontroller.Cli - Using cli argument -f=../config/examples/position.gdef
+2015-12-09_18:21:15.860 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_right_press' as gestureId from pattern[every (((PositionX(joint=9, pos > 5000.000000) or PositionX(joint=9, pos < 150.000000))) -> (PositionX(joint=9, pos > 150.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.259 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_right_release' as gestureId from pattern[every (((PositionX(joint=9, pos > 150.000000) or PositionX(joint=9, pos < -5000.000000))) -> (PositionX(joint=9, pos > -5000.000000, pos < 150.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.283 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_left_release' as gestureId from pattern[every (((PositionX(joint=10, pos > 5000.000000) or PositionX(joint=10, pos < -150.000000))) -> (PositionX(joint=10, pos > -150.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.303 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_forward_release' as gestureId from pattern[every (((PositionZ(joint=9, pos > 5000.000000) or PositionZ(joint=9, pos < 1300.000000))) -> (PositionZ(joint=9, pos > 1300.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.325 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_left_press' as gestureId from pattern[every (((PositionX(joint=10, pos > -150.000000) or PositionX(joint=10, pos < -5000.000000))) -> (PositionX(joint=10, pos > -5000.000000, pos < -150.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.346 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_back_release' as gestureId from pattern[every (((PositionZ(joint=9, pos > 1600.000000) or PositionZ(joint=9, pos < 0.000000))) -> (PositionZ(joint=9, pos > 0.000000, pos < 1600.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.368 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_forward_press' as gestureId from pattern[every (((PositionZ(joint=9, pos > 1300.000000) or PositionZ(joint=9, pos < 0.000000))) -> (PositionZ(joint=9, pos > 0.000000, pos < 1300.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.386 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_back_press' as gestureId from pattern[every (((PositionZ(joint=9, pos > 5000.000000) or PositionZ(joint=9, pos < 1600.000000))) -> (PositionZ(joint=9, pos > 1600.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:21:16.404 [main] INFO  c.l.h.k.kinect.KinectUserTracker - Initializing OpenNi and Nite.
+2015-12-09_18:21:21.721 [Thread-13] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 1
+2015-12-09_18:23:49.521 [main] INFO  c.l.hackathon.kinectcontroller.Cli - Using cli argument -f=../config/examples/position.gdef
+2015-12-09_18:23:50.413 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_right_press' as gestureId from pattern[every (((PositionX(joint=9, pos > 5000.000000) or PositionX(joint=9, pos < 150.000000))) -> (PositionX(joint=9, pos > 150.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.809 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_right_release' as gestureId from pattern[every (((PositionX(joint=9, pos > 150.000000) or PositionX(joint=9, pos < -5000.000000))) -> (PositionX(joint=9, pos > -5000.000000, pos < 150.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.837 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_left_release' as gestureId from pattern[every (((PositionX(joint=10, pos > 5000.000000) or PositionX(joint=10, pos < -150.000000))) -> (PositionX(joint=10, pos > -150.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.861 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_forward_release' as gestureId from pattern[every (((PositionZ(joint=9, pos > 5000.000000) or PositionZ(joint=9, pos < 1300.000000))) -> (PositionZ(joint=9, pos > 1300.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.885 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_left_press' as gestureId from pattern[every (((PositionX(joint=10, pos > -150.000000) or PositionX(joint=10, pos < -5000.000000))) -> (PositionX(joint=10, pos > -5000.000000, pos < -150.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.910 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_back_release' as gestureId from pattern[every (((PositionZ(joint=9, pos > 1600.000000) or PositionZ(joint=9, pos < 0.000000))) -> (PositionZ(joint=9, pos > 0.000000, pos < 1600.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.934 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_forward_press' as gestureId from pattern[every (((PositionZ(joint=9, pos > 1300.000000) or PositionZ(joint=9, pos < 0.000000))) -> (PositionZ(joint=9, pos > 0.000000, pos < 1300.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.958 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'move_back_press' as gestureId from pattern[every (((PositionZ(joint=9, pos > 5000.000000) or PositionZ(joint=9, pos < 1600.000000))) -> (PositionZ(joint=9, pos > 1600.000000, pos < 5000.000000))) where timer:within(1 sec)]
+2015-12-09_18:23:50.981 [main] INFO  c.l.h.k.kinect.KinectUserTracker - Initializing OpenNi and Nite.
+2015-12-09_18:23:57.542 [Thread-47] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 1
+2015-12-09_18:23:57.545 [Thread-47] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 2

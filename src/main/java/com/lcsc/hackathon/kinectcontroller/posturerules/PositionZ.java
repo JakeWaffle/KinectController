@@ -70,7 +70,7 @@ public class PositionZ implements Rule {
 	}
 
 	public RuleType getType() {
-		return RuleType.POSITIONX;
+		return RuleType.POSITIONZ;
 	}
 
 	public double getPos() {

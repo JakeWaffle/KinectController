@@ -117,7 +117,7 @@ public class Main {
         while (!_done) {
             _frame.repaint();
             try {
-                Thread.sleep(500);
+                Thread.sleep(16);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
