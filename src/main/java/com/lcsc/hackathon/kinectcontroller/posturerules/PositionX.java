@@ -25,23 +25,42 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
-public class AbsoluteDistX {
-	private String id = "";
-	private double absPointX;
-	private int jointId;
-    private double distance;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public class PositionX implements Rule {
+	private String 	id = "";
+	private float 	pos;
+	private int 	joint;
     
 	
-	public AbsoluteDistX(	String id,
-							double absPointX,
-							int jointId,
-							double distance) {
-		this.id = id;
-        this.absPointX = absPointX;
-        this.jointId = jointId;
-        this.distance = distance;
-    }
-	
+	public PositionX(int joint,
+					 float pos) {
+		this.joint	= joint;
+		this.pos	= pos;
+		this.id 	= getHash();
+	}
+
+
+	private String getHash() {
+		String hash = null;
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			String text = String.format("%s:%d", getType().alias, this.joint);
+
+			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+			hash = new String(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return hash;
+	}
+
 	public String getId() {
 		return this.id;
 	}
@@ -49,28 +68,24 @@ public class AbsoluteDistX {
 	public void setId(String id) {
 		this.id = id;
 	}
-    
-	public double getAbsPointX() {
-		return this.absPointX;
-	}
-	
-	public void setAbsPointX(double absPointX) {
-		this.absPointX = absPointX;
-	}
-	
-	public int getJointId() {
-		return this.jointId;
-	}
-	
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
+
+	public RuleType getType() {
+		return RuleType.POSITIONX;
 	}
     
-    public double getDistance() {
-		return this.distance;
+	public double getPos() {
+		return this.pos;
 	}
 	
-	public void setDistance(double distance) {
-		this.distance = distance;
+	public void setPos(float pos) {
+		this.pos = pos;
+	}
+	
+	public int getJoint() {
+		return this.joint;
+	}
+	
+	public void setJoint(int jnt) {
+		this.joint = jnt;
 	}
 }

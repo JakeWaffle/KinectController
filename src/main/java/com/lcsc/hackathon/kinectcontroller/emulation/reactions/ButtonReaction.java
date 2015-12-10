@@ -34,6 +34,16 @@ import java.awt.AWTException;
  * Created by jake on 10/15/2015.
  */
 public class ButtonReaction implements Reaction {
+    private static Robot _rob;
+
+    static {
+        try {
+            _rob = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ReactionConfig<String, Object> 	_config;
 
     public ButtonReaction(ReactionConfig config) {
@@ -45,25 +55,20 @@ public class ButtonReaction implements Reaction {
 	}
 
     public void trigger() {
-        try {
-            Robot rob = new Robot();
-            switch ((String)_config.get("DeviceType")) {
-                case "keyboard":
-                    int keyId = Conversions.getKeyId((String) _config.get("ButtonId"));
-                    rob.keyPress(keyId);
-                    try {
-                        Thread.sleep(75);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    rob.keyRelease(keyId);
-                    break;
-                case "mouse":
-                    //rob.mousePress(Conversions.getMouseButtonId((String)_config.get("ButtonId")));
-                    break;
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
+        switch ((String)_config.get("DeviceType")) {
+            case "keyboard":
+                int keyId = Conversions.getKeyId((String) _config.get("ButtonId"));
+                _rob.keyPress(keyId);
+                try {
+                    Thread.sleep(75);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                _rob.keyRelease(keyId);
+                break;
+            case "mouse":
+                //rob.mousePress(Conversions.getMouseButtonId((String)_config.get("ButtonId")));
+                break;
         }
     }
 }

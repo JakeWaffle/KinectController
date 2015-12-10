@@ -145,24 +145,22 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         jj_consume_token(RULE);
         ruleType = jj_consume_token(IDENTIFIER).image;
                 switch(RuleType.fromString(ruleType)) {
-                    case ABS_DISTANCE:
+                    case DISTANCE_FROM_POINT:
+                        parseDistanceFromPointRule(state, gesture);
                         break;
-                    case ABS_DISTANCEX:
-                        break;
-                    case ABS_DISTANCEY:
-                        break;
-                    case ABS_DISTANCEZ:
+                    case POSITIONX:
+                    case POSITIONY:
+                    case POSITIONZ:
+                        parsePositionRule(state, gesture, RuleType.fromString(ruleType));
                         break;
                     case ANGLE:
                         parseAngleRule(state, gesture);
                         break;
                     case DISTANCE:
-                        break;
                     case DISTANCEX:
-                        break;
                     case DISTANCEY:
-                        break;
                     case DISTANCEZ:
+                        parseDistanceRule(state, gesture, RuleType.fromString(ruleType));
                         break;
                 }
         break;
@@ -175,6 +173,9 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                     case KEY_UP:
                         parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
+                    case SHUTDOWN:
+                        gesture.addReaction(new ShutdownReaction());
+                        break;
                 }
         break;
       default:
@@ -186,6 +187,15 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
      state.addGesture(gestureId, gesture);
   }
 
+  final public void parseKeyReaction(Gesture gesture, ReactionType reactionType) throws ParseException {
+    String keyId;
+    jj_consume_token(KEY);
+    jj_consume_token(IS);
+    keyId = jj_consume_token(IDENTIFIER).image;
+                ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
+                gesture.addReaction(new ButtonReaction(config));
+  }
+
   final public void parseAngleRule(ControllerState state, Gesture gesture) throws ParseException {
     Token   t;
     String  end1        = null;
@@ -193,8 +203,6 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     String  end2        = null;
     Integer minAngle    = null;
     Integer maxAngle    = null;
-    String  matchQuery  = null;
-    Angle   angleRule   = null;
 
     String  patternChunk1;
     String  patternChunk2;
@@ -253,38 +261,292 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         System.out.printf("END2: %s\u005cn", end2);
         System.out.printf("VERTEX: %s\u005cn", vertex);
 
-        int end1_id     = Conversions.getJointId(end1);
-        int vertex_id   = Conversions.getJointId(vertex);
-        int end2_id     = Conversions.getJointId(end2);
+        int end1Id     = Conversions.getJointId(end1);
+        int vertexId   = Conversions.getJointId(vertex);
+        int end2Id     = Conversions.getJointId(end2);
 
-        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1_id,
-                                                                                       vertex_id,
-                                                                                       end2_id,
-                                                                                       minAngle.intValue(),
-                                                                                       maxAngle.intValue());
+        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
+                                                                                                    vertexId,
+                                                                                                    end2Id,
+                                                                                                    minAngle.intValue(),
+                                                                                                    maxAngle.intValue());
 
-        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1_id,
-                                                                                            vertex_id,
-                                                                                            end2_id,
-                                                                                            minAngle.intValue());
+        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        minAngle.intValue());
 
-        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1_id,
-                                                                                            vertex_id,
-                                                                                            end2_id,
-                                                                                            maxAngle.intValue());
+        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        maxAngle.intValue());
 
 
-        state.addRule(new Angle(end1_id, vertex_id, end2_id, 0));
+        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
-  final public void parseKeyReaction(Gesture gesture, ReactionType reactionType) throws ParseException {
-    String keyId;
-    jj_consume_token(KEY);
-    jj_consume_token(IS);
-    keyId = jj_consume_token(IDENTIFIER).image;
-                ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
-                gesture.addReaction(new ButtonReaction(config));
+  final public void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) throws ParseException {
+    Token   t;
+    String  joint1      = null;
+    String  joint2      = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+    label_5:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT1:
+      case JOINT2:
+      case MIN_DISTANCE:
+      case MAX_DISTANCE:
+        ;
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        break label_5;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT1:
+        jj_consume_token(JOINT1);
+        jj_consume_token(IS);
+        joint1 = jj_consume_token(IDENTIFIER).image;
+        break;
+      case JOINT2:
+        jj_consume_token(JOINT2);
+        jj_consume_token(IS);
+        joint2 = jj_consume_token(IDENTIFIER).image;
+        break;
+      case MIN_DISTANCE:
+        jj_consume_token(MIN_DISTANCE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             minDistance = Double.parseDouble(t.image);
+        break;
+      case MAX_DISTANCE:
+        jj_consume_token(MAX_DISTANCE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             maxDistance = Double.parseDouble(t.image);
+        break;
+      default:
+        jj_la1[9] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+        System.out.printf("MAX_DISTANCE: %f\u005cn", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\u005cn", minDistance.doubleValue());
+        System.out.printf("JOINT1: %s\u005cn", joint1);
+        System.out.printf("JOINT2: %s\u005cn", joint2);
+
+        int joint1Id     = Conversions.getJointId(joint1);
+        int joint2Id     = Conversions.getJointId(joint2);
+
+        //ruleType.className is going to be either Distance, DistanceX, DistanceY or DistanceZ.
+
+        patternChunk1 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1Id,
+                                                                                                      joint2Id,
+                                                                                                      minDistance.doubleValue(),
+                                                                                                      maxDistance.doubleValue());
+
+        patternChunk2 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance < %f)", joint1Id,
+                                                                                       joint2Id,
+                                                                                       minDistance.doubleValue());
+
+        patternChunk3 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f)", joint1Id,
+                                                                                       joint2Id,
+                                                                                       maxDistance.doubleValue());
+        switch(ruleType) {
+            case DISTANCE:
+                state.addRule(new Distance(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEX:
+                state.addRule(new DistanceX(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEY:
+                state.addRule(new DistanceY(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEZ:
+                state.addRule(new DistanceZ(joint1Id, joint2Id, 0));
+                break;
+        }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+  }
+
+  final public void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType) throws ParseException {
+    Token   t;
+    String  joint   = null;
+    Double  minPos  = null;
+    Double  maxPos  = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+    label_6:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT:
+      case MIN_POSITION:
+      case MAX_POSITION:
+        ;
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        break label_6;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT:
+        jj_consume_token(JOINT);
+        jj_consume_token(IS);
+        joint = jj_consume_token(IDENTIFIER).image;
+        break;
+      case MIN_POSITION:
+        jj_consume_token(MIN_POSITION);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             minPos = Double.parseDouble(t.image);
+        break;
+      case MAX_POSITION:
+        jj_consume_token(MAX_POSITION);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             maxPos = Double.parseDouble(t.image);
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+        System.out.printf("MAX_POSITION: %f\u005cn", maxPos.doubleValue());
+        System.out.printf("MIN_POSITION: %f\u005cn", minPos.doubleValue());
+        System.out.printf("JOINT: %s\u005cn", joint);
+
+        int jointId     = Conversions.getJointId(joint);
+
+        //ruleType.className is going to be either PositionX, PositionY or PositionZ.
+
+        patternChunk1 = String.format(ruleType.className+"(joint=%d, pos > %f, pos < %f)", jointId,
+                                                                                           minPos.doubleValue(),
+                                                                                           maxPos.doubleValue());
+
+        patternChunk2 = String.format(ruleType.className+"(joint=%d, pos < %f)", jointId,
+                                                                                  minPos.doubleValue());
+
+        patternChunk3 = String.format(ruleType.className+"(joint=%d, pos > %f)", jointId,
+                                                                                  maxPos.doubleValue());
+        switch(ruleType) {
+            case POSITIONX:
+                state.addRule(new PositionX(jointId, 0));
+                break;
+            case POSITIONY:
+                state.addRule(new PositionY(jointId, 0));
+                break;
+            case POSITIONZ:
+                state.addRule(new PositionZ(jointId, 0));
+                break;
+        }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+  }
+
+  final public void parseDistanceFromPointRule(ControllerState state, Gesture gesture) throws ParseException {
+    Token   t;
+    String  joint       = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
+    Double  pointX      = new Double(0);
+    Double  pointY      = new Double(0);
+    Double  pointZ      = new Double(1500);
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+    label_7:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT:
+      case MIN_DISTANCE:
+      case MAX_DISTANCE:
+      case POINT:
+        ;
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+        break label_7;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case JOINT:
+        jj_consume_token(JOINT);
+        jj_consume_token(IS);
+        joint = jj_consume_token(IDENTIFIER).image;
+        break;
+      case POINT:
+        jj_consume_token(POINT);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             pointX = Double.parseDouble(t.image);
+        jj_consume_token(COMMA);
+        t = jj_consume_token(NUMBER);
+             pointY = Double.parseDouble(t.image);
+        jj_consume_token(COMMA);
+        t = jj_consume_token(NUMBER);
+             pointZ = Double.parseDouble(t.image);
+        break;
+      case MIN_DISTANCE:
+        jj_consume_token(MIN_DISTANCE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             minDistance = Double.parseDouble(t.image);
+        break;
+      case MAX_DISTANCE:
+        jj_consume_token(MAX_DISTANCE);
+        jj_consume_token(IS);
+        t = jj_consume_token(NUMBER);
+             maxDistance = Double.parseDouble(t.image);
+        break;
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    }
+        System.out.printf("MAX_DISTANCE: %f\u005cn", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\u005cn", minDistance.doubleValue());
+        System.out.printf("JOINT: %s\u005cn", joint);
+
+        int jointId = Conversions.getJointId(joint);
+        double[] point = new double[] {pointX.doubleValue(), pointY.doubleValue(), pointZ.doubleValue()};
+        state.addRule(new DistanceFromPoint(point, jointId));
+
+        //TODO What can we do to optimize this? Use a hash for the Esper point identification?
+
+        patternChunk1 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue(),
+                                                                                        maxDistance.doubleValue());
+
+        patternChunk2 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue());
+
+        patternChunk3 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        maxDistance.doubleValue());
+
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
   /** Generated Token Manager. */
@@ -296,13 +558,13 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[8];
+  final private int[] jj_la1 = new int[14];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,0x2080,0x2080,0x1f00,0x1f00,};
+      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,0x200080,0x200080,0xe300,0xe300,0x30c00,0x30c00,0xc1000,0xc1000,0x131000,0x131000,};
    }
 
   /** Constructor with InputStream. */
@@ -316,7 +578,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -330,7 +592,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -340,7 +602,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -350,7 +612,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -359,7 +621,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -368,7 +630,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 14; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -419,12 +681,12 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[23];
+    boolean[] la1tokens = new boolean[32];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 14; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -433,7 +695,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         }
       }
     }
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 32; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -108,7 +108,7 @@ The CoordinateConverter class converts points between the different coordinate s
  
  Depth coordinates are the native data representation. In this system, the frame is a map (two
  dimensional array), and each pixel is assigned a depth value. This depth value represents the
- distance between the camera plane and whatever object is in the given pixel. The X and Y
+ _distance between the camera plane and whatever object is in the given pixel. The X and Y
  coordinates are simply the location in the map, where the origin is the top-left corner of the
  field of view.
  
@@ -131,7 +131,7 @@ The CoordinateConverter class converts points between the different coordinate s
  
  Since Depth coordinates are a projective, the apparent size of objects in depth coordinates
  (measured in pixels) will increase as an object moves closer to the sensor. The size of objects
- in the World coordinate system is independent of distance from the sensor.
+ in the World coordinate system is independent of _distance from the sensor.
  
  Note that converting from Depth to World coordinates is relatively expensive computationally. It
  is generally not practical to convert the entire raw depth map to World coordinates. A better

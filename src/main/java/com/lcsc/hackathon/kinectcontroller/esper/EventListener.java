@@ -76,9 +76,10 @@ public class EventListener implements UpdateListener {
     public void update(EventBean[] newEvents, EventBean[] oldEvents) {
         for (EventBean event : newEvents) {
 			String gestureId = (String)event.get("gestureId");
+            _logger.debug("Gesture Activated: "+gestureId);
             for (Reaction reaction : _reactions.get(gestureId)) {
                 _emulationController.scheduleReaction(reaction);
             }
-        }
+        }                           
     }
 }

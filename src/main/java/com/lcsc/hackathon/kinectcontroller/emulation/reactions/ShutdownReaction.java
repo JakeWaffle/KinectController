@@ -23,54 +23,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.lcsc.hackathon.kinectcontroller.posturerules;
+package com.lcsc.hackathon.kinectcontroller.emulation.reactions;
 
-public class AbsoluteDistance {
-	private String id = "";
-	private double[] absPoint;
-	private int jointId;
-    private double distance;
-    
-	
-	public AbsoluteDistance(	String id,
-								double[] absPoint,
-								int jointId,
-								double distance) {
-		this.id = id;
-        this.absPoint = absPoint;
-        this.jointId = jointId;
-        this.distance = distance;
+import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionConfig;
+
+/**
+ * Created by jake on 11/25/2015.
+ * This reactions just allows the KinectController to be shut down.
+ */
+public class ShutdownReaction implements Reaction {
+    public ShutdownReaction() {
     }
-	
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-    
-	public double[] getAbsPoint() {
-		return this.absPoint;
-	}
-	
-	public void setAbsPoint(double[] array) {
-		this.absPoint = array;
-	}
-	
-	public int getJointId() {
-		return this.jointId;
-	}
-	
-	public void setJointId(int jnt) {
-		this.jointId = jnt;
-	}
-    
-    public double getDistance() {
-		return this.distance;
-	}
-	
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
+
+    @Override
+    public ReactionConfig getConfig() {
+        return null;
+    }
+
+    @Override
+    public void trigger() {
+        System.exit(0);
+    }
 }

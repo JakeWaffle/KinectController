@@ -53,14 +53,23 @@ TOKEN: {
     < RULE : "rule" > |
     < END1 : "end1" > |
     < END2 : "end2" > |
+    < JOINT1 : "joint1" > |
+    < JOINT2 : "joint2" > |
+    < JOINT : "joint" > |
     < VERTEX : "vertex" > |
     < MIN_ANGLE : "min_angle" > |
     < MAX_ANGLE : "max_angle" > |
+    < MIN_DISTANCE : "min_distance" > |
+    < MAX_DISTANCE : "max_distance" > |
+    < MIN_POSITION : "min_position" > |
+    < MAX_POSITION : "max_position" > |
+    < POINT : "point"> |
     < REACTION : "reaction" > |
     < KEY : "key" > |
     < NUMBER : (["0"-"9"])+ (".")* (["0"-"9"])* > |
     < TEST_NUMBER : (["0"-"9"])+ > |
-    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ >
+    < IDENTIFIER : (["0"-"9"] | ["a"-"z"] | ["A"-"Z"] | "_" | "-")+ > |
+    < COMMA : (",") ("\\s")*>
 }
 
 SKIP: {
@@ -159,24 +168,22 @@ void parseGesture(String gestureId, ControllerState state) :
             ruleType = <IDENTIFIER>.image
             {
                 switch(RuleType.fromString(ruleType)) {
-                    case ABS_DISTANCE:
+                    case DISTANCE_FROM_POINT:
+                        parseDistanceFromPointRule(state, gesture);
                         break;
-                    case ABS_DISTANCEX:
-                        break;
-                    case ABS_DISTANCEY:
-                        break;
-                    case ABS_DISTANCEZ:
+                    case POSITIONX:
+                    case POSITIONY:
+                    case POSITIONZ:
+                        parsePositionRule(state, gesture, RuleType.fromString(ruleType));
                         break;
                     case ANGLE:
                         parseAngleRule(state, gesture);
                         break;
                     case DISTANCE:
-                        break;
                     case DISTANCEX:
-                        break;
                     case DISTANCEY:
-                        break;
                     case DISTANCEZ:
+                        parseDistanceRule(state, gesture, RuleType.fromString(ruleType));
                         break;
                 }
             }
@@ -192,11 +199,28 @@ void parseGesture(String gestureId, ControllerState state) :
                     case KEY_UP:
                         parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
+                    case SHUTDOWN:
+                        gesture.addReaction(new ShutdownReaction());
+                        break;
                 }
             }
         )
     )*
     {state.addGesture(gestureId, gesture);}
+}
+
+void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
+{
+    String keyId;
+}
+{
+    <KEY> <IS>
+    keyId = <IDENTIFIER>.image
+
+    {
+		ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
+		gesture.addReaction(new ButtonReaction(config));
+	}
 }
 
 void parseAngleRule(ControllerState state, Gesture gesture) :
@@ -207,8 +231,6 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
     String  end2        = null;
     Integer minAngle    = null;
     Integer maxAngle    = null;
-    String  matchQuery  = null;
-    Angle   angleRule   = null;
 
     String  patternChunk1;
     String  patternChunk2;
@@ -252,42 +274,253 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
         System.out.printf("END2: %s\n", end2);
         System.out.printf("VERTEX: %s\n", vertex);
         
-        int end1_id     = Conversions.getJointId(end1);
-        int vertex_id   = Conversions.getJointId(vertex);
-        int end2_id     = Conversions.getJointId(end2);
+        int end1Id     = Conversions.getJointId(end1);
+        int vertexId   = Conversions.getJointId(vertex);
+        int end2Id     = Conversions.getJointId(end2);
         
-        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1_id,
-                                                                                       vertex_id,
-                                                                                       end2_id,
-                                                                                       minAngle.intValue(),
-                                                                                       maxAngle.intValue());
+        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
+                                                                                                    vertexId,
+                                                                                                    end2Id,
+                                                                                                    minAngle.intValue(),
+                                                                                                    maxAngle.intValue());
 
-        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1_id,
-                                                                                            vertex_id,
-                                                                                            end2_id,
-                                                                                            minAngle.intValue());
+        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        minAngle.intValue());
 
-        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1_id,
-                                                                                            vertex_id,
-                                                                                            end2_id,
-                                                                                            maxAngle.intValue());
+        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        maxAngle.intValue());
 
 
-        state.addRule(new Angle(end1_id, vertex_id, end2_id, 0));
+        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
     }
 }
 
-void parseKeyReaction(Gesture gesture, ReactionType reactionType) :
+void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) :
 {
-    String keyId;
+    Token   t;
+    String  joint1      = null;
+    String  joint2      = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
 }
 {
-    <KEY> <IS>
-    keyId = <IDENTIFIER>.image
-
+    (
+        (
+            <JOINT1>
+            <IS>
+            joint1 = <IDENTIFIER>.image
+        )
+        |
+        (
+            <JOINT2>
+            <IS>
+            joint2 = <IDENTIFIER>.image
+        )
+        |
+        (
+            <MIN_DISTANCE> <IS>
+            t = <NUMBER>
+            {minDistance = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MAX_DISTANCE> <IS>
+            t = <NUMBER>
+            {maxDistance = Double.parseDouble(t.image);}
+        )
+    )*
     {
-		ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
-		gesture.addReaction(new ButtonReaction(config));
-	}
+        System.out.printf("MAX_DISTANCE: %f\n", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\n", minDistance.doubleValue());
+        System.out.printf("JOINT1: %s\n", joint1);
+        System.out.printf("JOINT2: %s\n", joint2);
+
+        int joint1Id     = Conversions.getJointId(joint1);
+        int joint2Id     = Conversions.getJointId(joint2);
+
+        //ruleType.className is going to be either Distance, DistanceX, DistanceY or DistanceZ.
+
+        patternChunk1 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f, distance < %f)", joint1Id,
+                                                                                                      joint2Id,
+                                                                                                      minDistance.doubleValue(),
+                                                                                                      maxDistance.doubleValue());
+
+        patternChunk2 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance < %f)", joint1Id,
+                                                                                       joint2Id,
+                                                                                       minDistance.doubleValue());
+
+        patternChunk3 = String.format(ruleType.className+"(joint1=%d, joint2=%d, distance > %f)", joint1Id,
+                                                                                       joint2Id,
+                                                                                       maxDistance.doubleValue());
+        switch(ruleType) {
+            case DISTANCE:
+                state.addRule(new Distance(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEX:
+                state.addRule(new DistanceX(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEY:
+                state.addRule(new DistanceY(joint1Id, joint2Id, 0));
+                break;
+            case DISTANCEZ:
+                state.addRule(new DistanceZ(joint1Id, joint2Id, 0));
+                break;
+        }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
+}
+
+void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType) :
+{
+    Token   t;
+    String  joint   = null;
+    Double  minPos  = null;
+    Double  maxPos  = null;
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+}
+{
+    (
+        (
+            <JOINT>
+            <IS>
+            joint = <IDENTIFIER>.image
+        )
+        |
+        (
+            <MIN_POSITION> <IS>
+            t = <NUMBER>
+            {minPos = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MAX_POSITION> <IS>
+            t = <NUMBER>
+            {maxPos = Double.parseDouble(t.image);}
+        )
+    )*
+    {
+        System.out.printf("MAX_POSITION: %f\n", maxPos.doubleValue());
+        System.out.printf("MIN_POSITION: %f\n", minPos.doubleValue());
+        System.out.printf("JOINT: %s\n", joint);
+
+        int jointId     = Conversions.getJointId(joint);
+
+        //ruleType.className is going to be either PositionX, PositionY or PositionZ.
+
+        patternChunk1 = String.format(ruleType.className+"(joint=%d, pos > %f, pos < %f)", jointId,
+                                                                                           minPos.doubleValue(),
+                                                                                           maxPos.doubleValue());
+
+        patternChunk2 = String.format(ruleType.className+"(joint=%d, pos < %f)", jointId,
+                                                                                  minPos.doubleValue());
+
+        patternChunk3 = String.format(ruleType.className+"(joint=%d, pos > %f)", jointId,
+                                                                                  maxPos.doubleValue());
+        switch(ruleType) {
+            case POSITIONX:
+                state.addRule(new PositionX(jointId, 0));
+                break;
+            case POSITIONY:
+                state.addRule(new PositionY(jointId, 0));
+                break;
+            case POSITIONZ:
+                state.addRule(new PositionZ(jointId, 0));
+                break;
+        }
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
+}
+
+void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
+{
+    Token   t;
+    String  joint       = null;
+    Double  minDistance = null;
+    Double  maxDistance = null;
+    Double  pointX      = new Double(0);
+    Double  pointY      = new Double(0);
+    Double  pointZ      = new Double(1500);
+
+    String  patternChunk1;
+    String  patternChunk2;
+    String  patternChunk3;
+}
+{
+    (
+        (
+            <JOINT> <IS>
+            joint = <IDENTIFIER>.image
+        )
+        |
+        (
+            <POINT> <IS>
+            t = <NUMBER>
+            {pointX = Double.parseDouble(t.image);}
+            <COMMA>
+            t = <NUMBER>
+            {pointY = Double.parseDouble(t.image);}
+            <COMMA>
+            t = <NUMBER>
+            {pointZ = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MIN_DISTANCE> <IS>
+            t = <NUMBER>
+            {minDistance = Double.parseDouble(t.image);}
+        )
+        |
+        (
+            <MAX_DISTANCE> <IS>
+            t = <NUMBER>
+            {maxDistance = Double.parseDouble(t.image);}
+        )
+    )*
+    {
+        System.out.printf("MAX_DISTANCE: %f\n", maxDistance.doubleValue());
+        System.out.printf("MIN_DISTANCE: %f\n", minDistance.doubleValue());
+        System.out.printf("JOINT: %s\n", joint);
+
+        int jointId = Conversions.getJointId(joint);
+        double[] point = new double[] {pointX.doubleValue(), pointY.doubleValue(), pointZ.doubleValue()};
+        state.addRule(new DistanceFromPoint(point, jointId));
+
+        //TODO What can we do to optimize this? Use a hash for the Esper point identification?
+
+        patternChunk1 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue(),
+                                                                                        maxDistance.doubleValue());
+
+        patternChunk2 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance < %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        minDistance.doubleValue());
+
+        patternChunk3 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f)",
+                                                                                        pointX,
+                                                                                        pointY,
+                                                                                        pointZ,
+                                                                                        jointId,
+                                                                                        maxDistance.doubleValue());
+
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
 }

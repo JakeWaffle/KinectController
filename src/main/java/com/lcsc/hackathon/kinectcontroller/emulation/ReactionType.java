@@ -31,7 +31,8 @@ package com.lcsc.hackathon.kinectcontroller.emulation;
 public enum ReactionType {
     KEY_DOWN_UP("Key_Down_Up"),
     KEY_DOWN("Key_Down"),
-    KEY_UP("Key_Up");
+    KEY_UP("Key_Up"),
+    SHUTDOWN("SHUTDOWN");
 
 
     //This is the alias that is used in the config file by the users.

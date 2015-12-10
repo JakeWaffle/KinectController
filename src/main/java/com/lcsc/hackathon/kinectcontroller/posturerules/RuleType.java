@@ -29,12 +29,12 @@ package com.lcsc.hackathon.kinectcontroller.posturerules;
  * Created by Jake on 5/28/2015.
  */
 public enum RuleType {
-    ABS_DISTANCE("Absolute_DistanceXYZ", "AbsoluteDistance"),
-    ABS_DISTANCEX("Absolute_DistanceX", "AbsoluteDistX"),
-    ABS_DISTANCEY("Absolute_DistanceY", "AbsoluteDistY"),
-    ABS_DISTANCEZ("Absolute_DistanceZ", "AbsoluteDistZ"),
+    DISTANCE_FROM_POINT("Distance_From_Point", "DistanceFromPoint"),
+    POSITIONX("PositionX", "PositionX"),
+    POSITIONY("PositionY", "PositionY"),
+    POSITIONZ("PositionZ", "PositionZ"),
     ANGLE("Angle", "Angle"),
-    DISTANCE("DistanceXYZ", "Distance"),
+    DISTANCE("Distance", "Distance"),
     DISTANCEX("DistanceX", "DistanceX"),
     DISTANCEY("DistanceY", "DistanceY"),
     DISTANCEZ("DistanceZ", "DistanceZ");

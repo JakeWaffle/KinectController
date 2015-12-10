@@ -25,11 +25,18 @@ Refer to the wiki for more information on the project and how the configuration 
     
     You must also define an environment variable called `JAVA_HOME` that points to the JDK installation directory. For example:
 
-    	set JAVA_HOME=c:\Program Files (x86)\Java\jdk1.8.0_32
+    	set JAVA_HOME=c:\Program Files\Java\jdk1.8.0_32
 
 - Javacc 5.0
 
     - Download and add the bin directory to your path: https://java.net/projects/javacc/downloads
+    
+- Gradle 2.8 or higher
+    - Download and add the bin directory to your path: http://gradle.org/gradle-download/\
+    
+    You must also define an environment variable called `GRADLE_HOME` that points to the root directory of gradle. For example:
+
+    	set GRADLE_HOME=c:\Program Files\Java\gradle-2.8
 
 ### Linux
 
@@ -91,7 +98,15 @@ Refer to the wiki for more information on the project and how the configuration 
 
 ## Building the Project
 
-The project still needs this part worked out a bit better, but I've been using Intellij for now (Gradle will be the goto later.)
+###Command Line Instructions
+
+1. Make sure all of the build prerequisites are installed -- they are listed above.
+2. Execute the build.bat script in the root directory of the project -- make sure the generated lib/KinectController.jar stays in the same directory as all 
+of the OpenNI and Nite files, because the jar expects them to be there.
+3. From there the run.bat script can be used to execute the jar that was created by the build.bat script. The run.bat script expects a config filename relative
+to the ./config/ directory in order to execute the KinectController.
+
+###Intellij Instructions
 
 1. Load up the project in Intellij.
 2. Make sure there is an Artifact in the Project Settings of the KinectController. If there isn't, then create a JAR artifact from the KinectController's

@@ -93,7 +93,6 @@ public class EmulationController extends Thread {
 	 * @param reaction The reaction that is to be scheduled.
 	 */
 	public synchronized void scheduleReaction(Reaction reaction) {
-		_logger.debug("Reaction Scheduled!");
 		_reactions.add(reaction);
 	}
 }

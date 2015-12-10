@@ -25,31 +25,42 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.lcsc.hackathon.kinectcontroller.posturerules;
 
+import com.primesense.nite.Point3D;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Angle implements Rule {
-	private String id = "";
-	private int end1;
-	private int vertex;
-	private int end2;
-    private double angle;
-	
-	public Angle(int end1, int vertex, int end2, double angle) {
-        this.end1 = end1;
-        this.vertex = vertex;
-        this.end2 = end2;
-        this.angle = angle;
-		this.id = getHash();
-    }
+public class DistanceFromPoint implements Rule {
+	private String 			id = "";
+	//An array of the point's position: x, y and z.
+	private double[] 		point;
+	private int 			joint;
+    private double 			distance;
+
+
+	/**
+	 * The constructor for the DistanceFromPoint requires a fixed point's location and the joint we're
+	 * going to be tracking with this rule. This rule is concerned with the distance between the fixed point and the joint.
+	 * @param point An array holding the x, y and z values of the fixed point's location in the Kinect's viewing area.
+	 * @param joint A joint id that is compatible with Nite's skeleton system. Our program is more efficient if we don't
+	 *              need to make conversions all the time. That's why we're integrating Nite's skeleton system
+	 *              into this program's event processor and keyboard/mouse emulator.
+	 */
+	public DistanceFromPoint(double[] point,
+							 int joint) {
+        this.point 		= point;
+		this.joint 		= joint;
+		this.distance 	= 0;
+		this.id 		= getHash();
+	}
 
 	private String getHash() {
 		String hash = null;
 
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			String text = String.format("%s:%d:%d:%d", getType().alias, end1, vertex, end2);
+			String text = String.format("%s:%f:%f:%f:%d", getType().alias, point[0], point[1], point[2], joint);
 
 			md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
 			hash = new String(md.digest());
@@ -66,43 +77,35 @@ public class Angle implements Rule {
 		return this.id;
 	}
 
-	public RuleType getType() {
-		return RuleType.ANGLE;
-	}
-	
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	public int getEnd1() {
-		return this.end1;
-	}
-	
-	public void setEnd1(int e1) {
-		this.end1 = e1;
-	}
-	
-	public int getVertex() {
-		return this.vertex;
-	}
-	
-	public void setVertex(int vertex) {
-		this.vertex = vertex;
-	}
-	
-	public int getEnd2() {
-		return this.end2;
-	}
-	
-	public void setEnd2(int e2) {
-		this.end2 = e2;
+
+	public RuleType getType() {
+		return RuleType.DISTANCE_FROM_POINT;
 	}
     
-    public double getAngle() {
-		return this.angle;
+	public double[] getPoint() {
+		return this.point;
 	}
 	
-	public void setAngle(double angle) {
-		this.angle = angle;
+	public void setPoint(double[] point) {
+		this.point = point;
+	}
+	
+	public int getJoint() {
+		return this.joint;
+	}
+	
+	public void setJoint(int jnt) {
+		this.joint = jnt;
+	}
+    
+    public double getDistance() {
+		return this.distance;
+	}
+	
+	public void setDistance(double _distance) {
+		this.distance = _distance;
 	}
 }

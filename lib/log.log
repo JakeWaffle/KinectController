@@ -1,0 +1,37 @@
+2015-11-29_13:26:23.172 [main] INFO  c.l.hackathon.kinectcontroller.Cli - Using cli argument -f=../config/config.gdef
+2015-11-29_13:26:23.885 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'select_option' as gestureId from pattern[every (((Angle(end1=7, vertex=5, end2=3, angle > 180) or Angle(end1=7, vertex=5, end2=3, angle < 150)) or (Angle(end1=6, vertex=4, end2=2, angle > 180) or Angle(end1=6, vertex=4, end2=2, angle < 150))) -> (Angle(end1=7, vertex=5, end2=3, angle > 150, angle < 180) and Angle(end1=6, vertex=4, end2=2, angle > 150, angle < 180))) where timer:within(1 sec)]
+2015-11-29_13:26:24.279 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'shutdown_game' as gestureId from pattern[every (((Angle(end1=7, vertex=3, end2=10, angle > 180) or Angle(end1=7, vertex=3, end2=10, angle < 160)) or (Angle(end1=6, vertex=2, end2=9, angle > 180) or Angle(end1=6, vertex=2, end2=9, angle < 150))) -> (Angle(end1=7, vertex=3, end2=10, angle > 160, angle < 180) and Angle(end1=6, vertex=2, end2=9, angle > 150, angle < 180))) where timer:within(1 sec)]
+2015-11-29_13:26:24.312 [main] INFO  c.l.h.k.kinect.KinectUserTracker - Initializing OpenNi and Nite.
+2015-11-29_14:24:04.849 [main] INFO  c.l.hackathon.kinectcontroller.Cli - Using cli argument -f=../config/examples/angle.gdef
+2015-11-29_14:24:05.576 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'select_option' as gestureId from pattern[every (((Angle(end1=7, vertex=5, end2=3, angle > 180) or Angle(end1=7, vertex=5, end2=3, angle < 150)) or (Angle(end1=7, vertex=3, end2=2, angle > 105) or Angle(end1=7, vertex=3, end2=2, angle < 75)) or (Angle(end1=7, vertex=3, end2=10, angle > 105) or Angle(end1=7, vertex=3, end2=10, angle < 75))) -> (Angle(end1=7, vertex=5, end2=3, angle > 150, angle < 180) and Angle(end1=7, vertex=3, end2=2, angle > 75, angle < 105) and Angle(end1=7, vertex=3, end2=10, angle > 75, angle < 105))) where timer:within(1 sec)]
+2015-11-29_14:24:05.962 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'down_option' as gestureId from pattern[every (((Angle(end1=7, vertex=5, end2=3, angle > 180) or Angle(end1=7, vertex=5, end2=3, angle < 150)) or (Angle(end1=7, vertex=3, end2=2, angle > 180) or Angle(end1=7, vertex=3, end2=2, angle < 150))) -> (Angle(end1=7, vertex=5, end2=3, angle > 150, angle < 180) and Angle(end1=7, vertex=3, end2=2, angle > 150, angle < 180))) where timer:within(1 sec)]
+2015-11-29_14:24:05.992 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'shutdown_game' as gestureId from pattern[every (((Angle(end1=7, vertex=3, end2=10, angle > 180) or Angle(end1=7, vertex=3, end2=10, angle < 160)) or (Angle(end1=6, vertex=2, end2=9, angle > 180) or Angle(end1=6, vertex=2, end2=9, angle < 150))) -> (Angle(end1=7, vertex=3, end2=10, angle > 160, angle < 180) and Angle(end1=6, vertex=2, end2=9, angle > 150, angle < 180))) where timer:within(1 sec)]
+2015-11-29_14:24:06.024 [main] DEBUG c.l.h.k.controller.Gesture - EsperQuery: select 'up_option' as gestureId from pattern[every (((Angle(end1=7, vertex=5, end2=3, angle > 180) or Angle(end1=7, vertex=5, end2=3, angle < 150)) or (Angle(end1=7, vertex=3, end2=10, angle > 180) or Angle(end1=7, vertex=3, end2=10, angle < 150))) -> (Angle(end1=7, vertex=5, end2=3, angle > 150, angle < 180) and Angle(end1=7, vertex=3, end2=10, angle > 150, angle < 180))) where timer:within(1 sec)]
+2015-11-29_14:24:06.053 [main] INFO  c.l.h.k.kinect.KinectUserTracker - Initializing OpenNi and Nite.
+2015-11-29_14:24:14.844 [Thread-128] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 1
+2015-11-29_14:24:15.241 [Thread-134] INFO  c.l.h.k.kinect.KinectUserTracker - Lost User: 1
+2015-11-29_14:24:16.504 [Thread-168] INFO  c.l.h.k.kinect.KinectUserTracker - New User: 1
+2015-11-29_14:24:29.691 [Thread-385] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:30.821 [Thread-403] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:41.298 [Thread-580] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:41.301 [Thread-580] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:24:43.165 [Thread-607] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:43.168 [Thread-607] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:24:44.002 [Thread-622] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:44.569 [Thread-630] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:45.371 [Thread-641] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:51.080 [Thread-731] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:52.478 [Thread-755] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:24:52.678 [Thread-758] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:57.182 [Thread-838] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:24:57.186 [Thread-838] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:25:00.553 [Thread-893] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:25:00.819 [Thread-898] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:25:01.025 [Thread-901] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:25:01.889 [Thread-915] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:25:02.588 [Thread-925] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
+2015-11-29_14:25:02.591 [Thread-925] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:25:04.755 [Thread-955] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: down_option
+2015-11-29_14:25:04.955 [Thread-958] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: up_option
+2015-11-29_14:25:05.023 [Thread-959] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: shutdown_game
+2015-11-29_14:25:05.092 [Thread-960] DEBUG c.l.h.k.esper.EventListener - Gesture Activated: select_option
