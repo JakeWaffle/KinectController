@@ -1,0 +1,76 @@
+version 1
+
+starting_state is Menu
+
+state Menu
+    gesture move_left_press
+        rule PositionX
+            joint           is   RIGHT_HIP
+            min_position    is   -5000
+            max_position    is   -150
+
+        reaction KEY_DOWN
+            key        is   A
+
+    gesture move_left_release
+        rule PositionX
+            joint           is   RIGHT_HIP
+            min_position    is   -150
+            max_position    is   5000
+
+        reaction KEY_UP
+            key        is   A
+
+    gesture move_right_press
+        rule PositionX
+            joint           is   LEFT_HIP
+            min_position    is   150
+            max_position    is   5000
+
+        reaction KEY_DOWN
+            key        is   A
+
+    gesture move_right_release
+        rule PositionX
+            joint           is   LEFT_HIP
+            min_position    is   -5000
+            max_position    is   150
+
+        reaction KEY_UP
+            key        is   A
+
+    gesture move_forward_press
+        rule PositionZ
+            joint           is   LEFT_HIP
+            min_position    is   0
+            max_position    is   1300
+
+        reaction KEY_DOWN
+            key        is   W
+
+    gesture move_forward_release
+        rule PositionZ
+            joint           is   LEFT_HIP
+            min_position    is   1300
+            max_position    is   5000
+
+        reaction KEY_UP
+            key        is   W
+
+    gesture move_back_press
+        rule PositionZ
+            joint           is   LEFT_HIP
+            min_position    is   1600
+            max_position    is   5000
+
+        reaction KEY_DOWN
+            key        is   D
+
+    gesture move_back_release
+        rule PositionZ
+            joint           is   LEFT_HIP
+            min_position    is   0
+            max_position    is   1600
+
+        reaction KEY_UP
+            key        is   D
