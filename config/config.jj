@@ -2,22 +2,26 @@ options {
     STATIC = false;
 }
 PARSER_BEGIN(ControllerFSMFactory)
-package com.lcsc.hackathon.kinectcontroller.config;
+package com.wafflesoft.kinectcontroller.config;
 
 import java.io.*;
 import java.util.*;
-import com.lcsc.hackathon.kinectcontroller.controller.*;
-import com.lcsc.hackathon.kinectcontroller.posturerules.*;
+import com.wafflesoft.kinectcontroller.controller.*;
+import com.wafflesoft.kinectcontroller.posturerules.*;
 
-import com.lcsc.hackathon.kinectcontroller.Conversions;
+import com.wafflesoft.kinectcontroller.Conversions;
 
 //These are the Reaction objects.
 
-import com.lcsc.hackathon.kinectcontroller.emulation.*;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.*;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.*;
+import com.wafflesoft.kinectcontroller.emulation.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.config.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ControllerFSMFactory {
+    private static final Logger _logger = LoggerFactory.getLogger(ControllerFSMFactory.class);
     private ControllerStateMachine _csm;
     private String _startingStateId = null;
 
@@ -148,7 +152,7 @@ ControllerState parseState(String stateId) :
         (
             <MOUSE_GESTURE>
             armId = <IDENTIFIER>.image
-            //TODO Add mouse gesture to the state
+            addMouseGesture(armId)
         )
     )*
     {return state;}
@@ -267,37 +271,42 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
             {maxAngle = Integer.parseInt(t.image);}
         )
     )*
+
     {
-        System.out.printf("MAX_ANGLE: %d\n", maxAngle.intValue());
-        System.out.printf("MIN_ANGLE: %d\n", minAngle.intValue());
-        System.out.printf("END1: %s\n", end1);
-        System.out.printf("END2: %s\n", end2);
-        System.out.printf("VERTEX: %s\n", vertex);
-        
-        int end1Id     = Conversions.getJointId(end1);
-        int vertexId   = Conversions.getJointId(vertex);
-        int end2Id     = Conversions.getJointId(end2);
-        
-        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
-                                                                                                    vertexId,
-                                                                                                    end2Id,
-                                                                                                    minAngle.intValue(),
-                                                                                                    maxAngle.intValue());
+        //Error checking for a valid Angle rule
+        boolean valid = true;
 
-        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
-                                                                                        vertexId,
-                                                                                        end2Id,
-                                                                                        minAngle.intValue());
-
-        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
-                                                                                        vertexId,
-                                                                                        end2Id,
-                                                                                        maxAngle.intValue());
-
-
-        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        if (end1 == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an end1 attribute!", gesture.gestureId));
+            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tend1 is <JointID>");
+            valid = false;
+        }
+        if (vertex == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an vertex attribute!", gesture.gestureId));
+            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tvertex is <JointID>");
+            valid = false;
+        }
+        if (end2 == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an end2 attribute!", gesture.gestureId));
+            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tend2 is <JointID>");
+            valid = false;
+        }
+        if (minAngle == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an min_angle attribute!", gesture.gestureId));
+            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tmin_angle is <JointID>");
+            valid = false;
+        }
+        if (maxAngle == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an max_angle attribute!", gesture.gestureId));
+            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tmax_angle is <JointID>");
+            valid = false;
+        }
+        if (!valid) {
+            System.exit(1);
+        }
     }
+
+    addAngleRule(gesture, end1, vertex, end2, minAngle, maxAngle)
 }
 
 void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) :
@@ -520,6 +529,49 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
                                                                                         pointZ,
                                                                                         jointId,
                                                                                         maxDistance.doubleValue());
+
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+    }
+}
+
+void addMouseGesture(String armId) :
+{
+
+}
+{
+
+}
+
+void addAngleRule(Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :
+{
+}
+{
+    {
+        System.out.printf("MAX_ANGLE: %d\n", maxAngle.intValue());
+        System.out.printf("MIN_ANGLE: %d\n", minAngle.intValue());
+        System.out.printf("END1: %s\n", end1);
+        System.out.printf("END2: %s\n", end2);
+        System.out.printf("VERTEX: %s\n", vertex);
+
+        int end1Id     = Conversions.getJointId(end1);
+        int vertexId   = Conversions.getJointId(vertex);
+        int end2Id     = Conversions.getJointId(end2);
+
+        String patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
+                                                                                                    vertexId,
+                                                                                                    end2Id,
+                                                                                                    minAngle.intValue(),
+                                                                                                    maxAngle.intValue());
+
+        String patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        minAngle.intValue());
+
+        String patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        maxAngle.intValue());
 
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
     }
