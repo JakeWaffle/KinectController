@@ -53,7 +53,7 @@ TOKEN: {
     < VERSION : "version" > |
     < STATE : "state" > |
     < GESTURE : "gesture" > |
-    < MOUSE_GESTURE : "gesture mouse using" > |
+    < MOUSE_GESTURE : ("gesture mouse using ") ("left_arm" | "right_arm") > |
     < RULE : "rule" > |
     < END1 : "end1" > |
     < END2 : "end2" > |
@@ -534,12 +534,50 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
     }
 }
 
+//Note: armId will be either 'left_arm' or 'right_arm'
 void addMouseGesture(String armId) :
 {
-
+    Gesture         gesture = new Gesture(gestureId, state);
 }
 {
-
+    //Grabs the direction that the user chose for the mouse control gesture.
+    //(Specifies which arm will be used for the mouse controlling.)
+    String dir;
+    String oppDir;
+    
+    if (armId == "left_arm") {
+        dir = "LEFT";
+        oppDir = "RIGHT";
+    }
+    else if (armId == "right_arm") {
+        dir = "RIGHT";
+        oppDir = "LEFT";
+    }
+    else {
+        _logger.error("Invalid ArmId for 'gesture mouse using <ArmId>': "+armId);
+        sys.exit(1);
+    }
+    
+    //Three angles are needed in order to tell if an arm is in the activation area for controlling the mouse.
+    //The activation area is when the arm is fully extended and in front of the user, basically.
+    
+    //Checks for the arm being straight.
+    addAngleRule(gesture, dir+"_HAND", dir+"ELBOW", dir+"SHOULDER", 150, 180);
+    
+    //Checks if arm is horizontally pointing forward.
+    addAngleRule(gesture, dir+"_HAND", dir+"SHOULDER", oppDir+"SHOULDER", 75, 105);
+    
+    //Checks if arm is vertically pointing forward.
+    addAngleRule(gesture, dir+"_HAND", dir+"SHOULDER", dir+"HIP", 75, 105);
+    
+    
+    //TODO Important: Make this gesture able to be triggered repeatedly. The Esper query would need altered.
+    //TODO Create a specific gesture class that is designed to handle the mouse control. It needs to keep around the
+    //angle rule objects and give them to the reactions as they are updated.
+    
+    //TODO Look into pushing more of this configuration stuff back into some other Java files. The .jj file should be for parsing and that is it.
+    
+    //TODO Create some sort of reaction that will grab the above angle rules and move the mouse.
 }
 
 void addAngleRule(Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :

@@ -101,6 +101,16 @@
             <mustExist>0</mustExist>
             <width>40</width>
         </directoryParameter>
+        <linkParameter>
+            <name>kinectsdk_1_8</name>
+            <title>Kinect SDK v1.8</title>
+            <description>Kinect SDK v1.8</description>
+            <explanation>Download the Kinect SDK v1.8 if you don't already have the drivers installed. This link will take you to Microsoft's website where the SDK is hosted.</explanation>
+            <clickedActionList>
+                <launchBrowser url="https://www.microsoft.com/en-us/download/details.aspx?id=40278">
+                </launchBrowser>
+            </clickedActionList>
+        </linkParameter>
     </parameterList>
 </project>
 

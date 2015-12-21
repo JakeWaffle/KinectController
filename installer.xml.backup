@@ -101,6 +101,13 @@
             <mustExist>0</mustExist>
             <width>40</width>
         </directoryParameter>
+        <linkParameter>
+             <name>Kinect_SDK_1_8</name>
+             <description>asdf</description>
+             <clickedActionList>
+                <launchBrowser url="https://www.microsoft.com/en-us/download/details.aspx?id=40278" />
+             </clickedActionList>
+          </linkParameter>
     </parameterList>
 </project>
 
