@@ -55,15 +55,15 @@ public class EsperHandler {
         config.getEngineDefaults().getExecution().setPrioritized(true);
         config.getEngineDefaults().getEventMeta().setDefaultEventRepresentation(Configuration.EventRepresentation.MAP);
 
-        config.addEventType("Angle", "com.lcsc.hackathon.kinectcontroller.posturerules.Angle");
-        config.addEventType("Distance", "com.lcsc.hackathon.kinectcontroller.posturerules.Distance");
-        config.addEventType("DistanceX", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceX");
-        config.addEventType("DistanceY", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceY");
-        config.addEventType("DistanceZ", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceZ");
-        config.addEventType("PositionZ", "com.lcsc.hackathon.kinectcontroller.posturerules.PositionZ");
-        config.addEventType("PositionX", "com.lcsc.hackathon.kinectcontroller.posturerules.PositionX");
-        config.addEventType("PositionY", "com.lcsc.hackathon.kinectcontroller.posturerules.PositionY");
-        config.addEventType("DistanceFromPoint", "com.lcsc.hackathon.kinectcontroller.posturerules.DistanceFromPoint");
+        config.addEventType("Angle", "com.wafflesoft.kinectcontroller.posturerules.Angle");
+        config.addEventType("Distance", "com.wafflesoft.kinectcontroller.posturerules.Distance");
+        config.addEventType("DistanceX", "com.wafflesoft.kinectcontroller.posturerules.DistanceX");
+        config.addEventType("DistanceY", "com.wafflesoft.kinectcontroller.posturerules.DistanceY");
+        config.addEventType("DistanceZ", "com.wafflesoft.kinectcontroller.posturerules.DistanceZ");
+        config.addEventType("PositionZ", "com.wafflesoft.kinectcontroller.posturerules.PositionZ");
+        config.addEventType("PositionX", "com.wafflesoft.kinectcontroller.posturerules.PositionX");
+        config.addEventType("PositionY", "com.wafflesoft.kinectcontroller.posturerules.PositionY");
+        config.addEventType("DistanceFromPoint", "com.wafflesoft.kinectcontroller.posturerules.DistanceFromPoint");
 
         _engine = EPServiceProviderManager.getDefaultProvider(config);
         _engine.initialize();

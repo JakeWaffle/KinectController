@@ -180,6 +180,12 @@ public class KinectUserTracker implements UserTracker.NewFrameListener {
                         end2            = skeleton.getJoint(JointType.fromNative(angRule.getEnd2()));
 
                         angle           = Formulas.getAngle(end1.getPosition(), vertex.getPosition(), end2.getPosition());
+
+                        //_logger.debug(String.format("end1: %s", angRule.getEnd1()));
+                        //_logger.debug(String.format("vertex: %s", angRule.getVertex()));
+                        //_logger.debug(String.format("end2: %s", angRule.getEnd2()));
+                        //_logger.debug(String.format("Angle: %f", angle));
+
                         angRule.setAngle(angle);
 
                         //Send that rule object over to Esper now for some event processing and pattern matching.

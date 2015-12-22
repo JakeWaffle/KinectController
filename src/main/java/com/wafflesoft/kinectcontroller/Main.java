@@ -25,10 +25,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller;
 
-import com.lcsc.hackathon.kinectcontroller.config.ControllerFSMFactory;
-import com.lcsc.hackathon.kinectcontroller.config.ParseException;
-import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.kinect.KinectUserTracker;
+import com.wafflesoft.kinectcontroller.config.ControllerFSMFactory;
+import com.wafflesoft.kinectcontroller.config.ParseException;
+import com.wafflesoft.kinectcontroller.controller.ControllerStateMachine;
+import com.wafflesoft.kinectcontroller.kinect.KinectUserTracker;
 import org.apache.commons.cli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

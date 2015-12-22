@@ -3,18 +3,22 @@ package com.wafflesoft.kinectcontroller.config;
 
 import java.io.*;
 import java.util.*;
-import com.lcsc.hackathon.kinectcontroller.controller.*;
-import com.lcsc.hackathon.kinectcontroller.posturerules.*;
+import com.wafflesoft.kinectcontroller.controller.*;
+import com.wafflesoft.kinectcontroller.posturerules.*;
 
-import com.lcsc.hackathon.kinectcontroller.Conversions;
+import com.wafflesoft.kinectcontroller.Conversions;
 
 //These are the Reaction objects.
 
-import com.lcsc.hackathon.kinectcontroller.emulation.*;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.*;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.*;
+import com.wafflesoft.kinectcontroller.emulation.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.config.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
+    private static final Logger _logger = LoggerFactory.getLogger(ControllerFSMFactory.class);
     private ControllerStateMachine _csm;
     private String _startingStateId = null;
 
@@ -112,7 +116,8 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         break;
       case MOUSE_GESTURE:
         jj_consume_token(MOUSE_GESTURE);
-        armId = jj_consume_token(IDENTIFIER).image;
+        armId = jj_consume_token(ARM_ID).image;
+        addMouseGesture(armId, state);
         break;
       default:
         jj_la1[3] = jj_gen;
@@ -255,35 +260,38 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         throw new ParseException();
       }
     }
-        System.out.printf("MAX_ANGLE: %d\u005cn", maxAngle.intValue());
-        System.out.printf("MIN_ANGLE: %d\u005cn", minAngle.intValue());
-        System.out.printf("END1: %s\u005cn", end1);
-        System.out.printf("END2: %s\u005cn", end2);
-        System.out.printf("VERTEX: %s\u005cn", vertex);
+        //Error checking for a valid Angle rule
+        boolean valid = true;
 
-        int end1Id     = Conversions.getJointId(end1);
-        int vertexId   = Conversions.getJointId(vertex);
-        int end2Id     = Conversions.getJointId(end2);
-
-        patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
-                                                                                                    vertexId,
-                                                                                                    end2Id,
-                                                                                                    minAngle.intValue(),
-                                                                                                    maxAngle.intValue());
-
-        patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
-                                                                                        vertexId,
-                                                                                        end2Id,
-                                                                                        minAngle.intValue());
-
-        patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
-                                                                                        vertexId,
-                                                                                        end2Id,
-                                                                                        maxAngle.intValue());
-
-
-        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        if (end1 == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an end1 attribute!", gesture.gestureId));
+            _logger.error("Usage:\u005cngesture <GestureId>\u005cn\u005ctrule Angle\u005cn\u005ct\u005ctend1 is <JointID>");
+            valid = false;
+        }
+        if (vertex == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an vertex attribute!", gesture.gestureId));
+            _logger.error("Usage:\u005cngesture <GestureId>\u005cn\u005ctrule Angle\u005cn\u005ct\u005ctvertex is <JointID>");
+            valid = false;
+        }
+        if (end2 == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an end2 attribute!", gesture.gestureId));
+            _logger.error("Usage:\u005cngesture <GestureId>\u005cn\u005ctrule Angle\u005cn\u005ct\u005ctend2 is <JointID>");
+            valid = false;
+        }
+        if (minAngle == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an min_angle attribute!", gesture.gestureId));
+            _logger.error("Usage:\u005cngesture <GestureId>\u005cn\u005ctrule Angle\u005cn\u005ct\u005ctmin_angle is <JointID>");
+            valid = false;
+        }
+        if (maxAngle == null) {
+            _logger.error(String.format("Angle Rule within %s gesture requires an max_angle attribute!", gesture.gestureId));
+            _logger.error("Usage:\u005cngesture <GestureId>\u005cn\u005ctrule Angle\u005cn\u005ct\u005ctmax_angle is <JointID>");
+            valid = false;
+        }
+        if (!valid) {
+            System.exit(1);
+        }
+    addAngleRule(state, gesture, end1, vertex, end2, minAngle, maxAngle);
   }
 
   final public void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) throws ParseException {
@@ -549,6 +557,91 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
+//Note: armId will be either 'left_arm' or 'right_arm'
+  final public void addMouseGesture(String armId, ControllerState state) throws ParseException {
+    String  gestureId   = "mouse using "+armId;
+    Gesture gesture     = new Gesture(gestureId, state);
+        //Grabs the direction that the user chose for the mouse control gesture.
+        //(Specifies which arm will be used for the mouse controlling.)
+        String dir      = "LEFT";
+        String oppDir   = "RIGHT";
+
+        //Thanks to the tokens of javacc, armId will always be either left_arm or right_arm.
+        if (armId.equals("left_arm")) {
+            dir = "LEFT";
+            oppDir = "RIGHT";
+        }
+        else if (armId.equals("right_arm")) {
+            dir = "RIGHT";
+            oppDir = "LEFT";
+        }
+
+        //Three angles are needed in order to tell if an arm is in the activation area for controlling the mouse.
+        //The activation area is when the arm is fully extended and in front of the user, basically.
+
+        //Checks for the arm being straight.
+        Angle armAngle = addAngleRule(state, gesture, dir+"_HAND", dir+"_ELBOW", dir+"_SHOULDER", 130, 180);
+
+        //Checks if arm is horizontally pointing forward.
+        Angle armX = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", 60, 120);
+
+        //Checks if arm is vertically pointing forward.
+        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", 40, 100);
+
+        //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
+        int maxXMouseSpeed;
+        int maxYMouseSpeed;
+
+        if (dir.equals("RIGHT")) {
+            maxXMouseSpeed = 1;
+            maxYMouseSpeed = -1;
+        }
+        else {
+            maxXMouseSpeed = -1;
+            maxYMouseSpeed = -1;
+        }
+
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 130, armX, 60, 120, armY, 40, 100)));
+
+        state.addGesture(gestureId, gesture);
+  }
+
+  final public Angle addAngleRule(ControllerState state, Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) throws ParseException {
+        System.out.printf("MAX_ANGLE: %d\u005cn", maxAngle.intValue());
+        System.out.printf("MIN_ANGLE: %d\u005cn", minAngle.intValue());
+        System.out.printf("END1: %s\u005cn", end1);
+        System.out.printf("END2: %s\u005cn", end2);
+        System.out.printf("VERTEX: %s\u005cn", vertex);
+
+        int end1Id     = Conversions.getJointId(end1);
+        int vertexId   = Conversions.getJointId(vertex);
+        int end2Id     = Conversions.getJointId(end2);
+
+        String patternChunk1 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d, angle < %d)", end1Id,
+                                                                                                    vertexId,
+                                                                                                    end2Id,
+                                                                                                    minAngle.intValue(),
+                                                                                                    maxAngle.intValue());
+
+        String patternChunk2 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle < %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        minAngle.intValue());
+
+        String patternChunk3 = String.format("Angle(end1=%d, vertex=%d, end2=%d, angle > %d)", end1Id,
+                                                                                        vertexId,
+                                                                                        end2Id,
+                                                                                        maxAngle.intValue());
+
+        Angle angleRule = new Angle(end1Id, vertexId, end2Id, 0);
+        state.addRule(angleRule);
+
+        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+
+        {if (true) return angleRule;}
+    throw new Error("Missing return statement in function");
+  }
+
   /** Generated Token Manager. */
   public ControllerFSMFactoryTokenManager token_source;
   SimpleCharStream jj_input_stream;
@@ -560,11 +653,16 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
   private int jj_gen;
   final private int[] jj_la1 = new int[14];
   static private int[] jj_la1_0;
+  static private int[] jj_la1_1;
   static {
       jj_la1_init_0();
+      jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,0x200080,0x200080,0xe300,0xe300,0x30c00,0x30c00,0xc1000,0xc1000,0x131000,0x131000,};
+      jj_la1_0 = new int[] {0x12,0x12,0x60,0x60,0x400100,0x400100,0x1c600,0x1c600,0x61800,0x61800,0x182000,0x182000,0x262000,0x262000,};
+   }
+   private static void jj_la1_init_1() {
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -681,7 +779,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[32];
+    boolean[] la1tokens = new boolean[33];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -692,10 +790,13 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
             la1tokens[j] = true;
           }
+          if ((jj_la1_1[i] & (1<<j)) != 0) {
+            la1tokens[32+j] = true;
+          }
         }
       }
     }
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < 33; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

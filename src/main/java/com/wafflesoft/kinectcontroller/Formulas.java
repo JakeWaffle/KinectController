@@ -62,8 +62,14 @@ public class Formulas {
 	public static double getDistance(double[] point, Point3D<Float> joint) {
 		return Math.sqrt(Math.pow(joint.getX()-point[0], 2) + Math.pow(joint.getY()-point[1], 2) + Math.pow(joint.getZ()-point[2], 2));
 	}
-	
-	// Get the angle at a vertex given three joints.
+
+	/**
+	 * Get the angle at a vertex given three joints.
+	 * @param jointA End1 of the angle.
+	 * @param vertex The vertex of the angle.
+	 * @param jointB End2 of the angle.
+	 * @return A double of the angle between these three joints, in degrees.
+	 */
 	public static double getAngle(Point3D<Float> jointA, Point3D<Float> vertex, Point3D<Float> jointB) {
 		double distA = getDistance(vertex, jointA);
 		double distB = getDistance(vertex, jointB);

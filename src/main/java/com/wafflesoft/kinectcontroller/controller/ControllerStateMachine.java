@@ -105,6 +105,7 @@ public class ControllerStateMachine {
         for (Gesture gesture : gestures) {
             esperHandler.setPattern(gesture.gestureId, gesture.getEsperPattern());
             _eventListener.loadReactions(gesture.gestureId, gesture.getReactions());
+            _eventListener.loadPersistentReactions(gesture.gestureId, gesture.getPersistentReactions());
             esperHandler.addListener(gesture.gestureId, _eventListener);
         }
     }

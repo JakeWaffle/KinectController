@@ -25,12 +25,15 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.controller;
 
+import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
 import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Jake on 6/2/2015.
@@ -46,9 +49,10 @@ public class Gesture {
     //These are a bunch of pieces of the overall gesture query. Each piece is specifically for
     //a rule that makes up the gesture. These will be able to be assembled into a complete gesture query for esper
     //when needed.
-    private 	 List<String>       _ruleConditions;
-    private 	 List<String>       _negatedRuleConditions;
-    private 	 List<Reaction> 	_reactions;
+    private List<String>                    _ruleConditions;
+    private List<String>                    _negatedRuleConditions;
+    private List<Reaction> 	                _reactions;
+    private List<PersistentReaction>        _persistentReactions;
 
     //TODO Some identifier for the mouse needs to go hear. Left_Arm and Right_Arm?
 
@@ -58,6 +62,7 @@ public class Gesture {
         _ruleConditions         = new ArrayList<String>();
         _negatedRuleConditions  = new ArrayList<String>();
         _reactions              = new ArrayList<Reaction>();
+        _persistentReactions    = new ArrayList<PersistentReaction>();
     }
 
     /**
@@ -74,11 +79,20 @@ public class Gesture {
     /**
      * This adds a reaction to the gesture. When the gesture's Esper pattern is matched, this reaction will be triggered
      * by the EmulationController.
-     * @param reaction
+     * @param reaction A regular, one use reaction.
      */
 	public void addReaction(Reaction reaction) {
 		_reactions.add(reaction);
 	}
+
+    /**
+     * This adds a reaction to the gesture. When the gesture's Esper pattern is matched, this reaction will be triggered
+     * by the EmulationController.
+     * @param reaction A persisting reaction.
+     */
+    public void addPersistentReaction(PersistentReaction reaction) {
+        _persistentReactions.add(reaction);
+    }
 
     /**
      * This will bundle up all of the separate _ruleQueries pieces for Esper.
@@ -123,4 +137,12 @@ public class Gesture {
 	public List<Reaction> getReactions() {
 		return _reactions;
 	}
+    /**
+     * This allows the ControllerStateMachine to load this Gesture's persistent reactions up into the EventListener.
+     * @return A list of persistent reactions that should be triggered when this gesture's Esper pattern has been matched.
+     */
+    public List<PersistentReaction> getPersistentReactions() {
+        return _persistentReactions;
+    }
+
 }

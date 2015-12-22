@@ -53,7 +53,8 @@ TOKEN: {
     < VERSION : "version" > |
     < STATE : "state" > |
     < GESTURE : "gesture" > |
-    < MOUSE_GESTURE : ("gesture mouse using ") ("left_arm" | "right_arm") > |
+    < MOUSE_GESTURE : ("gesture mouse using ") > |
+    < ARM_ID : ("left_arm" | "right_arm") > |
     < RULE : "rule" > |
     < END1 : "end1" > |
     < END2 : "end2" > |
@@ -151,7 +152,7 @@ ControllerState parseState(String stateId) :
         |
         (
             <MOUSE_GESTURE>
-            armId = <IDENTIFIER>.image
+            armId = <ARM_ID>.image
             addMouseGesture(armId, state)
         )
     )*
@@ -306,7 +307,7 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
         }
     }
 
-    addAngleRule(gesture, end1, vertex, end2, minAngle, maxAngle)
+    addAngleRule(state, gesture, end1, vertex, end2, minAngle, maxAngle)
 }
 
 void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) :
@@ -537,51 +538,58 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
 //Note: armId will be either 'left_arm' or 'right_arm'
 void addMouseGesture(String armId, ControllerState state) :
 {
-    Gesture         gesture = new Gesture(gestureId, state);
+    String  gestureId   = "mouse using "+armId;
+    Gesture gesture     = new Gesture(gestureId, state);
 }
 {
-    //Grabs the direction that the user chose for the mouse control gesture.
-    //(Specifies which arm will be used for the mouse controlling.)
-    String dir;
-    String oppDir;
-    
-    if (armId == "left_arm") {
-        dir = "LEFT";
-        oppDir = "RIGHT";
-    }
-    else if (armId == "right_arm") {
-        dir = "RIGHT";
-        oppDir = "LEFT";
-    }
-    else {
-        _logger.error("Invalid ArmId for 'gesture mouse using <ArmId>': "+armId);
-        sys.exit(1);
-    }
-    
-    //Three angles are needed in order to tell if an arm is in the activation area for controlling the mouse.
-    //The activation area is when the arm is fully extended and in front of the user, basically.
-    
-    //Checks for the arm being straight.
-    addAngleRule(state, gesture, dir+"_HAND", dir+"ELBOW", dir+"SHOULDER", 150, 180);
-    
-    //Checks if arm is horizontally pointing forward.
-    addAngleRule(state, gesture, dir+"_HAND", dir+"SHOULDER", oppDir+"SHOULDER", 75, 105);
-    
-    //Checks if arm is vertically pointing forward.
-    addAngleRule(state, gesture, dir+"_HAND", dir+"SHOULDER", dir+"HIP", 75, 105);
+    {
+        //Grabs the direction that the user chose for the mouse control gesture.
+        //(Specifies which arm will be used for the mouse controlling.)
+        String dir      = "LEFT";
+        String oppDir   = "RIGHT";
 
-    gesture.addReaction(new MouseReaction(new MouseReactionConfig(gesture)));
+        //Thanks to the tokens of javacc, armId will always be either left_arm or right_arm.
+        if (armId.equals("left_arm")) {
+            dir = "LEFT";
+            oppDir = "RIGHT";
+        }
+        else if (armId.equals("right_arm")) {
+            dir = "RIGHT";
+            oppDir = "LEFT";
+        }
 
-    //TODO Important: Make this gesture able to be triggered repeatedly. The Esper query would need altered.
-    //TODO Create a specific gesture class that is designed to handle the mouse control. It needs to keep around the
-    //angle rule objects and give them to the reactions as they are updated.
-    
-    //TODO Look into pushing more of this configuration stuff back into some other Java files. The .jj file should be for parsing and that is it.
-    
-    //TODO Create some sort of reaction that will grab the above angle rules and move the mouse.
+        //Three angles are needed in order to tell if an arm is in the activation area for controlling the mouse.
+        //The activation area is when the arm is fully extended and in front of the user, basically.
+
+        //Checks for the arm being straight.
+        Angle armAngle = addAngleRule(state, gesture, dir+"_HAND", dir+"_ELBOW", dir+"_SHOULDER", 130, 180);
+
+        //Checks if arm is horizontally pointing forward.
+        Angle armX = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", 60, 120);
+
+        //Checks if arm is vertically pointing forward.
+        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", 40, 100);
+
+        //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
+        int maxXMouseSpeed;
+        int maxYMouseSpeed;
+
+        if (dir.equals("RIGHT")) {
+            maxXMouseSpeed = 1;
+            maxYMouseSpeed = -1;
+        }
+        else {
+            maxXMouseSpeed = -1;
+            maxYMouseSpeed = -1;
+        }
+
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 130, armX, 60, 120, armY, 40, 100)));
+
+        state.addGesture(gestureId, gesture);
+    }
 }
 
-void addAngleRule(ControllerState state, Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :
+Angle addAngleRule(ControllerState state, Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :
 {
 }
 {
@@ -612,7 +620,11 @@ void addAngleRule(ControllerState state, Gesture gesture, String end1, String ve
                                                                                         end2Id,
                                                                                         maxAngle.intValue());
 
-        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
+        Angle angleRule = new Angle(end1Id, vertexId, end2Id, 0);
+        state.addRule(angleRule);
+        
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        
+        return angleRule;
     }
 }

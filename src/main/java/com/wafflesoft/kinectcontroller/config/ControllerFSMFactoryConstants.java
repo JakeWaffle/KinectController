@@ -23,45 +23,47 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int MOUSE_GESTURE = 6;
   /** RegularExpression Id. */
-  int RULE = 7;
+  int ARM_ID = 7;
   /** RegularExpression Id. */
-  int END1 = 8;
+  int RULE = 8;
   /** RegularExpression Id. */
-  int END2 = 9;
+  int END1 = 9;
   /** RegularExpression Id. */
-  int JOINT1 = 10;
+  int END2 = 10;
   /** RegularExpression Id. */
-  int JOINT2 = 11;
+  int JOINT1 = 11;
   /** RegularExpression Id. */
-  int JOINT = 12;
+  int JOINT2 = 12;
   /** RegularExpression Id. */
-  int VERTEX = 13;
+  int JOINT = 13;
   /** RegularExpression Id. */
-  int MIN_ANGLE = 14;
+  int VERTEX = 14;
   /** RegularExpression Id. */
-  int MAX_ANGLE = 15;
+  int MIN_ANGLE = 15;
   /** RegularExpression Id. */
-  int MIN_DISTANCE = 16;
+  int MAX_ANGLE = 16;
   /** RegularExpression Id. */
-  int MAX_DISTANCE = 17;
+  int MIN_DISTANCE = 17;
   /** RegularExpression Id. */
-  int MIN_POSITION = 18;
+  int MAX_DISTANCE = 18;
   /** RegularExpression Id. */
-  int MAX_POSITION = 19;
+  int MIN_POSITION = 19;
   /** RegularExpression Id. */
-  int POINT = 20;
+  int MAX_POSITION = 20;
   /** RegularExpression Id. */
-  int REACTION = 21;
+  int POINT = 21;
   /** RegularExpression Id. */
-  int KEY = 22;
+  int REACTION = 22;
   /** RegularExpression Id. */
-  int NUMBER = 23;
+  int KEY = 23;
   /** RegularExpression Id. */
-  int TEST_NUMBER = 24;
+  int NUMBER = 24;
   /** RegularExpression Id. */
-  int IDENTIFIER = 25;
+  int TEST_NUMBER = 25;
   /** RegularExpression Id. */
-  int COMMA = 26;
+  int IDENTIFIER = 26;
+  /** RegularExpression Id. */
+  int COMMA = 27;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -74,7 +76,8 @@ public interface ControllerFSMFactoryConstants {
     "\"version\"",
     "\"state\"",
     "\"gesture\"",
-    "\"gesture mouse using\"",
+    "\"gesture mouse using \"",
+    "<ARM_ID>",
     "\"rule\"",
     "\"end1\"",
     "\"end2\"",
@@ -99,7 +102,7 @@ public interface ControllerFSMFactoryConstants {
     "\"\\t\"",
     "\"\\n\"",
     "\"\\r\"",
-    "<token of kind 31>",
+    "<token of kind 32>",
   };
 
 }

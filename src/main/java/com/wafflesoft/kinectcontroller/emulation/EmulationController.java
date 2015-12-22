@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.emulation;
 
+import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
 import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +46,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * as we might hope. A priority queue could be used to improve the delay also.
  */
 public class EmulationController extends Thread {
-	private static final Logger 				_logger = LoggerFactory.getLogger(EmulationController.class);
-    private 			 boolean         		_done;
-	private 			 boolean         		_paused;
-    private 			 Queue<Reaction> 		_expendableReactions;
-	private 			 Map<String, Reaction> 	_persistantReactions;
+	private static final Logger 				            _logger = LoggerFactory.getLogger(EmulationController.class);
+    private 			 boolean         		            _done;
+	private 			 boolean         		            _paused;
+    private 			 Queue<Reaction> 		            _expendableReactions;
+	private 			 Map<String, PersistentReaction>    _persistantReactions;
 
 	//TODO Do we need persisting reactions that can be interacted with over time?
 
@@ -57,7 +58,7 @@ public class EmulationController extends Thread {
         _done       			= false;
 		_paused					= false;
 		_expendableReactions 	= new ConcurrentLinkedQueue<Reaction>();
-		_persistantReactions 	= new HashMap<String, Reaction>();
+		_persistantReactions 	= new HashMap<String, PersistentReaction>();
     }
 
     /**
@@ -67,13 +68,22 @@ public class EmulationController extends Thread {
     public void run() {
 		_done = false;
         while (!_done) {
-			for (Map.Entry<String, Reaction> reaction : _persistantReactions.entrySet()) {
+			//TODO FIgure out a better way to schedule these different types of reactions.
+			//One untilizes a queue and the other a dictionary. What takes priority?
+			for (Map.Entry<String, PersistentReaction> reaction : _persistantReactions.entrySet()) {
 				reaction.getValue().trigger();
 			}
 
 			if (_expendableReactions.size() > 0) {
 				Reaction reaction = _expendableReactions.remove();
 				reaction.trigger();
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					_logger.error("Interrupted sleep", e);
+				}
+			}
+			else if (_persistantReactions.size() > 0) {
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -103,4 +113,14 @@ public class EmulationController extends Thread {
 	public synchronized void scheduleReaction(Reaction reaction) {
 		_expendableReactions.add(reaction);
 	}
+
+    /**
+     * Adds an EXPENDABLE reaction to the queue of reactions that are to be executed. The EventListener uses this
+     * to add reactions of the matched gestures to the reaction queue.
+     *
+     * @param reaction The reaction that is to be scheduled.
+     */
+    public synchronized void schedulePersistentReaction(PersistentReaction reaction) {
+        _persistantReactions.put(reaction.getId(), reaction);
+    }
 }

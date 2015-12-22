@@ -29,6 +29,7 @@ import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
 import com.wafflesoft.kinectcontroller.emulation.EmulationController;
+import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
 import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +39,17 @@ import java.util.List;
 import java.util.Map;
 
 public class EventListener implements UpdateListener {
-    private static final Logger             	        _logger = LoggerFactory.getLogger(EventListener.class);
-    private              EmulationController	        _emulationController;
+    private static final Logger             	                _logger = LoggerFactory.getLogger(EventListener.class);
+    private              EmulationController	                _emulationController;
     //Maps a gestureId to a list of reactions.
-    private              Map<String, List<Reaction>>    _reactions;
+    private              Map<String, List<Reaction>>            _reactions;
+    //Maps a gestureId to a list of persistent reactions.
+    private              Map<String, List<PersistentReaction>>  _persistentReactions;
 
     public EventListener(EmulationController emualtionController) {
         _emulationController  	= emualtionController;
         _reactions				= new HashMap<String, List<Reaction>>();
+        _persistentReactions    = new HashMap<String, List<PersistentReaction>>();
     }
 
     /**
@@ -54,6 +58,7 @@ public class EventListener implements UpdateListener {
      */
     public void clearReactions() {
         _reactions.clear();
+        _persistentReactions.clear();
     }
 
     /**
@@ -68,6 +73,17 @@ public class EventListener implements UpdateListener {
     }
 
     /**
+     * This is for loading the valid persistent reactions for the current ControllerState's gestures. This will
+     * happen every time the ControllerState has been changed in the ControllerStateMachine.
+     * @param gestureId The given reactions belong to the gesture identified by this id.
+     * @param reactions These are the reactions that belong to some gesture. When the gesture is matched by
+     *                  Esper, then these reactions will be looked up and triggered.
+     */
+    public void loadPersistentReactions(String gestureId, List<PersistentReaction> reactions){
+        _persistentReactions.put(gestureId, reactions);
+    }
+
+    /**
      * Esper uses this method to inform the EventListener when a gesture has been matched.
      *
      * @param newEvents When a gesture's pattern is matched, Esper sends this method a newEvent.
@@ -77,8 +93,15 @@ public class EventListener implements UpdateListener {
         for (EventBean event : newEvents) {
 			String gestureId = (String)event.get("gestureId");
             _logger.debug("Gesture Activated: "+gestureId);
+
+            //schedules all regular reactions associated with this gesture.
             for (Reaction reaction : _reactions.get(gestureId)) {
                 _emulationController.scheduleReaction(reaction);
+            }
+
+            //schedules all persistent reactions associated with this gesture.
+            for (PersistentReaction reaction : _persistentReactions.get(gestureId)) {
+                _emulationController.schedulePersistentReaction(reaction);
             }
         }                           
     }
