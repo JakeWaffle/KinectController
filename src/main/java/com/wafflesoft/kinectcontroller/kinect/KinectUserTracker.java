@@ -25,9 +25,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.kinect;
 
-import com.lcsc.hackathon.kinectcontroller.Formulas;
-import com.lcsc.hackathon.kinectcontroller.controller.ControllerStateMachine;
-import com.lcsc.hackathon.kinectcontroller.posturerules.*;
+import com.wafflesoft.kinectcontroller.Formulas;
+import com.wafflesoft.kinectcontroller.controller.ControllerStateMachine;
+import com.wafflesoft.kinectcontroller.posturerules.*;
 import com.primesense.nite.*;
 import org.openni.Device;
 import org.openni.DeviceInfo;

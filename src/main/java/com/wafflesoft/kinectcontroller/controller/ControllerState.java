@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
+import com.wafflesoft.kinectcontroller.posturerules.Rule;
 
 /**
  * Created by Jake on 5/17/2015.

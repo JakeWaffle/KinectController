@@ -25,10 +25,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.emulation;
 
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -43,17 +45,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * as we might hope. A priority queue could be used to improve the delay also.
  */
 public class EmulationController extends Thread {
-	private static final Logger 			_logger = LoggerFactory.getLogger(EmulationController.class);
-    private 			 boolean         	_done;
-	private 			 boolean         	_paused;
-    private 			 Queue<Reaction> 	_reactions;
+	private static final Logger 				_logger = LoggerFactory.getLogger(EmulationController.class);
+    private 			 boolean         		_done;
+	private 			 boolean         		_paused;
+    private 			 Queue<Reaction> 		_expendableReactions;
+	private 			 Map<String, Reaction> 	_persistantReactions;
 
 	//TODO Do we need persisting reactions that can be interacted with over time?
 
     public EmulationController() {
-        _done       = false;
-		_paused		= false;
-        _reactions  = new ConcurrentLinkedQueue<Reaction>();
+        _done       			= false;
+		_paused					= false;
+		_expendableReactions 	= new ConcurrentLinkedQueue<Reaction>();
+		_persistantReactions 	= new HashMap<String, Reaction>();
     }
 
     /**
@@ -63,8 +67,12 @@ public class EmulationController extends Thread {
     public void run() {
 		_done = false;
         while (!_done) {
-			if (_reactions.size() > 0) {
-				Reaction reaction = _reactions.remove();
+			for (Map.Entry<String, Reaction> reaction : _persistantReactions.entrySet()) {
+				reaction.getValue().trigger();
+			}
+
+			if (_expendableReactions.size() > 0) {
+				Reaction reaction = _expendableReactions.remove();
 				reaction.trigger();
 				try {
 					Thread.sleep(10);
@@ -87,12 +95,12 @@ public class EmulationController extends Thread {
 	}
 	
 	/**
-	 * Adds a reaction to the queue of reactions that are to be executed. The EventListener uses this to add reactions
-	 * of the matched gestures to the reaction queue.
+	 * Adds an EXPENDABLE reaction to the queue of reactions that are to be executed. The EventListener uses this
+	 * to add reactions of the matched gestures to the reaction queue.
 	 *
 	 * @param reaction The reaction that is to be scheduled.
 	 */
 	public synchronized void scheduleReaction(Reaction reaction) {
-		_reactions.add(reaction);
+		_expendableReactions.add(reaction);
 	}
 }

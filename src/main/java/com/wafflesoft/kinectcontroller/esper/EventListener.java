@@ -28,8 +28,8 @@ package com.wafflesoft.kinectcontroller.esper;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
-import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.Reaction;
+import com.wafflesoft.kinectcontroller.emulation.EmulationController;
+import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

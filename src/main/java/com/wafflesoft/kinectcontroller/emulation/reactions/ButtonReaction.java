@@ -24,8 +24,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 package com.wafflesoft.kinectcontroller.emulation.reactions;
 
-import com.lcsc.hackathon.kinectcontroller.Conversions;
-import com.lcsc.hackathon.kinectcontroller.emulation.reactions.config.ReactionConfig;
+import com.wafflesoft.kinectcontroller.Conversions;
+import com.wafflesoft.kinectcontroller.emulation.reactions.config.ReactionConfig;
 
 import java.awt.Robot;
 import java.awt.AWTException;

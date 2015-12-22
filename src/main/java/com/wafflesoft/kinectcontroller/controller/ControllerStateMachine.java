@@ -25,10 +25,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.controller;
 
-import com.lcsc.hackathon.kinectcontroller.esper.EsperHandler;
-import com.lcsc.hackathon.kinectcontroller.emulation.EmulationController;
-import com.lcsc.hackathon.kinectcontroller.esper.EventListener;
-import com.lcsc.hackathon.kinectcontroller.posturerules.Rule;
+import com.wafflesoft.kinectcontroller.esper.EsperHandler;
+import com.wafflesoft.kinectcontroller.emulation.EmulationController;
+import com.wafflesoft.kinectcontroller.esper.EventListener;
+import com.wafflesoft.kinectcontroller.posturerules.Rule;
 
 import java.util.Collection;
 import java.util.HashMap;

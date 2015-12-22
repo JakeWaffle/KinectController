@@ -152,7 +152,7 @@ ControllerState parseState(String stateId) :
         (
             <MOUSE_GESTURE>
             armId = <IDENTIFIER>.image
-            addMouseGesture(armId)
+            addMouseGesture(armId, state)
         )
     )*
     {return state;}
@@ -535,7 +535,7 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
 }
 
 //Note: armId will be either 'left_arm' or 'right_arm'
-void addMouseGesture(String armId) :
+void addMouseGesture(String armId, ControllerState state) :
 {
     Gesture         gesture = new Gesture(gestureId, state);
 }
@@ -562,15 +562,16 @@ void addMouseGesture(String armId) :
     //The activation area is when the arm is fully extended and in front of the user, basically.
     
     //Checks for the arm being straight.
-    addAngleRule(gesture, dir+"_HAND", dir+"ELBOW", dir+"SHOULDER", 150, 180);
+    addAngleRule(state, gesture, dir+"_HAND", dir+"ELBOW", dir+"SHOULDER", 150, 180);
     
     //Checks if arm is horizontally pointing forward.
-    addAngleRule(gesture, dir+"_HAND", dir+"SHOULDER", oppDir+"SHOULDER", 75, 105);
+    addAngleRule(state, gesture, dir+"_HAND", dir+"SHOULDER", oppDir+"SHOULDER", 75, 105);
     
     //Checks if arm is vertically pointing forward.
-    addAngleRule(gesture, dir+"_HAND", dir+"SHOULDER", dir+"HIP", 75, 105);
-    
-    
+    addAngleRule(state, gesture, dir+"_HAND", dir+"SHOULDER", dir+"HIP", 75, 105);
+
+    gesture.addReaction(new MouseReaction(new MouseReactionConfig(gesture)));
+
     //TODO Important: Make this gesture able to be triggered repeatedly. The Esper query would need altered.
     //TODO Create a specific gesture class that is designed to handle the mouse control. It needs to keep around the
     //angle rule objects and give them to the reactions as they are updated.
@@ -580,7 +581,7 @@ void addMouseGesture(String armId) :
     //TODO Create some sort of reaction that will grab the above angle rules and move the mouse.
 }
 
-void addAngleRule(Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :
+void addAngleRule(ControllerState state, Gesture gesture, String end1, String vertex, String end2, Integer minAngle, Integer maxAngle) :
 {
 }
 {
@@ -611,6 +612,7 @@ void addAngleRule(Gesture gesture, String end1, String vertex, String end2, Inte
                                                                                         end2Id,
                                                                                         maxAngle.intValue());
 
+        state.addRule(new Angle(end1Id, vertexId, end2Id, 0));
         gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
     }
 }
