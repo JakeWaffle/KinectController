@@ -49,10 +49,13 @@ public class MouseReaction implements PersistentReaction {
 
     public boolean trigger() {
         boolean done = false;
-        if (lastTime != -1) {
-            //Delta time of time past since last mouse movement, in milliseconds.
-            double deltaTime = (System.nanoTime() - lastTime)/1_000_000d;
 
+        //Delta time of time past since last mouse movement, in milliseconds.
+        double deltaTime = (System.nanoTime() - lastTime)/1_000_000d;
+
+        //We will be ignoring any delta times that are above 1 second.
+        //This prevents the mouse from moving around really fast spontaneously.
+        if (deltaTime < 1_000) {
             //These are the positions on the monitor for the mouse I think.
             int relX = 1;
             int relY = 1;
@@ -76,11 +79,9 @@ public class MouseReaction implements PersistentReaction {
             int armYMin = (int)_config.get("armYMin");
             int armYMax = (int)_config.get("armYMax");
 
-            //Normalizes the angles to be
-            normX = 2*(relX - armXMin) / (armXMax - armXMin)-1;
-            normY = 2*(relY - armYMin) / (armYMax - armYMin)-1;
-
-            //_logger.debug(String.format("Normalized RelX, RelY: %f, %f", normX, normY));
+            //Normalizes the angles to be between -1 and 1.
+            normX = 2*((double)(relX - armXMin)) / ((double)(armXMax - armXMin))-1;
+            normY = 2*((double)(relY - armYMin)) / ((double)(armYMax - armYMin))-1;
 
             //Checks to see if the arm's angles aren't within the valid space still.
             if (normX < -1 || normX > 1 ||
@@ -91,15 +92,42 @@ public class MouseReaction implements PersistentReaction {
             }
             //Move the mouse if the arm angles are valid.
             else {
-                //TODO This currently moves the mouse 2x as fast for diagonal movements.
-                //The mouseMaxVelocity needs to modify the magnitude of the (x,y) vector as a whole.
-                //So that the (x,y) vector's highest magnitude is mouseMaxVelocity -- currently it's 2*mouseMaxVelocity.
+                _logger.debug(String.format("normX, normY: %f, %f", normX, normY));
 
-                //TODO relX and relY are always 9 or 10, (the same as the delta time basically.)
-                //Times the relative offset by the elapsed time, in milliseconds.
-                relX = (int) (((int)_config.get("mouseXMaxVelocity"))*deltaTime*normX);
-                relY = (int) (((int)_config.get("mouseYMaxVelocity"))*deltaTime*normY);
+                //Prefetches some information from the config and calculates the angle of the normalized
+                //relative x position -- before adding speed and the elapsed time.
+                double maxXVel  = (double)((int)_config.get("mouseXMaxVelocity"));
+                double maxYVel  = (double)((int)_config.get("mouseYMaxVelocity"));
 
+                //These give us a nice little resting space where the user won't accidentally move the mouse
+                //while the arm is extended.
+                if (-0.4 < normX && normX < 0.4) {
+                    normX = 0;
+                }
+                if (-0.4 < normY && normY < 0.4) {
+                    normY = 0;
+                }
+
+                //Gives an angle between -45 and 45 degrees since the input (normX/normY) is between -1 and 1.
+                double angle    = Math.atan(normX/normY);
+
+                //Updates the angle if the normX is negative, because the above angle only takes into account.
+                //positive x-values even though it accepts positive and negative y-values. without issue.
+                if (normX < 0 && normY < 0) {
+                    angle = -3.14159265359 - angle;
+                }
+                else if (normX < 0 && normY >= 0) {
+                    angle = 3.14159265359 - angle;
+                }
+
+                //Calculates the relative positions for the mouse.
+                //The elapsed time makes the movement consistent no matter how fast the program is running.
+                //The sin and cos are there to make the actual speed of the mouse the same no matter if it's going
+                //diagonal or not.
+                relX = (int)(maxXVel*deltaTime*Math.cos(angle));
+                relY = (int)(maxYVel*deltaTime*Math.sin(angle));
+
+                _logger.debug(String.format("Angle: %f", angle));
                 _logger.debug(String.format("DeltaTime: %f", deltaTime));
                 _logger.debug(String.format("RelX, RelY: %d, %d", relX, relY));
 

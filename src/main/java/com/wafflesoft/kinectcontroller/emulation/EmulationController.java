@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -70,8 +71,16 @@ public class EmulationController extends Thread {
         while (!_done) {
 			//TODO FIgure out a better way to schedule these different types of reactions.
 			//One untilizes a queue and the other a dictionary. What takes priority?
-			for (Map.Entry<String, PersistentReaction> reaction : _persistantReactions.entrySet()) {
-				reaction.getValue().trigger();
+
+            Iterator<Map.Entry<String,PersistentReaction>> iter = _persistantReactions.entrySet().iterator();
+			while (iter.hasNext()) {
+                PersistentReaction reaction = iter.next().getValue();
+
+                //If trigger returns true, then we must remove it from the reaction map.
+				if (reaction.trigger()) {
+                    iter.remove();
+                    _logger.debug(String.format("Removed PersistentReaction: %s", reaction.getId()));
+                }
 			}
 
 			if (_expendableReactions.size() > 0) {

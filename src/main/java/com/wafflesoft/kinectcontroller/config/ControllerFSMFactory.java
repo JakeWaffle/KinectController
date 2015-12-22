@@ -586,7 +586,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         Angle armX = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", 60, 120);
 
         //Checks if arm is vertically pointing forward.
-        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", 40, 100);
+        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", 60, 120);
 
         //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
         int maxXMouseSpeed;
@@ -601,7 +601,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
             maxYMouseSpeed = -1;
         }
 
-        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 130, armX, 60, 120, armY, 40, 100)));
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 130, armX, 60, 120, armY, 60, 120)));
 
         state.addGesture(gestureId, gesture);
   }
