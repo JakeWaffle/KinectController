@@ -56,76 +56,88 @@ public class MouseReaction implements PersistentReaction {
         //We will be ignoring any delta times that are above 1 second.
         //This prevents the mouse from moving around really fast spontaneously.
         if (deltaTime < 1_000) {
-            //These are the positions on the monitor for the mouse I think.
-            int relX = 1;
-            int relY = 1;
-
+            //Grabs some Angle Rules
             Angle armAngle = (Angle)_config.get("armAngle");
             Angle armX = (Angle)_config.get("armX");
             Angle armY = (Angle)_config.get("armY");
 
             //First we just get the straight up angles for the arm angle rules for now.
             //They are not normalized yet!
-            relX = (int)armX.getAngle();
-            relY = (int)armY.getAngle();
+            int armXAngle = (int)armX.getAngle();
+            int armYAngle = (int)armY.getAngle();
 
             //_logger.debug(String.format("ArmY: %d", relY));
 
             double normX;
             double normY;
 
+            //Grabs angles supplied by the config object.
             int armXMin = (int)_config.get("armXMin");
             int armXMax = (int)_config.get("armXMax");
             int armYMin = (int)_config.get("armYMin");
             int armYMax = (int)_config.get("armYMax");
 
-            //Normalizes the angles to be between -1 and 1.
-            normX = 2*((double)(relX - armXMin)) / ((double)(armXMax - armXMin))-1;
-            normY = 2*((double)(relY - armYMin)) / ((double)(armYMax - armYMin))-1;
+            int armAngleMin = (int)_config.get("armAngleMin");
 
-            //Checks to see if the arm's angles aren't within the valid space still.
-            if (normX < -1 || normX > 1 ||
-                    normY < -1 || normY > 1 ||
-                    ((int)armAngle.getAngle()) < (int)_config.get("armAngleMin")) {
+            //These formulas are wrong. They don't keep normX and Y between -1 and 1.
+
+            //The below formula, when taking in (armXAngle=0), will output -3.
+            //-3 is not within -1 and 1 and makes no sense. So we're ignoring this case.
+            if (armXAngle != 0) {
+                //Normalizes the angles to be between -1 and 1.
+                normX = 2 * ((double) (armXAngle - armXMin)) / ((double) (armXMax - armXMin)) - 1;
+            }
+            else {
+                normX = armXAngle;
+            }
+
+            //The below formula, when taking in (armYAngle=0), will output -3.
+            //-3 is not within -1 and 1 and makes no sense. So we're ignoring this case.
+            if (armYAngle != 0) {
+                normY = 2*((double)(armYAngle - armYMin)) / ((double)(armYMax - armYMin))-1;
+            }
+            else {
+                normY = armYAngle;
+            }
+
+            //Gets distance between 0 and 1 that represents the user's hand's distance from the middle of the defined
+            //gesture space.
+            double distance = Math.sqrt(Math.pow(normX, 2) + Math.pow(normY, 2));
+
+            _logger.debug(String.format("armXAngle, armYAngle: %d, %d", armXAngle, armYAngle));
+            _logger.debug(String.format("normX, normY: %f, %f", normX, normY));
+            _logger.debug(String.format("normXY magnitude: %f", distance));
+
+            //Checks to see if the user is still doing the gesture.
+            if (distance > 1 || armAngle.getAngle() < armAngleMin) {
                 //_logger.debug("Ended persistentReaction");
                 done = true;
             }
             //Move the mouse if the arm angles are valid.
-            else {
-                _logger.debug(String.format("normX, normY: %f, %f", normX, normY));
+            else if (distance > 0.2) {
 
                 //Prefetches some information from the config and calculates the angle of the normalized
                 //relative x position -- before adding speed and the elapsed time.
                 double maxXVel  = (double)((int)_config.get("mouseXMaxVelocity"));
                 double maxYVel  = (double)((int)_config.get("mouseYMaxVelocity"));
 
-                //These give us a nice little resting space where the user won't accidentally move the mouse
-                //while the arm is extended.
-                if (-0.4 < normX && normX < 0.4) {
-                    normX = 0;
-                }
-                if (-0.4 < normY && normY < 0.4) {
-                    normY = 0;
-                }
-
                 //Gives an angle between -45 and 45 degrees since the input (normX/normY) is between -1 and 1.
-                double angle    = Math.atan(normX/normY);
+                double angle = Math.atan(normX / normY);
 
                 //Updates the angle if the normX is negative, because the above angle only takes into account.
                 //positive x-values even though it accepts positive and negative y-values. without issue.
                 if (normX < 0 && normY < 0) {
-                    angle = -3.14159265359 - angle;
-                }
-                else if (normX < 0 && normY >= 0) {
-                    angle = 3.14159265359 - angle;
+                    angle = -1*Math.PI - angle;
+                } else if (normX < 0 && normY >= 0) {
+                    angle = Math.PI - angle;
                 }
 
                 //Calculates the relative positions for the mouse.
                 //The elapsed time makes the movement consistent no matter how fast the program is running.
                 //The sin and cos are there to make the actual speed of the mouse the same no matter if it's going
                 //diagonal or not.
-                relX = (int)(maxXVel*deltaTime*Math.cos(angle));
-                relY = (int)(maxYVel*deltaTime*Math.sin(angle));
+                int relX = (int) (maxXVel * deltaTime * Math.cos(angle));
+                int relY = (int) (maxYVel * deltaTime * Math.sin(angle));
 
                 _logger.debug(String.format("Angle: %f", angle));
                 _logger.debug(String.format("DeltaTime: %f", deltaTime));

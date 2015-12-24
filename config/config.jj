@@ -2,7 +2,7 @@ options {
     STATIC = false;
 }
 PARSER_BEGIN(ControllerFSMFactory)
-package com.wafflesoft.kinectcontroller.config;
+package com.wafflesoft.kinectcontroller.config.generated;
 
 import java.io.*;
 import java.util.*;
@@ -548,15 +548,36 @@ void addMouseGesture(String armId, ControllerState state) :
         String dir      = "LEFT";
         String oppDir   = "RIGHT";
 
+        //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
+        int maxXMouseSpeed;
+        int minXAngle;
+        int maxXAngle;
+
+        int maxYMouseSpeed;
+        int minYAngle;
+        int maxYAngle;
+
         //Thanks to the tokens of javacc, armId will always be either left_arm or right_arm.
         if (armId.equals("left_arm")) {
             dir = "LEFT";
             oppDir = "RIGHT";
+
+            maxXMouseSpeed = -1;
+            maxYMouseSpeed = -1;
         }
-        else if (armId.equals("right_arm")) {
+        else {
             dir = "RIGHT";
             oppDir = "LEFT";
+
+            maxXMouseSpeed = 1;
+            maxYMouseSpeed = -1;
         }
+
+        minXAngle = 90;
+        maxXAngle = 180;
+
+        minYAngle = 60;
+        maxYAngle = 120;
 
         //Three angles are needed in order to tell if an arm is in the activation area for controlling the mouse.
         //The activation area is when the arm is fully extended and in front of the user, basically.
@@ -565,25 +586,12 @@ void addMouseGesture(String armId, ControllerState state) :
         Angle armAngle = addAngleRule(state, gesture, dir+"_HAND", dir+"_ELBOW", dir+"_SHOULDER", 130, 180);
 
         //Checks if arm is horizontally pointing forward.
-        Angle armX = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", 60, 120);
+        Angle armX = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", minXAngle, maxXAngle);
 
         //Checks if arm is vertically pointing forward.
-        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", 60, 120);
+        Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", minYAngle, maxYAngle);
 
-        //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
-        int maxXMouseSpeed;
-        int maxYMouseSpeed;
-
-        if (dir.equals("RIGHT")) {
-            maxXMouseSpeed = 1;
-            maxYMouseSpeed = -1;
-        }
-        else {
-            maxXMouseSpeed = -1;
-            maxYMouseSpeed = -1;
-        }
-
-        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 130, armX, 60, 120, armY, 60, 120)));
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 90, armX, 60, 120, armY, 60, 120)));
 
         state.addGesture(gestureId, gesture);
     }

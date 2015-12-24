@@ -13,14 +13,12 @@ public class MouseReactionConfig extends ReactionConfig<String,Object> {
      * @param mouseXMaxVelocity The pixels per millisecond at which the travels at its maximum speed on the x-axis.
      * @param mouseYMaxVelocity The pixels per millisecond at which the travels at its maximum speed on the y-axis.
      * @param armAngle      The angle of the chosen arm. Used to determine if it's straight or now.
-     * @param armX          The angle between the chosen arm and the opposite shoulder. 90 is going to count
-     *                      as "zero" for the x-axis relative to the user's body. The degrees along this
+     * @param armX          The angle between the chosen arm and the opposite shoulder. The degrees along this
      *                      x-axis away from "zero" will count towards
      *                      how fast the mouse moves along the x-axis of the monitor.
      * @param armXMin       The minimum angle for the x-axis angle.
      * @param armXMax       The maximum angle for the x-axis angle.
-     * @param armY          The angle between the chosen arm and the same side hip. 90 is going to count
-     *                      as "zero" for the y-axis relative to the user's body. The degrees along this
+     * @param armY          The angle between the chosen arm and the same side hip. The degrees along this
      *                      y-axis away from "zero" will count towards
      *                      how fast the mouse moves along the y-axis of the monitor.
      * @param armYMin       The minimum angle for the y-axis angle.

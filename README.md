@@ -4,7 +4,7 @@
 
 This project's goal is to make the Kinect compatible with any possible video game on a computer. The idea behind it is that the user supplies a
 configuration file that defines the gestures that the Kinect Controller will observe. These gestures will be tied to one or many reactions that
-have the potential to do a lot of different things from emulating keyboard events to executing programs or macros.
+have the potential to do a lot of different things from emulating keyboard events to controlling the mouse and executing programs or macros.
 
 After this project gets some headway and we reach a near 1.0 release, then there should be a good amount of configuration
 files already created for various games and applications of the project.
