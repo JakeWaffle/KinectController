@@ -25,8 +25,8 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.emulation;
 
-import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
-import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.PersistentReaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

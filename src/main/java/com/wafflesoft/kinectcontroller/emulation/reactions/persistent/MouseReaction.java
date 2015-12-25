@@ -1,4 +1,4 @@
-package com.wafflesoft.kinectcontroller.emulation.reactions;
+package com.wafflesoft.kinectcontroller.emulation.reactions.persistent;
 
 import com.wafflesoft.kinectcontroller.emulation.reactions.config.MouseReactionConfig;
 import com.wafflesoft.kinectcontroller.emulation.reactions.config.ReactionConfig;

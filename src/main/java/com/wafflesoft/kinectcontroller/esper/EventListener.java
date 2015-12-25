@@ -29,8 +29,8 @@ import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.client.EventBean;
 
 import com.wafflesoft.kinectcontroller.emulation.EmulationController;
-import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
-import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.PersistentReaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

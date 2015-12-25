@@ -23,25 +23,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.wafflesoft.kinectcontroller.emulation.reactions;
+package com.wafflesoft.kinectcontroller.controller.gestures;
 
-import com.wafflesoft.kinectcontroller.emulation.reactions.config.ReactionConfig;
+import com.wafflesoft.kinectcontroller.controller.ControllerState;
 
 /**
- * Created by jake on 11/25/2015.
- * This reactions just allows the KinectController to be shut down.
+ * Created by jake on 12/24/2015.
+ * This creates a Gesture instance that contains all of the
  */
-public class ShutdownReaction implements Reaction {
-    public ShutdownReaction() {
+public class MouseGestureFactory {
+    public MouseGestureFactory(String armId, ControllerState state) {
+
     }
 
-    @Override
-    public ReactionConfig getConfig() {
-        return null;
-    }
 
-    @Override
-    public void trigger() {
-        System.exit(0);
-    }
 }

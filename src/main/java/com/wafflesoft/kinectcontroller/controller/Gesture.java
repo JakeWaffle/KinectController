@@ -25,15 +25,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 package com.wafflesoft.kinectcontroller.controller;
 
-import com.wafflesoft.kinectcontroller.emulation.reactions.PersistentReaction;
-import com.wafflesoft.kinectcontroller.emulation.reactions.Reaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.PersistentReaction;
+import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.Reaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Jake on 6/2/2015.

@@ -23,26 +23,25 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-package com.wafflesoft.kinectcontroller.emulation.reactions;
+package com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon;
 
 import com.wafflesoft.kinectcontroller.emulation.reactions.config.ReactionConfig;
 
 /**
- * Created by jake on 10/15/2015.
- * A very important interface that is used to interact with the many types of Reaction
- * objects. Reaction objects are capable of doing many different things in reaction to a gesture
- * that has been triggered.
+ * Created by jake on 11/25/2015.
+ * This reactions just allows the KinectController to be shut down.
  */
-public interface Reaction {
-    /**
-     * @return A Map class with a special constructor that standardizes the data requirements for their
-     * respective Reaction classes. Each Reaction's config Map will have the same keys no matter what!
-     */
-	ReactionConfig getConfig();
+public class ShutdownReaction implements Reaction {
+    public ShutdownReaction() {
+    }
 
-    /**
-     * This is called to actually trigger the reaction. It doesn't matter what the Reaction does. The EmulationController
-     * is only concerned with triggering the reaction.
-     */
-    void trigger();
+    @Override
+    public ReactionConfig getConfig() {
+        return null;
+    }
+
+    @Override
+    public void trigger() {
+        System.exit(0);
+    }
 }
