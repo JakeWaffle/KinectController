@@ -315,7 +315,7 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
     )*
 
     {
-        //Error checking for a valid Angle rule
+         //Error checking for a valid Angle rule
         boolean valid = true;
 
         if (end1 == null) {
@@ -348,7 +348,7 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
         }
 
         AngleRuleInstaller.install(gesture, end1, vertex, end2, minAngle, maxAngle);
-    }
+   }
 }
 
 void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType) :
@@ -390,7 +390,53 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
         )
     )*
     {
+        String className = ruleType.className;
 
+        //Error checking for a valid Angle rule
+        boolean valid = true;
+
+        if (joint1 == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an joint1 attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tjoint1 is <JointID>", className));
+            valid = false;
+        }
+        if (joint2 == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an joint2 attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tjoint2 is <JointID>", className));
+            valid = false;
+        }
+        if (minDistance == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an min_distance attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmin_distance is <Number>", className));
+            valid = false;
+        }
+        if (maxDistance == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an max_distance attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmax_distance is <Number>", className));
+            valid = false;
+        }
+        if (!valid) {
+            System.exit(1);
+        }
+
+        switch (ruleType) {
+            case DISTANCE:
+                DistanceRuleInstaller.install(gesture, joint1, joints2, minDistance, maxDistance);
+                break;
+            case DISTANCEX:
+                DistanceRuleInstaller.installX(gesture, joint1, joints2, minDistance, maxDistance);
+                break;
+            case DISTANCEY:
+                DistanceRuleInstaller.installY(gesture, joint1, joints2, minDistance, maxDistance);
+                break;
+            case DISTANCEZ:
+                DistanceRuleInstaller.installZ(gesture, joint1, joints2, minDistance, maxDistance);
+                break;
+            case default:
+                _logger.error("Invalid RuleType given to parseDistanceRule(): " + ruleType.alias);
+                System.exit(1);
+                break;
+        }
     }
 }
 
