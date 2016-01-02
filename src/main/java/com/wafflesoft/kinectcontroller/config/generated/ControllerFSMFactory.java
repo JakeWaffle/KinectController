@@ -9,6 +9,8 @@ import com.wafflesoft.kinectcontroller.Conversions;
 //These are the Reaction objects.
 
 import com.wafflesoft.kinectcontroller.emulation.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.*;
 import com.wafflesoft.kinectcontroller.emulation.reactions.config.*;
 
 import org.slf4j.Logger;
@@ -20,7 +22,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     private String _startingStateId = null;
 
     private void addStartingState(String stateId) {
-        //If we can't change the state, then we'll just store the id until the state is added later.
+        //If we can't change the _state, then we'll just store the id until the _state is added later.
         if (!_csm.changeState(stateId)) {
             _startingStateId = stateId;
         }
@@ -29,7 +31,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     private void addState(ControllerState state) {
         _csm.addState(state);
 
-        //If the starting state hasn't been set and this state is the starting state.
+        //If the starting _state hasn't been set and this _state is the starting _state.
         if (_startingStateId != null && _startingStateId.equals(state.stateId)) {
             if (_csm.changeState(_startingStateId)) {
                 _startingStateId = null;
@@ -176,7 +178,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                         parseKeyReaction(gesture, ReactionType.fromString(reactionType));
                         break;
                     case SHUTDOWN:
-                        gesture.addReaction(new com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.ShutdownReaction());
+                        gesture.addReaction(new ShutdownReaction());
                         break;
                 }
         break;
@@ -195,7 +197,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
     jj_consume_token(IS);
     keyId = jj_consume_token(IDENTIFIER).image;
                 ButtonReactionConfig config = new ButtonReactionConfig(keyId, "keyboard");
-                gesture.addReaction(new com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.ButtonReaction(config));
+                gesture.addReaction(new ButtonReaction(config));
   }
 
   final public void parseAngleRule(ControllerState state, Gesture gesture) throws ParseException {
@@ -379,7 +381,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                 state.addRule(new DistanceZ(joint1Id, joint2Id, 0));
                 break;
         }
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        gesture.addRule(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
   final public void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType) throws ParseException {
@@ -455,7 +457,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                 state.addRule(new PositionZ(jointId, 0));
                 break;
         }
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        gesture.addRule(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
   final public void parseDistanceFromPointRule(ControllerState state, Gesture gesture) throws ParseException {
@@ -551,7 +553,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
                                                                                         jointId,
                                                                                         maxDistance.doubleValue());
 
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        gesture.addRule(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
   }
 
 //Note: armId will be either 'left_arm' or 'right_arm'
@@ -606,7 +608,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         //Checks if arm is vertically pointing forward.
         Angle armY = addAngleRule(state, gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", minYAngle, maxYAngle);
 
-        gesture.addPersistentReaction(new com.wafflesoft.kinectcontroller.emulation.reactions.persistent.MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 90, armX, 60, 120, armY, 60, 120)));
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 90, armX, 60, 120, armY, 60, 120)));
 
         state.addGesture(gestureId, gesture);
   }
@@ -641,7 +643,7 @@ public class ControllerFSMFactory implements ControllerFSMFactoryConstants {
         Angle angleRule = new Angle(end1Id, vertexId, end2Id, 0);
         state.addRule(angleRule);
 
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        gesture.addRule(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         {if (true) return angleRule;}
     throw new Error("Missing return statement in function");

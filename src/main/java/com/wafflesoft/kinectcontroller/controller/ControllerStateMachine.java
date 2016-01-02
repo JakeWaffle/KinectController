@@ -36,7 +36,7 @@ import java.util.Map;
 
 /**
  * Created by Jake on 5/17/2015.
- * This will keep track of the different states of the controller. Each state should represent a different
+ * This will keep track of the different states of the controller. Each _state should represent a different
  * area within the game where the controls possibly change.
  *
  * Assumptions:
@@ -46,7 +46,7 @@ import java.util.Map;
 public class ControllerStateMachine {
     public final    EsperHandler                    esperHandler 	= new EsperHandler();
 
-    //This maps a state id to a Controller state. This mapping is defined in the config file.
+    //This maps a _state id to a Controller _state. This mapping is defined in the config file.
     private         Map<String, ControllerState>    _states;
     private         ControllerState                 _curState 		= null;
 
@@ -60,18 +60,18 @@ public class ControllerStateMachine {
     }
 
     /**
-     * This interface allows Javacc to pass in ControllerStates into the state machine.
-     * @param newState A state containing all the information needed for handling a particular state of the Controller.
+     * This interface allows Javacc to pass in ControllerStates into the _state machine.
+     * @param newState A _state containing all the information needed for handling a particular _state of the Controller.
      */
     public void addState(ControllerState newState) {
         _states.put(newState.stateId, newState);
     }
 
     /**
-     * This will change the current state of the controller. Javacc will call this to set the initial state of
+     * This will change the current _state of the controller. Javacc will call this to set the initial _state of
 	 * the program.
-     * @param stateId This is the id of the state we're switching to.
-     * @return True if the stateId existed, false if it doesn't exist in the state machine.
+     * @param stateId This is the id of the _state we're switching to.
+     * @return True if the stateId existed, false if it doesn't exist in the _state machine.
      */
     public boolean changeState(String stateId) {
         boolean success = false;
@@ -86,8 +86,8 @@ public class ControllerStateMachine {
     }
 
     /**
-     * The csm needs to be a mediator between the current state and the KinectUserTracker. That way there are no problems
-     * when the state changes.
+     * The csm needs to be a mediator between the current _state and the KinectUserTracker. That way there are no problems
+     * when the _state changes.
      * @return A collection of the posturerule event beans. Cast each item with the Rule interface.
      */
     public Collection<Rule> getCurrentRules() {
@@ -95,7 +95,7 @@ public class ControllerStateMachine {
     }
 
     /**
-     * This will load gestures into Esper using the current state's Gestures. These gestures belong to the current
+     * This will load gestures into Esper using the current _state's Gestures. These gestures belong to the current
      * ControllerState. Loading only the gestures for the current ControllerState will improve the lookup times for the
      * EventListener
      */
@@ -111,7 +111,7 @@ public class ControllerStateMachine {
     }
 
     /**
-     * @return This returns the current state of the state machine.
+     * @return This returns the current _state of the _state machine.
      */
     public ControllerState state() {
         return _curState;

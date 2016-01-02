@@ -65,7 +65,7 @@ public interface ControllerFSMFactoryConstants {
   /** RegularExpression Id. */
   int COMMA = 27;
 
-  /** Lexical state. */
+  /** Lexical _state. */
   int DEFAULT = 0;
 
   /** Literal token values. */
@@ -74,7 +74,7 @@ public interface ControllerFSMFactoryConstants {
     "\"starting_state\"",
     "\"is\"",
     "\"version\"",
-    "\"state\"",
+    "\"_state\"",
     "\"gesture\"",
     "\"gesture mouse using \"",
     "<ARM_ID>",

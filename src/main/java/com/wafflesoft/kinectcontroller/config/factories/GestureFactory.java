@@ -1,5 +1,6 @@
-package com.wafflesoft.kinectcontroller.controller.gestures;
+package com.wafflesoft.kinectcontroller.config.factories;
 
+import com.wafflesoft.kinectcontroller.controller.ControllerState;
 import com.wafflesoft.kinectcontroller.controller.Gesture;
 import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.Reaction;
 import com.wafflesoft.kinectcontroller.posturerules.Rule;
@@ -23,12 +24,9 @@ public interface GestureFactory {
     boolean loadConfig(Map<String,String> config);
 
     /**
-     * This essentially just loads a bunch of prewritten rules and reactions into some amount of gestures. Then it spits
-     * out the resulting one. These gestures will then be put within a ControllerState object and loaded when the ControllerStateMachine's
-     * transitions to that particular ControllerState
-     *
-     * @return Some premade gestures might need to be several gestures under the hood in order to make the user's configuration
-     * easier. So a list of gestures will be returned from this.
+     * This creates a Gesture (or any number of gestures) with the loaded config map and then installs
+     * it into the given ControllerState.
+     * @param state This is the _state that the premade gesture will be installed into.
      */
-    List<Gesture> createGestures();
+    void installGesture(ControllerState state);
 }

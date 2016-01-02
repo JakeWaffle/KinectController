@@ -153,7 +153,7 @@ public class KinectUserTracker implements UserTracker.NewFrameListener {
         if (skeleton.getState() == SkeletonState.TRACKED) {
             //Note: If there is no ControllerState assigned to the ControllerStateMachine's curState, then
             //the following will throw a null pointer exception! We will prevent this by making sure there is
-            //a current state when the config file is loaded.
+            //a current _state when the config file is loaded.
 
             //Reusable variables for the below switch case.
             SkeletonJoint end1      = null;

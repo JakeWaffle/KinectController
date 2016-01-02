@@ -108,12 +108,12 @@ public class MouseReaction implements PersistentReaction {
             _logger.debug(String.format("normX, normY: %f, %f", normX, normY));
             _logger.debug(String.format("normXY magnitude: %f", distance));
 
-            //Checks to see if the user is still doing the gesture.
+            //Checks to see if the user isn't doing the gesture.
             if (distance > 1 || armAngle.getAngle() < armAngleMin) {
                 //_logger.debug("Ended persistentReaction");
                 done = true;
             }
-            //Move the mouse if the arm angles are valid.
+            //Move the mouse if the arm is outside of the center spot of the user's arm's movement circle.
             else if (distance > 0.2) {
 
                 //Prefetches some information from the config and calculates the angle of the normalized
@@ -124,8 +124,8 @@ public class MouseReaction implements PersistentReaction {
                 //Gives an angle between -45 and 45 degrees since the input (normX/normY) is between -1 and 1.
                 double angle = Math.atan(normX / normY);
 
-                //Updates the angle if the normX is negative, because the above angle only takes into account.
-                //positive x-values even though it accepts positive and negative y-values. without issue.
+                //Updates the angle if the normX is negative, because the above angle only takes into account
+                //positive x-values even though it accepts positive and negative y-values without issue.
                 if (normX < 0 && normY < 0) {
                     angle = -1*Math.PI - angle;
                 } else if (normX < 0 && normY >= 0) {
@@ -133,7 +133,7 @@ public class MouseReaction implements PersistentReaction {
                 }
 
                 //Calculates the relative positions for the mouse.
-                //The elapsed time makes the movement consistent no matter how fast the program is running.
+                //The elapsed time makes the movement relatively consistent -- there are better ways to do this.
                 //The sin and cos are there to make the actual speed of the mouse the same no matter if it's going
                 //diagonal or not.
                 int relX = (int) (maxXVel * deltaTime * Math.cos(angle));

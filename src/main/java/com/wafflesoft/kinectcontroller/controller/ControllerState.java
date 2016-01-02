@@ -33,8 +33,8 @@ import com.wafflesoft.kinectcontroller.posturerules.Rule;
 
 /**
  * Created by Jake on 5/17/2015.
- * This state is loaded up by Javacc and contains the posturerules that are to be passed to Esper for this state.
- * Each state has their own gestures and respective emulation.
+ * This _state is loaded up by Javacc and contains the posturerules that are to be passed to Esper for this _state.
+ * Each _state has their own gestures and respective emulation.
  */
 public class ControllerState {
     public final String                 stateId;
@@ -68,9 +68,9 @@ public class ControllerState {
      * @param rule This is an empty Rule object that probably identifies the skeleton joints the Rule is concerned with
      *             and some other information that will narrow down the information that needs to be pulled from the Kinect.
      */
-    public void addRule(Object rule) {
-        String ruleId = ((Rule)rule).getId();
-        _rules.put(ruleId, (Rule)rule);
+    public void addRule(Rule rule) {
+        String ruleId = rule.getId();
+        _rules.put(ruleId, rule);
     }
 
     /**

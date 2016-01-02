@@ -8,7 +8,8 @@ import com.wafflesoft.kinectcontroller.Conversions;
 //These are the Reaction objects.
 
 import com.wafflesoft.kinectcontroller.emulation.*;
-import com.wafflesoft.kinectcontroller.emulation.reactions.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.*;
+import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.*;
 import com.wafflesoft.kinectcontroller.emulation.reactions.config.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -996,7 +997,7 @@ public static final String[] jjstrLiteralImages = {
 "\155\151\156\137\160\157\163\151\164\151\157\156", "\155\141\170\137\160\157\163\151\164\151\157\156", "\160\157\151\156\164", 
 "\162\145\141\143\164\151\157\156", "\153\145\171", null, null, null, null, null, null, null, null, null, };
 
-/** Lexer state names. */
+/** Lexer _state names. */
 public static final String[] lexStateNames = {
    "DEFAULT",
 };
@@ -1046,11 +1047,11 @@ public void ReInit(SimpleCharStream stream, int lexState)
    SwitchTo(lexState);
 }
 
-/** Switch to specified lex state. */
+/** Switch to specified lex _state. */
 public void SwitchTo(int lexState)
 {
    if (lexState >= 1 || lexState < 0)
-      throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
+      throw new TokenMgrError("Error: Ignoring invalid lexical _state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
    else
       curLexState = lexState;
 }

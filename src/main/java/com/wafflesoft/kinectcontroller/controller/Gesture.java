@@ -27,6 +27,7 @@ package com.wafflesoft.kinectcontroller.controller;
 
 import com.wafflesoft.kinectcontroller.emulation.reactions.persistent.PersistentReaction;
 import com.wafflesoft.kinectcontroller.emulation.reactions.hapaxlegomenon.Reaction;
+import com.wafflesoft.kinectcontroller.posturerules.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +42,9 @@ import java.util.List;
  */
 public class Gesture {
     private static final Logger             _logger      = LoggerFactory.getLogger(Gesture.class);
+
     public         final String             gestureId;
-    public         final ControllerState    state;
+    private        final ControllerState    _state;
 
     //These are a bunch of pieces of the overall gesture query. Each piece is specifically for
     //a rule that makes up the gesture. These will be able to be assembled into a complete gesture query for esper
@@ -52,11 +54,9 @@ public class Gesture {
     private List<Reaction> 	                _reactions;
     private List<PersistentReaction>        _persistentReactions;
 
-    //TODO Some identifier for the mouse needs to go hear. Left_Arm and Right_Arm?
-
     public Gesture(String gestureId, ControllerState state) {
         this.gestureId          = gestureId;
-        this.state              = state;
+        _state = state;
         _ruleConditions         = new ArrayList<String>();
         _negatedRuleConditions  = new ArrayList<String>();
         _reactions              = new ArrayList<Reaction>();
@@ -64,12 +64,23 @@ public class Gesture {
     }
 
     /**
-     * This will add a Rule to the Esper pattern for this gesture.
-     * The Rule is made up of a positive and negative part.
+     *  - The Rule bean is what gets updated with data and is then given to Esper as an "event".
+     *      Each Rule bean is probably unique, because it could have one of many posturerules class' and
+     *      the default properties are going to define what data is retrieved from the user's skeleton data
+     *      -- which is available through OpenNI and Nite.
+     *
+     *  - The Esper pattern is what is used to detect when an event is in a "matched" _state. It needs knowledge of the
+     *      Rule beans so that
+     *
+     * So this basically just adds a Rule bean object to its ControllerState's list of event beans and then stores the
+     * matched/unmatched conditions for the Esper pattern.
+     *
+     * @param rule                  This is an event bean object that will be updated with data and given to Esper.
      * @param ruleCondition         This denotes the rule's matched condition. When this condition is true, the rule is true.
      * @param negatedRuleCondition  This condition is true, when the rule is false.
      */
-    public void addRuleToEsperPattern(String ruleCondition, String negatedRuleCondition) {
+    public void addRule(Rule rule, String ruleCondition, String negatedRuleCondition) {
+        _state.addRule(rule);
         _ruleConditions.add(ruleCondition);
         _negatedRuleConditions.add(negatedRuleCondition);
     }
