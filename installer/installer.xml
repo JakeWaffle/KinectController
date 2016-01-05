@@ -85,7 +85,7 @@
     </componentList>
     <enableRollback>1</enableRollback>
     <enableTimestamp>1</enableTimestamp>
-    <outputDirectory>F:/Projects/KinectController/installers</outputDirectory>
+    <outputDirectory>F:/Projects/KinectController/installer/installers</outputDirectory>
     <vendor>WaffleSoft</vendor>
     <parameterList>
         <directoryParameter>

@@ -4,7 +4,7 @@ if "%1"=="" goto BLANK
 
 cd lib
 
-call java -cp KinectController.jar com.lcsc.hackathon.kinectcontroller.Main -d -f ../%1
+call java -cp KinectController.jar com.wafflesoft.kinectcontroller.Main -d -f ../%1
 
 cd ..
 

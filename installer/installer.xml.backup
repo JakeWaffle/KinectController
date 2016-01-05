@@ -58,7 +58,7 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>F:/Projects/KinectController/run.bat</origin>
+                            <origin>F:/Projects/KinectController/installer/run.bat</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -107,8 +107,7 @@
             <description>Kinect SDK v1.8</description>
             <explanation>Download the Kinect SDK v1.8 if you don't already have the drivers installed. This link will take you to Microsoft's website where the SDK is hosted.</explanation>
             <clickedActionList>
-                <launchBrowser url="https://www.microsoft.com/en-us/download/details.aspx?id=40278">
-                </launchBrowser>
+                <launchBrowser url="https://www.microsoft.com/en-us/download/details.aspx?id=40278"/>
             </clickedActionList>
         </linkParameter>
     </parameterList>
