@@ -27,9 +27,11 @@ package com.wafflesoft.kinectcontroller.controller;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import com.wafflesoft.kinectcontroller.posturerules.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Jake on 5/17/2015.
@@ -37,6 +39,7 @@ import com.wafflesoft.kinectcontroller.posturerules.Rule;
  * Each _state has their own gestures and respective emulation.
  */
 public class ControllerState {
+    private static final Logger _logger = LoggerFactory.getLogger(ControllerState.class);
     public final String                 stateId;
     public final ControllerStateMachine csm;
 
@@ -70,7 +73,21 @@ public class ControllerState {
      */
     public void addRule(Rule rule) {
         String ruleId = rule.getId();
+        if (_rules.containsKey(ruleId)) {
+            _logger.error("Duplicate Rule Given to State: "+stateId);
+        }
         _rules.put(ruleId, rule);
+    }
+
+    /**
+     * This is used to retrieve a Rule that may already exist within the ControllerState. It's customary
+     * to first check before creating a duplicate Rule. That way no Rules get overwritten and references
+     * aren't broken
+     * @param ruleId The id for the rule that is a deterministic value for identifying a specific rule (a hash essentially.)
+     * @return A Rule if the ruleId exists or null otherwise.
+     */
+    public Rule getRule(String ruleId) {
+        return _rules.getOrDefault(ruleId, null);
     }
 
     /**

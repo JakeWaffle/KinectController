@@ -8,10 +8,8 @@ import com.wafflesoft.kinectcontroller.posturerules.Angle;
  * Created by jake on 1/1/2016.
  * This supplies functions necessary for installing an Angle rule into a Gesture object.
  *
- * This supplies functions necessary for installing the different Distance rules into a Gesture object.
- *
- * These rules supply an additional requirement to be "matched". If some joints are within a distance threshold of
- * each other, then this requirement would be satisfied. Then the gesture is able to trigger its reactions once it is
+ * This rules supplies an additional requirement to be "matched". If some joints form an angle within some threshold,
+ * then this requirement would be satisfied. Then the gesture is able to trigger its reactions once it is
  * considered matched.
  *
  * - Angle - (Use install()) This rule will account for an angle between 3 joints on the user that the Kinect is tracking.
@@ -65,7 +63,7 @@ public class AngleRuleInstaller {
         Angle angleRule = new Angle(end1Id, vertexId, end2Id, 0);
 
         //arguments are the empty event bean and the matched and negated rule conditions for this specific angle rule.
-        gesture.addRule(angleRule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        angleRule = (Angle)gesture.addRule(angleRule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         return angleRule;
     }

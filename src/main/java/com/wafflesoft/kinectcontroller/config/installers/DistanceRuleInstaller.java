@@ -64,7 +64,7 @@ public class DistanceRuleInstaller {
                                                                                        maxDistance.doubleValue());
 
         Distance rule = new Distance(joint1Id, joint2Id, 0);
-        gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        rule = (Distance)gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         return rule;
     }
@@ -106,7 +106,7 @@ public class DistanceRuleInstaller {
                                                                                        maxDistance.doubleValue());
 
         DistanceX rule = new DistanceX(joint1Id, joint2Id, 0);
-        gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        rule = (DistanceX)gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         return rule;
     }
@@ -148,7 +148,7 @@ public class DistanceRuleInstaller {
                                                                                        maxDistance.doubleValue());
 
         DistanceY rule = new DistanceY(joint1Id, joint2Id, 0);
-        gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        rule = (DistanceY)gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         return rule;
     }
@@ -189,7 +189,7 @@ public class DistanceRuleInstaller {
                                                                                        maxDistance.doubleValue());
 
         DistanceZ rule = new DistanceZ(joint1Id, joint2Id, 0);
-        gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        rule = (DistanceZ)gesture.addRule(rule, patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
 
         return rule;
     }

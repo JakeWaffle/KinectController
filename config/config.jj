@@ -11,6 +11,11 @@ import com.wafflesoft.kinectcontroller.posturerules.*;
 
 import com.wafflesoft.kinectcontroller.Conversions;
 
+import com.wafflesoft.kinectcontroller.config.factories.PremadeGestureType;
+import com.wafflesoft.kinectcontroller.config.factories.GestureFactory;
+
+import com.wafflesoft.kinectcontroller.config.installers.*;
+
 //These are the Reaction objects.
 
 import com.wafflesoft.kinectcontroller.emulation.*;
@@ -20,6 +25,8 @@ import com.wafflesoft.kinectcontroller.emulation.reactions.config.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.InstantiationException;
 
 public class ControllerFSMFactory {
     private static final Logger _logger = LoggerFactory.getLogger(ControllerFSMFactory.class);
@@ -54,7 +61,7 @@ TOKEN: {
     < VERSION : "version" > |
     < STATE : "state" > |
     < GESTURE : "gesture" > |
-    < MOUSE_GESTURE : ("gesture mouse using ") > |
+    < PREMADE_GESTURE : "premade_gesture" > |
     < ARM_ID : ("left_arm" | "right_arm") > |
     < RULE : "rule" > |
     < END1 : "end1" > |
@@ -184,18 +191,26 @@ void parsePremadeGesture(String gestureId, ControllerState state) :
         String factoryFullName  = "com.wafflesoft.kinectcontroller.config.factories." + type.factoryClassName;
 
         //This instantiates a GestureFactory for some premade gesture. We will be interacting with that implementation
-        //through the GestureFactory interface.
-        GestureFactory factory = (GestureFactory)Class.forName(factoryFullName).newInstance();
+        //through the GestureFactory interface
+        try {
+            GestureFactory factory = (GestureFactory)Class.forName(factoryFullName).newInstance();
 
-        //This kicks off whatever specific implementation of the factory that was defined.
-        boolean isValid = factory.loadConfig(config);
+            //This kicks off whatever specific implementation of the factory that was defined.
+            boolean isValid = factory.loadConfig(config);
 
-        //We will only install this gesture if the configuration was valid.
-        if (isValid) {
-            factory.installGesture(state);
-        }
-        else {
-            _logger.warn("Invalid Configuration for Premade Gesture: " + gestureId);
+            //We will only install this gesture if the configuration was valid.
+            if (isValid) {
+                factory.installGesture(state);
+            }
+            else {
+                _logger.warn("Invalid Configuration for Premade Gesture: " + gestureId);
+            }
+        } catch (ClassNotFoundException e) {
+            _logger.warn(String.format("Factory Class Not Found: %s", factoryFullName), e);
+        } catch (InstantiationException e) {
+            _logger.warn(String.format("Factory Class Instantiation Failed: %s", factoryFullName), e);
+        } catch (IllegalAccessException e) {
+            _logger.warn(String.format("Factory Class Illegal Access: %s", factoryFullName), e);
         }
     }
 }
@@ -277,10 +292,6 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
     String  end2        = null;
     Integer minAngle    = null;
     Integer maxAngle    = null;
-
-    String  patternChunk1;
-    String  patternChunk2;
-    String  patternChunk3;
 }
 {
     (
@@ -315,6 +326,8 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
     )*
 
     {
+        String className = RuleType.ANGLE.className;
+
          //Error checking for a valid Angle rule
         boolean valid = true;
 
@@ -324,23 +337,23 @@ void parseAngleRule(ControllerState state, Gesture gesture) :
             valid = false;
         }
         if (vertex == null) {
-            _logger.error(String.format("Angle Rule within %s gesture requires an vertex attribute!", gesture.gestureId));
-            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tvertex is <JointID>");
+            _logger.error(String.format("%s Rule within %s gesture requires an vertex attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tvertex is <JointID>", className));
             valid = false;
         }
         if (end2 == null) {
-            _logger.error(String.format("Angle Rule within %s gesture requires an end2 attribute!", gesture.gestureId));
-            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tend2 is <JointID>");
+            _logger.error(String.format("%s Rule within %s gesture requires an end2 attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tend2 is <JointID>", className));
             valid = false;
         }
         if (minAngle == null) {
-            _logger.error(String.format("Angle Rule within %s gesture requires an min_angle attribute!", gesture.gestureId));
-            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tmin_angle is <JointID>");
+            _logger.error(String.format("%s Rule within %s gesture requires an min_angle attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmin_angle is <JointID>", className));
             valid = false;
         }
         if (maxAngle == null) {
-            _logger.error(String.format("Angle Rule within %s gesture requires an max_angle attribute!", gesture.gestureId));
-            _logger.error("Usage:\ngesture <GestureId>\n\trule Angle\n\t\tmax_angle is <JointID>");
+            _logger.error(String.format("%s Rule within %s gesture requires an max_angle attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmax_angle is <JointID>", className));
             valid = false;
         }
         if (!valid) {
@@ -358,10 +371,6 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
     String  joint2      = null;
     Double  minDistance = null;
     Double  maxDistance = null;
-
-    String  patternChunk1;
-    String  patternChunk2;
-    String  patternChunk3;
 }
 {
     (
@@ -421,18 +430,18 @@ void parseDistanceRule(ControllerState state, Gesture gesture, RuleType ruleType
 
         switch (ruleType) {
             case DISTANCE:
-                DistanceRuleInstaller.install(gesture, joint1, joints2, minDistance, maxDistance);
+                DistanceRuleInstaller.install(gesture, joint1, joint2, minDistance, maxDistance);
                 break;
             case DISTANCEX:
-                DistanceRuleInstaller.installX(gesture, joint1, joints2, minDistance, maxDistance);
+                DistanceRuleInstaller.installX(gesture, joint1, joint2, minDistance, maxDistance);
                 break;
             case DISTANCEY:
-                DistanceRuleInstaller.installY(gesture, joint1, joints2, minDistance, maxDistance);
+                DistanceRuleInstaller.installY(gesture, joint1, joint2, minDistance, maxDistance);
                 break;
             case DISTANCEZ:
-                DistanceRuleInstaller.installZ(gesture, joint1, joints2, minDistance, maxDistance);
+                DistanceRuleInstaller.installZ(gesture, joint1, joint2, minDistance, maxDistance);
                 break;
-            case default:
+            default:
                 _logger.error("Invalid RuleType given to parseDistanceRule(): " + ruleType.alias);
                 System.exit(1);
                 break;
@@ -446,10 +455,6 @@ void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType
     String  joint   = null;
     Double  minPos  = null;
     Double  maxPos  = null;
-
-    String  patternChunk1;
-    String  patternChunk2;
-    String  patternChunk3;
 }
 {
     (
@@ -472,35 +477,45 @@ void parsePositionRule(ControllerState state, Gesture gesture, RuleType ruleType
         )
     )*
     {
-        System.out.printf("MAX_POSITION: %f\n", maxPos.doubleValue());
-        System.out.printf("MIN_POSITION: %f\n", minPos.doubleValue());
-        System.out.printf("JOINT: %s\n", joint);
+        String className = ruleType.className;
 
-        int jointId     = Conversions.getJointId(joint);
+        //Error checking for a valid Angle rule
+        boolean valid = true;
 
-        //ruleType.className is going to be either PositionX, PositionY or PositionZ.
+        if (joint == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an joint attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tjoint is <JointID>", className));
+            valid = false;
+        }
+        if (minPos == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an min_position attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmin_position is <Number>", className));
+            valid = false;
+        }
+        if (maxPos == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an max_position attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmax_position is <Number>", className));
+            valid = false;
+        }
+        if (!valid) {
+            System.exit(1);
+        }
 
-        patternChunk1 = String.format(ruleType.className+"(joint=%d, pos > %f, pos < %f)", jointId,
-                                                                                           minPos.doubleValue(),
-                                                                                           maxPos.doubleValue());
-
-        patternChunk2 = String.format(ruleType.className+"(joint=%d, pos < %f)", jointId,
-                                                                                  minPos.doubleValue());
-
-        patternChunk3 = String.format(ruleType.className+"(joint=%d, pos > %f)", jointId,
-                                                                                  maxPos.doubleValue());
         switch(ruleType) {
             case POSITIONX:
-                state.addRule(new PositionX(jointId, 0));
+                PositionRuleInstaller.installX(gesture, joint, minPos, maxPos);
                 break;
             case POSITIONY:
-                state.addRule(new PositionY(jointId, 0));
+                PositionRuleInstaller.installY(gesture, joint, minPos, maxPos);
                 break;
             case POSITIONZ:
-                state.addRule(new PositionZ(jointId, 0));
+                PositionRuleInstaller.installZ(gesture, joint, minPos, maxPos);
+                break;
+            default:
+                _logger.error("Invalid RuleType given to parsePositionRule(): " + ruleType.alias);
+                System.exit(1);
                 break;
         }
-        gesture.addRuleToEsperPattern(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
     }
 }
 
@@ -513,10 +528,6 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
     Double  pointX      = new Double(0);
     Double  pointY      = new Double(0);
     Double  pointZ      = new Double(1500);
-
-    String  patternChunk1;
-    String  patternChunk2;
-    String  patternChunk3;
 }
 {
     (
@@ -550,39 +561,33 @@ void parseDistanceFromPointRule(ControllerState state, Gesture gesture) :
         )
     )*
     {
-        System.out.printf("MAX_DISTANCE: %f\n", maxDistance.doubleValue());
-        System.out.printf("MIN_DISTANCE: %f\n", minDistance.doubleValue());
-        System.out.printf("JOINT: %s\n", joint);
+        String className = RuleType.DISTANCE_FROM_POINT.className;
 
-        int jointId = Conversions.getJointId(joint);
+        //Error checking for a valid Angle rule
+        boolean valid = true;
+
+        if (joint == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an joint attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tjoint is <JointID>", className));
+            valid = false;
+        }
+        if (minDistance == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an min_distance attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmin_distance is <Number>", className));
+            valid = false;
+        }
+        if (maxDistance == null) {
+            _logger.error(String.format("%s Rule within %s gesture requires an max_distance attribute!", className, gesture.gestureId));
+            _logger.error(String.format("Usage:\ngesture <GestureId>\n\trule %s\n\t\tmax_distance is <Number>", className));
+            valid = false;
+        }
+        if (!valid) {
+            System.exit(1);
+        }
+
         double[] point = new double[] {pointX.doubleValue(), pointY.doubleValue(), pointZ.doubleValue()};
-        state.addRule(new DistanceFromPoint(point, jointId));
 
-        //TODO What can we do to optimize this? Use a hash for the Esper point identification?
-
-        patternChunk1 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f, distance < %f)",
-                                                                                        pointX,
-                                                                                        pointY,
-                                                                                        pointZ,
-                                                                                        jointId,
-                                                                                        minDistance.doubleValue(),
-                                                                                        maxDistance.doubleValue());
-
-        patternChunk2 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance < %f)",
-                                                                                        pointX,
-                                                                                        pointY,
-                                                                                        pointZ,
-                                                                                        jointId,
-                                                                                        minDistance.doubleValue());
-
-        patternChunk3 = String.format("DistanceFromPoint(point[0]=%f, point[1]=%f, point[2]=%f, joint=%d, distance > %f)",
-                                                                                        pointX,
-                                                                                        pointY,
-                                                                                        pointZ,
-                                                                                        jointId,
-                                                                                        maxDistance.doubleValue());
-
-        gesture.addRule(patternChunk1, String.format("(%s or %s)", patternChunk3, patternChunk2));
+        DistanceFromPointRuleInstaller.install(gesture, joint, point, minDistance, maxDistance);
     }
 }
 

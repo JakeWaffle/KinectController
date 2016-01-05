@@ -88,7 +88,7 @@ public class MouseReaction implements PersistentReaction {
                 normX = 2 * ((double) (armXAngle - armXMin)) / ((double) (armXMax - armXMin)) - 1;
             }
             else {
-                normX = armXAngle;
+                normX = 0;
             }
 
             //The below formula, when taking in (armYAngle=0), will output -3.
@@ -97,7 +97,7 @@ public class MouseReaction implements PersistentReaction {
                 normY = 2*((double)(armYAngle - armYMin)) / ((double)(armYMax - armYMin))-1;
             }
             else {
-                normY = armYAngle;
+                normY = 0;
             }
 
             //Gets distance between 0 and 1 that represents the user's hand's distance from the middle of the defined
@@ -121,15 +121,15 @@ public class MouseReaction implements PersistentReaction {
                 double maxXVel  = (double)((int)_config.get("mouseXMaxVelocity"));
                 double maxYVel  = (double)((int)_config.get("mouseYMaxVelocity"));
 
-                //Gives an angle between -45 and 45 degrees since the input (normX/normY) is between -1 and 1.
-                double angle = Math.atan(normX / normY);
+                //Gives an angle between -90 and 90 degrees (in radians!)
+                double angle = Math.atan(normY / normX);
 
                 //Updates the angle if the normX is negative, because the above angle only takes into account
                 //positive x-values even though it accepts positive and negative y-values without issue.
                 if (normX < 0 && normY < 0) {
-                    angle = -1*Math.PI - angle;
+                    angle = -1*Math.PI + angle;
                 } else if (normX < 0 && normY >= 0) {
-                    angle = Math.PI - angle;
+                    angle = Math.PI + angle;
                 }
 
                 //Calculates the relative positions for the mouse.

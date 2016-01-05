@@ -78,13 +78,18 @@ public class MouseGestureFactory implements GestureFactory {
         String  gestureId   = "mouse using "+_armId;
         Gesture gesture     = new Gesture(gestureId, state);
 
+        System.out.println("Mouse Gesture: " + gestureId);
+
         //Grabs the direction that the user chose for the mouse control gesture.
         //(Specifies which arm will be used for the mouse controlling.)
         String dir      = "LEFT";
         String oppDir   = "RIGHT";
 
+        int minArmAngle;
+
         //This is pixels per millisecond and it is supposed to be negative for the left arm and positive for the right arm.
         int maxXMouseSpeed;
+
         int minXAngle;
         int maxXAngle;
 
@@ -93,7 +98,8 @@ public class MouseGestureFactory implements GestureFactory {
         int maxYAngle;
 
         //Thanks to the tokens of javacc, armId will always be either left_arm or right_arm.
-        if (_armId.equals("left_arm")) {
+        //_armId is assumed to be either 'left' or 'right' because of loadConfig()'s validation.
+        if (_armId.equals("left")) {
             dir = "LEFT";
             oppDir = "RIGHT";
 
@@ -108,8 +114,10 @@ public class MouseGestureFactory implements GestureFactory {
             maxYMouseSpeed = -1;
         }
 
-        minXAngle = 90;
-        maxXAngle = 180;
+        minArmAngle = 130;
+
+        minXAngle = 80;
+        maxXAngle = 140;
 
         minYAngle = 60;
         maxYAngle = 120;
@@ -118,7 +126,7 @@ public class MouseGestureFactory implements GestureFactory {
         //The activation area is when the arm is fully extended and in front of the user, basically.
 
         //Checks for the arm being straight.
-        Angle armAngle = AngleRuleInstaller.install(gesture, dir+"_HAND", dir+"_ELBOW", dir+"_SHOULDER", 130, 180);
+        Angle armAngle = AngleRuleInstaller.install(gesture, dir+"_HAND", dir+"_ELBOW", dir+"_SHOULDER", minArmAngle, 180);
 
         //Checks if arm is horizontally pointing forward.
         Angle armX = AngleRuleInstaller.install(gesture, dir+"_HAND", dir+"_SHOULDER", oppDir+"_SHOULDER", minXAngle, maxXAngle);
@@ -126,7 +134,7 @@ public class MouseGestureFactory implements GestureFactory {
         //Checks if arm is vertically pointing forward.
         Angle armY = AngleRuleInstaller.install(gesture, dir+"_HAND", dir+"_SHOULDER", dir+"_HIP", minYAngle, maxYAngle);
 
-        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, 90, armX, 60, 120, armY, 60, 120)));
+        gesture.addPersistentReaction(new MouseReaction("mouse_control", new MouseReactionConfig(maxXMouseSpeed, maxYMouseSpeed, armAngle, minArmAngle, armX, minXAngle, maxXAngle, armY, minYAngle, maxYAngle)));
 
         state.addGesture(gestureId, gesture);
     }

@@ -3,7 +3,9 @@ version 1
 starting_state is Menu
 
 state Menu
-    gesture mouse using left_arm
+    premade_gesture mouse
+        armId is left
+
 
     gesture shutdown_game
         rule Angle

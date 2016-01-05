@@ -75,14 +75,24 @@ public class Gesture {
      * So this basically just adds a Rule bean object to its ControllerState's list of event beans and then stores the
      * matched/unmatched conditions for the Esper pattern.
      *
-     * @param rule                  This is an event bean object that will be updated with data and given to Esper.
+     * @param rule                  This is an event bean object that will be updated with data and given to Esper. If
+     *                              an identical event bean object exists, it will be used instead of this one and will be
+     *                              returned.
      * @param ruleCondition         This denotes the rule's matched condition. When this condition is true, the rule is true.
      * @param negatedRuleCondition  This condition is true, when the rule is false.
+     * @return If the given rule is a duplicate Rule object, then the existing Rule object will be returned.
+     * Otherwise the given rule object will be returned.
+     * (The Rule object that is in the ControllerState's _rules list will be returned.)
      */
-    public void addRule(Rule rule, String ruleCondition, String negatedRuleCondition) {
-        _state.addRule(rule);
+    public Rule addRule(Rule rule, String ruleCondition, String negatedRuleCondition) {
+        Rule existingRule = _state.getRule(rule.getId());
+        if (existingRule == null) {
+            _state.addRule(rule);
+            existingRule = rule;
+        }
         _ruleConditions.add(ruleCondition);
         _negatedRuleConditions.add(negatedRuleCondition);
+        return existingRule;
     }
 
     /**
