@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '1.2.2'
 }
 
 group = 'com.lcsc.hackathon.kinectcontroller'
@@ -10,11 +9,6 @@ description = """KinectController"""
 
 repositories {
     mavenCentral()
-}
-
-shadowJar {
-    destinationDir = file("${project.rootDir}/lib")
-    archiveName = "${baseName}.${extension}"
 }
 
 
