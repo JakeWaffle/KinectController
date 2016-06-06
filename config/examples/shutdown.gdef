@@ -8,7 +8,7 @@ state Menu
             end1        is RIGHT_HAND
             vertex      is RIGHT_SHOULDER
             end2        is RIGHT_HIP
-            min_angle   is 160
+            min_angle   is 150
             max_angle   is 180
 
         rule Angle

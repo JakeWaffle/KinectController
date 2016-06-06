@@ -11,6 +11,16 @@ repositories {
     mavenCentral()
 }
 
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Kinect Controller',
+                'Implementation-Version': version,
+                'Main-Class': 'com.wafflesoft.kinectcontroller.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
 
 javadoc {
     destinationDir=file("${project.rootDir}/Documentation/KinectController")

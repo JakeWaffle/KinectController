@@ -2,9 +2,13 @@
 
 if "%1"=="" goto BLANK
 
+SET JAR=KinectController-all-0.0.3.jar
+
+cp build/libs/%JAR% lib
+
 cd lib
 
-call java -cp KinectController.jar com.wafflesoft.kinectcontroller.Main -d -f ../%1
+call java -cp %JAR% com.wafflesoft.kinectcontroller.Main -d -f ../%1
 
 cd ..
 
